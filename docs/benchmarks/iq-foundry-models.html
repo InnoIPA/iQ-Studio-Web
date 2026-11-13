@@ -2,10 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PXR5PTSD');</script>
+<!-- End Google Tag Manager -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>iQ-Foundry Model Benchmark · iQ-Studio Docs</title>
+<title>IQ-9075: iQ-Foundry Model Benchmark · iQ-Studio Docs</title>
 <link rel="icon" type="image/svg+xml" href="../../assets/logo/favicon.svg">
-<meta name="description" content="Accuracy, size and inference latency of iQ-Foundry model conversions on EXMP-Q911 (Qualcomm QCS9075).">
+<meta name="description" content="Accuracy, size and inference latency of iQ-Foundry model conversions on EXMP-Q911 (Qualcomm IQ-9075).">
 <script src="../../assets/js/support.js"></script>
 </head>
 <body>
@@ -141,11 +144,11 @@
 
     <main style="min-width:0; animation:gsRise .6s cubic-bezier(.16,1,.3,1) .05s both">
       <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.08em; transition:color 1s ease; color:{{ fgMuted }}">
-        <a href="../index.html">Docs</a><span>/</span><span>Benchmarks</span><span>/</span><span style="transition:color 1s ease; color:{{ fg }}">iQ-Foundry Model Benchmark</span>
+        <a href="../index.html">Docs</a><span>/</span><span>Benchmarks</span><span>/</span><span style="transition:color 1s ease; color:{{ fg }}">IQ-9075: iQ-Foundry Model Benchmark</span>
       </div>
       <h1 style="margin:22px 0 0; font-size:38px; line-height:1.15; font-weight:700; letter-spacing:-.03em">iQ-Foundry Model Benchmark</h1>
       <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:16px"><span style="padding:5px 13px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; background:color-mix(in srgb, var(--acBg) 14%, transparent); color:var(--ac)">Benchmark</span><span style="padding:5px 13px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; background:color-mix(in srgb, var(--acBg) 14%, transparent); color:var(--ac)">iQ-Foundry</span><span style="padding:5px 13px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; background:color-mix(in srgb, var(--acBg) 14%, transparent); color:var(--ac)">EXMP-Q911</span><span style="padding:5px 13px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; background:color-mix(in srgb, var(--acBg) 14%, transparent); color:var(--ac)">COCO mAP</span></div>
-      <p style="margin:18px 0 0; font-size:17px; line-height:1.8; transition:color 1s ease; color:{{ fgMuted }}">This benchmark compares <a href="https://github.com/InnoIPA/iQ-Foundry" target="_blank" rel="noopener">iQ-Foundry</a> model conversions and their measured performance on EXMP-Q911 (Qualcomm QCS9075).</p>
+      <p style="margin:18px 0 0; font-size:17px; line-height:1.8; transition:color 1s ease; color:{{ fgMuted }}">This benchmark compares <a href="https://github.com/InnoIPA/iQ-Foundry" target="_blank" rel="noopener">iQ-Foundry</a> model conversions and their measured performance on EXMP-Q911 (Qualcomm IQ-9075).</p>
 
       <h2 id="overview" style="margin:44px 0 0; font-size:26px; font-weight:600; letter-spacing:-.02em; padding-top:22px; transition:border-color 1s ease; border-top:1px solid {{ line }}">Overview</h2>
       <p style="margin:14px 0 0; font-size:15.5px; line-height:1.85; transition:color 1s ease; color:{{ fgMuted }}">This page compares the accuracy, deployment size, and on-device inference performance of the model combinations supported by <a href="https://github.com/InnoIPA/iQ-Foundry" target="_blank" rel="noopener">iQ-Foundry</a>. The results help users select an appropriate model based on accuracy, inference latency, model size, runtime compatibility, and deployment requirements.</p>
@@ -156,7 +159,7 @@
       <div style="margin-top:18px; overflow-x:auto; border-radius:12px; transition:border-color 1s ease; border:1px solid {{ line }}">
         <table style="width:100%; border-collapse:collapse; font-size:13.5px">
           <thead><tr><th style="text-align:left; padding:12px 15px; white-space:nowrap; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; font-weight:400; transition:color 1s ease, background 1s ease, border-color 1s ease; color:{{ fgMuted }}; background:{{ panelBg }}; border-bottom:1px solid {{ line }}">Item</th><th style="text-align:left; padding:12px 15px; white-space:nowrap; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; font-weight:400; transition:color 1s ease, background 1s ease, border-color 1s ease; color:{{ fgMuted }}; background:{{ panelBg }}; border-bottom:1px solid {{ line }}">Configuration</th></tr></thead>
-          <tbody><tr><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; border-bottom:1px solid {{ line }}">Target device</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; border-bottom:1px solid {{ line }}">EXMP-Q911 (Qualcomm QCS9075)</td></tr>
+          <tbody><tr><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; border-bottom:1px solid {{ line }}">Target device</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; border-bottom:1px solid {{ line }}">EXMP-Q911 (Qualcomm IQ-9075)</td></tr>
             <tr><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; border-bottom:1px solid {{ line }}">Inference accelerator</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; border-bottom:1px solid {{ line }}">Qualcomm HTP/NPU</td></tr>
             <tr><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; border-bottom:1px solid {{ line }}">Power plan</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; border-bottom:1px solid {{ line }}">30 W (High Performance mode)</td></tr>
             <tr><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit;">AI performance</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit;">100 TOPS (Dense)</td></tr></tbody>
@@ -306,7 +309,11 @@
       <div class="docs-pager" style="display:flex; gap:14px; margin-top:44px; padding-top:22px; transition:border-color 1s ease; border-top:1px solid {{ line }}">
         <a href="perception.html" style="flex:1; display:flex; flex-direction:column; gap:4px; padding:14px 18px; border-radius:12px; text-decoration:none; transition:border-color .3s ease, transform .3s ease; border:1px solid {{ line }}" style-hover="transform:translateY(-2px); border-color:color-mix(in srgb, var(--acSoft) 60%, transparent)">
           <span style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ac)">← Previous</span>
-          <span style="font-size:14px; font-weight:600; transition:color 1s ease; color:{{ fg }}">Perception AI Benchmark</span>
+          <span style="font-size:14px; font-weight:600; transition:color 1s ease; color:{{ fg }}">IQ-9075: Perception AI Benchmark</span>
+        </a>
+              <a href="iq-8275-streampipe.html" style="flex:1; display:flex; flex-direction:column; align-items:flex-end; gap:4px; padding:14px 18px; border-radius:12px; text-decoration:none; transition:border-color .3s ease, transform .3s ease; border:1px solid {{ line }}" style-hover="transform:translateY(-2px); border-color:color-mix(in srgb, var(--acSoft) 60%, transparent)">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ac)">Next →</span>
+          <span style="font-size:14px; font-weight:600; text-align:right; transition:color 1s ease; color:{{ fg }}">IQ-8275: iQS-Streampipe Multi-stream Inference</span>
         </a>
       </div>
     </main>
@@ -349,7 +356,7 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;'dark' | 'light'&quot;}}">
 const SIDE = IQ_PAGES.SIDE;
-const ACTIVE = 'iQ-Foundry Model Benchmark';
+const ACTIVE = 'IQ-9075: iQ-Foundry Model Benchmark';
 
 const TOC = [
   ['Overview', '#overview', 0],

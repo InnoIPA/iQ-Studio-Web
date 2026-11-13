@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PXR5PTSD');</script>
+<!-- End Google Tag Manager -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Q911 Quick Start Guide · iQ-Studio Docs</title>
 <link rel="icon" type="image/svg+xml" href="../../assets/logo/favicon.svg">
@@ -178,7 +181,7 @@
             <span style="padding:14px 16px; transition:color 1s ease; color:{{ fgMuted }}">1x IQ9 COM-HPC Mini Module<br>1x 3.5” COM-HPC Mini Carrier (secured with the module)<br>1x Cooler with Fan (secured onto the module)<br>1x 60W power adapter<br>1x US power cord<br>1x Speaker*2 cable<br>1x D-SUB(F) cable (GPIO)<br>1x D-SUB(M) cable (CAN FD)<br>1x USB 2.0 A-TYPE(F)*2 cable<br>1x D-SUB(M) cable (COM)</span>
           </div>
           <div style="display:grid; grid-template-columns:130px 170px 1fr 1.4fr; font-size:13.5px; line-height:1.7">
-            <span style="padding:14px 16px; transition:color 1s ease; color:{{ fg }}">APEX-A100</span>
+            <span style="padding:14px 16px"><a href="https://www.innodisk.com/en/edge-ai-systems/qualcomm-solution/apex-a100">APEX-A100</a></span>
             <span style="padding:14px 16px; font-family:'JetBrains Mono',monospace; font-size:11.5px; transition:color 1s ease; color:{{ fgMuted }}">EXOC-Q911-00A1-W1</span>
             <span style="padding:14px 16px; transition:color 1s ease; color:{{ fgMuted }}">Edge AI System By Qualcomm IQ-9075</span>
             <span style="padding:14px 16px; transition:color 1s ease; color:{{ fgMuted }}">1x Fanless Edge AI System based on EXMP-Q911 module<br>1x 60W power adapter<br>1x US power cord</span>
@@ -249,7 +252,7 @@
           </div></div></li>
         <li style="display:flex; gap:12px; align-items:flex-start"><span style="flex:none; width:20px; height:20px; margin-top:1px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; background:color-mix(in srgb, var(--ac) 20%, transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ac) 45%, transparent); color:var(--ac)">2</span><div style="flex:1; min-width:0">Please ensure that all boot mode DIP switches are set to <code style="font-family:'JetBrains Mono',monospace; font-size:13px; padding:2px 7px; border-radius:5px; background:color-mix(in srgb, var(--ac) 12%, transparent); color:var(--ac)">ON</code>, so the system boots from <code style="font-family:'JetBrains Mono',monospace; font-size:13px; padding:2px 7px; border-radius:5px; background:color-mix(in srgb, var(--ac) 12%, transparent); color:var(--ac)">UFS</code>.
           <figure style="margin:14px 0 0; max-width:520px; border-radius:4px; overflow:hidden; transition:transform .45s cubic-bezier(.2,1,.3,1), box-shadow .45s ease; box-shadow:0 0 0 1px {{ line }}" style-hover="transform:translateY(-4px); box-shadow:0 0 0 1px color-mix(in srgb, var(--acSoft) 55%, transparent), 0 16px 34px -18px rgba(0,0,0,.5)">
-            <img src="https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/tutorials/starting-guides/q911/fig/boot_mode_ufs.png" alt="Boot mode set to UFS" loading="lazy" style="display:block; width:100%">
+            <img src="https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/tutorials/starting-guides/iq-9075/fig/boot_mode_ufs.png" alt="Boot mode set to UFS" loading="lazy" style="display:block; width:100%">
             <figcaption style="padding:9px 13px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; transition:color 1s ease; color:{{ fgMuted }}">Boot mode set to UFS</figcaption>
           </figure></div></li>
         <li style="display:flex; gap:12px; align-items:flex-start"><span style="flex:none; width:20px; height:20px; margin-top:1px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; background:color-mix(in srgb, var(--ac) 20%, transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ac) 45%, transparent); color:var(--ac)">3</span><div style="flex:1; min-width:0">Connect the power supply and press the power button to boot the system.
@@ -378,7 +381,7 @@ Password: ubuntu</pre>
         </div>
       </sc-for>
       <figure style="margin:16px 0 0; max-width:640px; border-radius:4px; overflow:hidden; transition:transform .45s cubic-bezier(.2,1,.3,1), box-shadow .45s ease; box-shadow:0 0 0 1px {{ line }}" style-hover="transform:translateY(-4px); box-shadow:0 0 0 1px color-mix(in srgb, var(--acSoft) 55%, transparent), 0 16px 34px -18px rgba(0,0,0,.5)">
-        <img src="https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/tutorials/starting-guides/q911/fig/adb_usage_example.png" alt="ADB usage example" loading="lazy" style="display:block; width:100%">
+        <img src="https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/tutorials/starting-guides/iq-9075/fig/adb_usage_example.png" alt="ADB usage example" loading="lazy" style="display:block; width:100%">
         <figcaption style="padding:9px 13px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; transition:color 1s ease; color:{{ fgMuted }}">ADB usage example</figcaption>
       </figure>
 
@@ -479,7 +482,7 @@ Password: ubuntu</pre>
 const SIDE = IQ_PAGES.SIDE;
 const ACTIVE = 'Q911 Quick Start Guide';
 
-const FIG = 'https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/tutorials/starting-guides/q911/fig/';
+const FIG = 'https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/tutorials/starting-guides/iq-9075/fig/';
 const TOC = [
   ['Overview', '#overview', 0], ['What’s in the Box', '#box', 0], ['EXEC-Q911 / APEX-A100 Hardware', '#hardware', 0],
   ['Step 1: Prepare Required Items', '#step1', 0], ['Step 2: Power On', '#step2', 0], ['Step 3: Interact with the System', '#step3', 0],

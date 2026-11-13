@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PXR5PTSD');</script>
+<!-- End Google Tag Manager -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Multi-stream Inference Status · iQ-Studio Docs</title>
+<title>IQ-9075: iQS-Streampipe Multi-stream Inference · iQ-Studio Docs</title>
 <link rel="icon" type="image/svg+xml" href="../../assets/logo/favicon.svg">
 <meta name="description" content="Throughput and latency scaling with channel count on Jetson AGX Orin and EXMP-Q911.">
 <script src="../../assets/js/support.js"></script>
@@ -141,11 +144,11 @@
 
     <main style="min-width:0; animation:gsRise .6s cubic-bezier(.16,1,.3,1) .05s both">
       <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.08em; transition:color 1s ease; color:{{ fgMuted }}">
-        <a href="../index.html">Docs</a><span>/</span><span>Benchmarks</span><span>/</span><span style="transition:color 1s ease; color:{{ fg }}">Multi-stream Inference Status</span>
+        <a href="../index.html">Docs</a><span>/</span><span>Benchmarks</span><span>/</span><span style="transition:color 1s ease; color:{{ fg }}">IQ-9075: iQS-Streampipe Multi-stream Inference</span>
       </div>
-      <h1 style="margin:22px 0 0; font-size:38px; line-height:1.15; font-weight:700; letter-spacing:-.03em">Multi-stream inference scaling on EXMP-Q911 (QCS9075) across video resolutions</h1>
+      <h1 style="margin:22px 0 0; font-size:38px; line-height:1.15; font-weight:700; letter-spacing:-.03em">Multi-stream inference status on Jetson AGX and Qualcomm IQ-9075</h1>
       <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:16px"><span style="padding:5px 13px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; background:color-mix(in srgb, var(--acBg) 14%, transparent); color:var(--ac)">Benchmark</span><span style="padding:5px 13px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; background:color-mix(in srgb, var(--acBg) 14%, transparent); color:var(--ac)">iQS-Streampipe</span><span style="padding:5px 13px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; background:color-mix(in srgb, var(--acBg) 14%, transparent); color:var(--ac)">Jetson AGX Orin 32GB</span><span style="padding:5px 13px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; background:color-mix(in srgb, var(--acBg) 14%, transparent); color:var(--ac)">EXMP-Q911</span></div>
-      <p style="margin:18px 0 0; font-size:17px; line-height:1.8; transition:color 1s ease; color:{{ fgMuted }}">This benchmark measures how throughput and latency scale as channels are added, running <a href="../applications/iqs-streampipe.html">iQS-Streampipe</a> on an NVIDIA Jetson AGX Orin 32GB and an EXMP-Q911 — useful for sizing a deployment (how many cameras per board), not as a general hardware ranking. A recording of live multi-stream inference is available <a href="https://github.com/InnoIPA/iQ-Studio/blob/main/benchmarks/iqs-streampipe/fig/nv_qc_live.mp4" target="_blank" rel="noopener">here</a>.</p>
+      <p style="margin:18px 0 0; font-size:17px; line-height:1.8; transition:color 1s ease; color:{{ fgMuted }}">This benchmark measures how throughput and latency scale as channels are added, running <a href="../applications/iqs-streampipe.html">iQS-Streampipe</a> on an NVIDIA Jetson AGX Orin 32GB and an EXMP-Q911 — useful for sizing a deployment (how many cameras per board), not as a general hardware ranking. A recording of live multi-stream inference is available <a href="https://github.com/InnoIPA/iQ-Studio/blob/main/benchmarks/iq-9075/multi-stream/iqs-streampipe/fig/nv_qc_live.mp4" target="_blank" rel="noopener">here</a>.</p>
       <ul style="margin:14px 0 0; padding-left:22px; font-size:15.5px; line-height:1.9; transition:color 1s ease; color:{{ fgMuted }}"><li>Application: <a href="../applications/iqs-streampipe.html">iQS-Streampipe</a></li><li>Task: object detection with an INT8 model</li><li>Input: 1080p, 30 FPS H.264 video streams</li><li>Platforms: Jetson AGX Orin 32GB, EXMP-Q911 (Qualcomm IQ-9075-based module)</li><li>Metrics:<ul style="margin:6px 0 0; padding-left:20px"><li>Output average end-to-end FPS per channel</li><li>Average CPU loading (%)</li><li>Average CPU memory usage (%)</li><li>Output end-to-end FPS percentiles (P95, P75, P50, P25)</li></ul></li><li>Channel counts: 1, 4, 9, 16</li></ul>
 
       <h2 id="hardware" style="margin:44px 0 0; font-size:26px; font-weight:600; letter-spacing:-.02em; padding-top:22px; transition:border-color 1s ease; border-top:1px solid {{ line }}">Hardware</h2>
@@ -182,9 +185,9 @@
         </table>
       </div>
       <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-top:20px">
-        <figure style="margin:0; border-radius:12px; overflow:hidden; transition:border-color 1s ease, background 1s ease; border:1px solid {{ line }}; background:{{ panelBg }}"><img src="https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/benchmarks/iqs-streampipe/fig/fps_per_channel.png" alt="FPS per channel" loading="lazy" style="display:block; width:100%"></figure>
-        <figure style="margin:0; border-radius:12px; overflow:hidden; transition:border-color 1s ease, background 1s ease; border:1px solid {{ line }}; background:{{ panelBg }}"><img src="https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/benchmarks/iqs-streampipe/fig/cpu_loading.png" alt="CPU loading" loading="lazy" style="display:block; width:100%"></figure>
-        <figure style="margin:0; border-radius:12px; overflow:hidden; transition:border-color 1s ease, background 1s ease; border:1px solid {{ line }}; background:{{ panelBg }}"><img src="https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/benchmarks/iqs-streampipe/fig/cpu_memory.png" alt="CPU memory" loading="lazy" style="display:block; width:100%"></figure>
+        <figure style="margin:0; border-radius:12px; overflow:hidden; transition:border-color 1s ease, background 1s ease; border:1px solid {{ line }}; background:{{ panelBg }}"><img src="https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/benchmarks/iq-9075/multi-stream/iqs-streampipe/fig/fps_per_channel.png" alt="FPS per channel" loading="lazy" style="display:block; width:100%"></figure>
+        <figure style="margin:0; border-radius:12px; overflow:hidden; transition:border-color 1s ease, background 1s ease; border:1px solid {{ line }}; background:{{ panelBg }}"><img src="https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/benchmarks/iq-9075/multi-stream/iqs-streampipe/fig/cpu_loading.png" alt="CPU loading" loading="lazy" style="display:block; width:100%"></figure>
+        <figure style="margin:0; border-radius:12px; overflow:hidden; transition:border-color 1s ease, background 1s ease; border:1px solid {{ line }}; background:{{ panelBg }}"><img src="https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/benchmarks/iq-9075/multi-stream/iqs-streampipe/fig/cpu_memory.png" alt="CPU memory" loading="lazy" style="display:block; width:100%"></figure>
       </div>
       <ul style="margin:14px 0 0; padding-left:22px; font-size:15.5px; line-height:1.9; transition:color 1s ease; color:{{ fgMuted }}"><li>The FPS plot (left) shows that both platforms keep per-channel FPS close to 30 at lower channel counts and gradually lose per-channel throughput as channels increase; EXMP-Q911 stays nearer to real-time at medium and higher channel counts, while Jetson AGX Orin drops earlier.</li><li>The CPU loading plot (middle) shows low utilization at 1 channel and a steady increase as more channels are added, with both platforms near or at high CPU usage at 9 and 16 channels; the points where CPU load approaches saturation align with the visible per-channel FPS reductions.</li><li>The CPU memory plot (right) shows that memory usage rises with channel count on both platforms but remains in a moderate range; in this benchmark, scaling behavior is dominated by CPU load and per-channel FPS rather than memory capacity limits.</li></ul>
 
@@ -209,7 +212,7 @@
               <span class="iq-copy" onClick="{{ mc2.copy }}"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></span>
               <span>bash</span>
             </div>
-            <pre style="margin:0; padding:14px 16px; overflow-x:auto; font-family:'JetBrains Mono',monospace; font-size:13px; line-height:1.7; background:#0a0e1c; color:#dfe8ff"><span style="color:#5b83c4">$</span> cd benchmarks/iqs-streampipe</pre>
+            <pre style="margin:0; padding:14px 16px; overflow-x:auto; font-family:'JetBrains Mono',monospace; font-size:13px; line-height:1.7; background:#0a0e1c; color:#dfe8ff"><span style="color:#5b83c4">$</span> cd benchmarks/iq-9075/multi-stream/iqs-streampipe</pre>
           </div></div></li>
         <li style="display:flex; gap:12px; align-items:flex-start"><span style="flex:none; width:20px; height:20px; margin-top:1px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; background:color-mix(in srgb, var(--ac) 20%, transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ac) 45%, transparent); color:var(--ac)">3</span><div style="flex:1; min-width:0">Edit <code style="font-family:'JetBrains Mono',monospace; font-size:13px; padding:2px 7px; border-radius:5px; transition:background 1s ease; background:{{ chipBg }}; color:var(--ac)">config.json</code> so that the <code style="font-family:'JetBrains Mono',monospace; font-size:13px; padding:2px 7px; border-radius:5px; transition:background 1s ease; background:{{ chipBg }}; color:var(--ac)">streams</code> array contains 1, 4, 9, or 16 entries, depending on the channel count being tested.</div></li>
         <li style="display:flex; gap:12px; align-items:flex-start"><span style="flex:none; width:20px; height:20px; margin-top:1px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; background:color-mix(in srgb, var(--ac) 20%, transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ac) 45%, transparent); color:var(--ac)">4</span><div style="flex:1; min-width:0">Run the benchmark script with the Qualcomm platform selected:          <div style="margin-top:12px; border-radius:10px; overflow:hidden; transition:border-color 1s ease; border:1px solid {{ line }}">
@@ -224,7 +227,7 @@
     --warmup_time 180 \
     --output ./logs/qcom_chX.txt</pre>
           </div>
-      <figure style="margin:14px 0 0; border-radius:12px; overflow:hidden; transition:border-color 1s ease, background 1s ease; border:1px solid {{ line }}; background:{{ panelBg }}"><img src="https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/benchmarks/iqs-streampipe/fig/output_qualcomm.png" alt="output.png" loading="lazy" style="display:block; width:100%"></figure></div></li>
+      <figure style="margin:14px 0 0; border-radius:12px; overflow:hidden; transition:border-color 1s ease, background 1s ease; border:1px solid {{ line }}; background:{{ panelBg }}"><img src="https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/benchmarks/iq-9075/multi-stream/iqs-streampipe/fig/output_qualcomm.png" alt="output.png" loading="lazy" style="display:block; width:100%"></figure></div></li>
       </ol>
       <h3 id="nvidia-procedure" style="margin:30px 0 0; font-size:18px; font-weight:600; letter-spacing:-.01em">NVIDIA Jetson AGX Orin 32GB procedure</h3>
       <ol style="list-style:none; margin:16px 0 0; padding:0; display:flex; flex-direction:column; gap:20px; font-size:15.5px; line-height:1.7; transition:color 1s ease; color:{{ fgMuted }}">
@@ -236,7 +239,7 @@
             </div>
             <pre style="margin:0; padding:14px 16px; overflow-x:auto; font-family:'JetBrains Mono',monospace; font-size:13px; line-height:1.7; background:#0a0e1c; color:#dfe8ff"><span style="color:#5b83c4">$</span> wget <span style="color:var(--acSoft)">https://github.com/InnoIPA/iQ-Studio/releases/download/v0.0.6/benchmark_nvidia_sources.tar.gz</span></pre>
           </div></div></li>
-        <li style="display:flex; gap:12px; align-items:flex-start"><span style="flex:none; width:20px; height:20px; margin-top:1px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; background:color-mix(in srgb, var(--ac) 20%, transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ac) 45%, transparent); color:var(--ac)">2</span><div style="flex:1; min-width:0">Under <code style="font-family:'JetBrains Mono',monospace; font-size:13px; padding:2px 7px; border-radius:5px; transition:background 1s ease; background:{{ chipBg }}; color:var(--ac)">benchmarks/iqs-streampipe</code>, extract the NVIDIA benchmark archive:          <div style="margin-top:12px; border-radius:10px; overflow:hidden; transition:border-color 1s ease; border:1px solid {{ line }}">
+        <li style="display:flex; gap:12px; align-items:flex-start"><span style="flex:none; width:20px; height:20px; margin-top:1px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; background:color-mix(in srgb, var(--ac) 20%, transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ac) 45%, transparent); color:var(--ac)">2</span><div style="flex:1; min-width:0">Under <code style="font-family:'JetBrains Mono',monospace; font-size:13px; padding:2px 7px; border-radius:5px; transition:background 1s ease; background:{{ chipBg }}; color:var(--ac)">benchmarks/iq-9075/multi-stream/iqs-streampipe</code>, extract the NVIDIA benchmark archive:          <div style="margin-top:12px; border-radius:10px; overflow:hidden; transition:border-color 1s ease; border:1px solid {{ line }}">
             <div style="display:flex; align-items:center; gap:10px; padding:8px 14px; font-family:'JetBrains Mono',monospace; font-size:11px; transition:background 1s ease, color 1s ease, border-color 1s ease; background:{{ panelBg }}; color:{{ fgMuted }}; border-bottom:1px solid {{ line }}">
               <span style="color:var(--ac)">{{ mc5.fname }}</span>
               <span class="iq-copy" onClick="{{ mc5.copy }}"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></span>
@@ -265,7 +268,7 @@
     --warmup_time 180 \
     --output ./logs/nv_chX.txt</pre>
           </div>
-      <figure style="margin:14px 0 0; border-radius:12px; overflow:hidden; transition:border-color 1s ease, background 1s ease; border:1px solid {{ line }}; background:{{ panelBg }}"><img src="https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/benchmarks/iqs-streampipe/fig/output_nvidia.png" alt="output.png" loading="lazy" style="display:block; width:100%"></figure></div></li>
+      <figure style="margin:14px 0 0; border-radius:12px; overflow:hidden; transition:border-color 1s ease, background 1s ease; border:1px solid {{ line }}; background:{{ panelBg }}"><img src="https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/benchmarks/iq-9075/multi-stream/iqs-streampipe/fig/output_nvidia.png" alt="output.png" loading="lazy" style="display:block; width:100%"></figure></div></li>
       </ol>
 
             <div class="docs-pager" style="display:flex; gap:14px; margin-top:44px; padding-top:22px; transition:border-color 1s ease; border-top:1px solid {{ line }}">
@@ -275,7 +278,7 @@
         </a>
         <a href="multistream-scaling.html" style="flex:1; display:flex; flex-direction:column; align-items:flex-end; gap:4px; padding:14px 18px; border-radius:12px; text-decoration:none; transition:border-color .3s ease, transform .3s ease; border:1px solid {{ line }}" style-hover="transform:translateY(-2px); border-color:color-mix(in srgb, var(--acSoft) 60%, transparent)">
           <span style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ac)">Next →</span>
-          <span style="font-size:14px; font-weight:600; text-align:right; transition:color 1s ease; color:{{ fg }}">Multi-stream Scaling Across Resolutions</span>
+          <span style="font-size:14px; font-weight:600; text-align:right; transition:color 1s ease; color:{{ fg }}">IQ-9075: iQS-QVADK Multi-stream Scaling</span>
         </a>
       </div>
     </main>
@@ -318,9 +321,9 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;'dark' | 'light'&quot;}}">
 const SIDE = IQ_PAGES.SIDE;
-const ACTIVE = 'Multi-stream Inference Status';
+const ACTIVE = 'IQ-9075: iQS-Streampipe Multi-stream Inference';
 
-const FIG = 'https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/tutorials/starting-guides/q911/fig/';
+const FIG = 'https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/tutorials/starting-guides/iq-9075/fig/';
 const TOC = [
   ['Hardware', '#hardware', 0],
   ['AI model', '#ai-model', 0],
@@ -350,7 +353,7 @@ class Component extends DCLogic {
     return Object.assign({}, t, {
       ...IQ_DOCS.vals(this, { TOC, ACTIVE, SIDE, t, name, pal }),
       mc1: block('mc1', 'terminal', 'git clone https://github.com/InnoIPA/iQ-Studio.git\ncd iQ-Studio\n./install.sh'),
-      mc2: block('mc2', 'terminal', 'cd benchmarks/iqs-streampipe'),
+      mc2: block('mc2', 'terminal', 'cd benchmarks/iq-9075/multi-stream/iqs-streampipe'),
       mc3: block('mc3', 'terminal', './scripts/auto_benchmark.sh \\\n    --platform qcom \\\n    --test_time 300 \\\n    --warmup_time 180 \\\n    --output ./logs/qcom_chX.txt'),
       mc4: block('mc4', 'terminal', 'wget https://github.com/InnoIPA/iQ-Studio/releases/download/v0.0.6/benchmark_nvidia_sources.tar.gz'),
       mc5: block('mc5', 'terminal', 'tar xzf benchmark_nvidia_sources.tar.gz'),

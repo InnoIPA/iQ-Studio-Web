@@ -2,10 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PXR5PTSD');</script>
+<!-- End Google Tag Manager -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Benchmarks · iQ-Studio</title>
 <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg">
-<meta name="description" content="Numbers with their method attached: QCS9075 vs Jetson AGX Orin, the limits of one board, and which model to deploy.">
+<meta name="description" content="Numbers with their method attached: IQ-9075 vs Jetson AGX Orin, the limits of one board, and which model to deploy.">
 <script src="assets/js/support.js"></script>
 </head>
 <body>
@@ -197,6 +200,9 @@
     .bmd-pair { height:180px; gap:3px; }
     .bmd-bar em { font-size:10px; }
   }
+  .bmd-plat { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+  .bmd-platbtn { padding:9px 18px; border-radius:999px; cursor:pointer; font-size:13.5px; font-weight:600; transition:background .25s ease, color .25s ease, border-color .25s ease; user-select:none; }
+  .bmd-platbtn:hover { border-color:var(--ac) !important; color:var(--ac) !important; }
 </style>
 </helmet>
 
@@ -304,8 +310,8 @@
     <section id="compare" class="bmd-sec" style="border-top:1px solid {{ line }}">
       <div class="bmd-rail" style="border-right:1px solid {{ line }}">
         <span class="bmd-label">01 / Different platforms</span>
-        <h2 class="bmd-h2">QCS9075 holds 28.4 FPS per channel at 9 channels. Orin falls to 7.6.</h2>
-        <p class="bmd-rp" style="color:{{ fgMuted }}">EXMP-Q911 vs Jetson AGX Orin, same software architecture and same pipeline: iQS-Streampipe, YOLOv10n INT8, 1080p30. Switch the metric to see the other side of the trade-off.</p>
+        <h2 class="bmd-h2">{{ platTitle }}</h2>
+        <p class="bmd-rp" style="color:{{ fgMuted }}">{{ platDesc }}</p>
         <div class="bmd-metrics">
           <sc-for list="{{ metricTabs }}" as="m" hint-placeholder-count="3">
             <span class="bmd-metric" onClick="{{ m.pick }}" style="background:{{ m.bg }}; color:{{ m.fg }}">{{ m.name }}</span>
@@ -313,6 +319,11 @@
         </div>
       </div>
       <div class="bmd-content">
+        <div class="bmd-plat" role="tablist" aria-label="Platform comparison">
+          <sc-for list="{{ platTabs }}" as="p" hint-placeholder-count="2">
+            <span class="bmd-platbtn" role="tab" onClick="{{ p.pick }}" style="background:{{ p.bg }}; color:{{ p.fg }}; border:1px solid {{ p.bd }}">{{ p.name }}</span>
+          </sc-for>
+        </div>
         <div class="bmd-facts" style="border:1px solid {{ line }}; background:{{ chipBg }}">
           <sc-for list="{{ facts }}" as="f" hint-placeholder-count="4">
             <div class="bmd-fact" style="border-right:1px solid {{ line }}">
@@ -325,7 +336,7 @@
         <div class="bmd-chart" style="border:1px solid {{ line }}; background:{{ chipBg }}">
           <div class="bmd-chart__head" style="color:{{ fgMuted }}">
             <span>{{ chartTitle }}</span>
-            <span class="bmd-legend"><span><i style="background:linear-gradient(to right,var(--acBg),var(--acSoft))"></i>EXMP-Q911</span><span><i style="background:rgba(150,162,186,.6)"></i>Jetson AGX Orin</span></span>
+            <span class="bmd-legend"><span><i style="background:linear-gradient(to right,var(--acBg),var(--acSoft))"></i>{{ usName }}</span><span><i style="background:rgba(150,162,186,.6)"></i>{{ themName }}</span></span>
           </div>
           <div class="bmd-plot">
             <sc-for list="{{ groups }}" as="g" hint-placeholder-count="4">
@@ -503,6 +514,51 @@ const METRICS = {
   }
 };
 
+// Platform comparisons shown in chapter 01. IQ-9075 numbers are the Home-page test; IQ-8275 numbers are the 1080p tables of the IQ-8275 report.
+const NX_NOTE = 'iQS-Streampipe · YOLO26n INT8 · 1080p30 · 8 cores · 300s warm-up · Orin NX in MAXN power mode';
+const METRICS_8275 = {
+  fps: {
+    name: 'throughput · fps/ch', unit: ' fps', max: 30, higherBetter: true,
+    title: 'Output average E2E FPS per channel · 1080p · higher is better', note: 'output average E2E FPS/channel · ' + NX_NOTE,
+    rows: [
+      { label: '1 ch', us: 29.38, them: 29.34 }, { label: '4 ch', us: 26.05, them: 27.04 },
+      { label: '9 ch', us: 10.28, them: 7.86 }, { label: '16 ch', us: 7.42, them: 3.79 }
+    ]
+  },
+  cpu: {
+    name: 'cpu load · %', unit: '%', max: 100, higherBetter: false,
+    title: 'CPU loading (%) · 1080p · lower is better', note: 'CPU loading % · ' + NX_NOTE,
+    rows: [
+      { label: '1 ch', us: 40.1, them: 24.8 }, { label: '4 ch', us: 86.1, them: 62.5 },
+      { label: '9 ch', us: 99.4, them: 82.8 }, { label: '16 ch', us: 99.6, them: 94.4 }
+    ]
+  },
+  mem: {
+    name: 'memory · %', unit: '%', max: 40, higherBetter: false,
+    title: 'Average CPU memory (%) · 1080p · lower is better', note: 'average CPU memory % · ' + NX_NOTE,
+    rows: [
+      { label: '1 ch', us: 8.4, them: 21.9 }, { label: '4 ch', us: 15.1, them: 25.5 },
+      { label: '9 ch', us: 28.9, them: 30.8 }, { label: '16 ch', us: 40.5, them: 39.5 }
+    ]
+  }
+};
+const PLATFORMS = {
+  q911: {
+    btn: 'IQ-9075 vs Jetson AGX Orin', usName: 'EXMP-Q911', themName: 'Jetson AGX Orin', metrics: METRICS,
+    title: 'IQ-9075 holds 28.4 FPS per channel at 9 channels. Orin falls to 7.6.',
+    desc: 'EXMP-Q911 vs Jetson AGX Orin, same software architecture and same pipeline: iQS-Streampipe, YOLOv10n INT8, 1080p30. Switch the metric to see the other side of the trade-off.',
+    facts: [{ n: '3.7×', l: 'FPS per channel at 9 channels', color: 'var(--ac)' }, { n: '30 W', l: 'vs 35 W system power at 9 channels', color: '#3ddc97' }],
+    href: 'docs/benchmarks/multi-stream.html'
+  },
+  q8275: {
+    btn: 'IQ-8275 vs Jetson Orin NX', usName: 'IQ-8275', themName: 'Jetson Orin NX', metrics: METRICS_8275,
+    title: 'IQ-8275 draws 12.6 W at 9 channels, less than half of Orin NX\u2019s 30.4 W.',
+    desc: 'IQ-8275 vs Jetson Orin NX 16GB, same software architecture and same pipeline: iQS-Streampipe, YOLO26n INT8, 1080p30. On par at 1 and 4 channels, faster from 9 channels, at less than half the power.',
+    facts: [{ n: '2.0×', l: 'FPS per channel at 16 channels', color: 'var(--ac)' }, { n: '12.6 W', l: 'vs 30.4 W system power at 9 channels', color: '#3ddc97' }],
+    href: 'docs/benchmarks/iq-8275-streampipe.html'
+  }
+};
+
 // Perception suite (Perception Model Benchmark): average FPS, INT8, Q911 vs Orin.
 const PERC = [
   { name: 'ResNet-50',   sub: '224×224',   q: 1206, n: 1053 },
@@ -541,14 +597,15 @@ const TOC = [
 const TILES = [{ n: 16, res: '720p' }, { n: 12, res: '1080p' }, { n: 9, res: '2K' }, { n: 4, res: '4K' }];
 
 const REPORTS = [
-  { name: 'iQS-Streampipe Benchmark', note: 'Channel scaling, Q911 vs Orin', href: 'docs/benchmarks/multi-stream.html' },
-  { name: 'Perception Model Benchmark', note: 'Model suite, Q911 vs Orin', href: 'docs/benchmarks/perception.html' },
-  { name: 'Multi-stream Scaling Across Resolutions', note: 'EXEC-Q911, 720p to 4K', href: 'docs/benchmarks/multistream-scaling.html' },
-  { name: 'iQ-Foundry Model Benchmark', note: 'Accuracy, size, latency', href: 'docs/benchmarks/iq-foundry-models.html' }
+  { name: 'IQ-9075: iQS-Streampipe Multi-stream Inference', note: 'Channel scaling, Q911 vs Orin', href: 'docs/benchmarks/multi-stream.html' },
+  { name: 'IQ-9075: iQS-QVADK Multi-stream Scaling', note: 'EXEC-Q911, 720p to 4K', href: 'docs/benchmarks/multistream-scaling.html' },
+  { name: 'IQ-9075: Perception AI Benchmark', note: 'Model suite, Q911 vs Orin', href: 'docs/benchmarks/perception.html' },
+  { name: 'IQ-9075: iQ-Foundry Model Benchmark', note: 'Accuracy, size, latency', href: 'docs/benchmarks/iq-foundry-models.html' },
+  { name: 'IQ-8275: iQS-Streampipe Multi-stream Inference', note: '720p to 4K, IQ-8275 vs Orin NX', href: 'docs/benchmarks/iq-8275-streampipe.html' }
 ];
 
 class Component extends DCLogic {
-  state = { theme: IQ_THEME.saved.theme, pal: IQ_THEME.saved.pal, palOpen: false, prog: 0, sideOpen: false, navOpen: false, metric: 'fps' };
+  state = { theme: IQ_THEME.saved.theme, pal: IQ_THEME.saved.pal, palOpen: false, prog: 0, sideOpen: false, navOpen: false, metric: 'fps', plat: 'q911' };
 
   componentDidMount() { IQ_THEME.apply(this.state.theme || this.props.theme || 'dark'); }
 
@@ -556,16 +613,21 @@ class Component extends DCLogic {
     const name = this.state.theme || this.props.theme || 'dark';
     const { t, pal } = IQ_THEME.resolve(name, this.state.pal);
     const metric = this.state.metric;
-    const M = METRICS[metric];
+    const P = PLATFORMS[this.state.plat] || PLATFORMS.q911;
+    const M = P.metrics[metric];
     const pc = (v, max) => Math.max(2, Math.min(100, Math.round(v / max * 100)));
     const ratios = PERC.map((p) => p.q / p.n);
     return Object.assign({}, t, {
       ...IQ_DOCS.vals(this, { TOC: [], ACTIVE: '', SIDE: [], t, name, pal }),
       toc: TOC, tiles: TILES, reports: REPORTS,
-      facts: [
-        { n: '3.7×', l: 'FPS per channel at 9 channels', color: 'var(--ac)' },
-        { n: '30 W', l: 'vs 35 W system power at 9 channels', color: '#3ddc97' }
-      ],
+      facts: P.facts,
+      platTabs: Object.keys(PLATFORMS).map((k) => ({
+        name: PLATFORMS[k].btn, pick: () => this.setState({ plat: k }),
+        bg: this.state.plat === k ? 'color-mix(in srgb, var(--acBg) 16%, transparent)' : 'transparent',
+        fg: this.state.plat === k ? 'var(--ac)' : t.fgMuted,
+        bd: this.state.plat === k ? 'color-mix(in srgb, var(--ac) 45%, transparent)' : t.line
+      })),
+      platTitle: P.title, platDesc: P.desc, usName: P.usName, themName: P.themName,
       limitRows: LIMITS,
       fcharts: [
         { title: 'Model size', sub: 'MB · lower is better', idx: 6, unit: ' MB' },
@@ -584,8 +646,8 @@ class Component extends DCLogic {
           })
         };
       }),
-      metricTabs: Object.keys(METRICS).map((k) => ({
-        name: METRICS[k].name, pick: () => this.setState({ metric: k }),
+      metricTabs: Object.keys(P.metrics).map((k) => ({
+        name: P.metrics[k].name, pick: () => this.setState({ metric: k }),
         bg: metric === k ? 'color-mix(in srgb, var(--acBg) 16%, transparent)' : 'transparent',
         fg: metric === k ? 'var(--ac)' : t.fgMuted
       })),
@@ -610,7 +672,7 @@ class Component extends DCLogic {
         dcol: r[4].charAt(0) === '+' ? '#3ddc97' : t.fgMuted,
         bg: r[1] === 'INT8' ? 'color-mix(in srgb, var(--ac) 7%, transparent)' : 'transparent'
       })),
-      streampipeHref: 'docs/benchmarks/multi-stream.html',
+      streampipeHref: P.href,
       perceptionHref: 'docs/benchmarks/perception.html',
       scalingHref: 'docs/benchmarks/multistream-scaling.html',
       foundryHref: 'docs/benchmarks/iq-foundry-models.html'

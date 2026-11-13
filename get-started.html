@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PXR5PTSD');</script>
+<!-- End Google Tag Manager -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Get Started · iQ-Studio</title>
 <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg">
@@ -245,9 +248,11 @@ const INTENTS = [
     icon: IC('<g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m17 23 4.5 4.5L32 17"></path><rect x="8" y="8" width="32" height="32" rx="7" stroke="currentColor" stroke-opacity=".55"></rect></g>'),
     cat: 'AVL', intro: 'Approved vendor list — validated cameras and peripherals.',
     pages: [
-      { name: 'Approved Vendor List', desc: 'Every validated module, by interface', href: 'docs/avl/vendor-list.html' },
+      { name: 'Approved Vendor List', desc: 'Pick a category of validated modules', href: 'docs/avl/vendor-list.html' },
       { name: 'GMSL Camera', desc: 'Bring up a GMSL camera', href: 'docs/avl/gmsl-camera.html' },
-      { name: 'MIPI Camera', desc: 'Bring up a MIPI camera', href: 'docs/avl/mipi-camera.html' }
+      { name: 'MIPI Camera', desc: 'Bring up a MIPI camera', href: 'docs/avl/mipi-camera.html' },
+      { name: 'Camera Adapter Boards', desc: 'Connect GMSL and MIPI cameras', href: 'docs/avl/camera-adapter-boards.html' },
+      { name: 'Embedded Peripheral Modules', desc: 'LAN, serial, CAN Bus, Wi-Fi / Bluetooth', href: 'docs/avl/embedded-peripheral.html' }
     ] },
   { id: 'demo', name: 'Run a ready-made AI demo', desc: 'See an AI inference demo running on the hardware in under ten minutes.',
     icon: IC('<g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="9" width="34" height="26" rx="5"></rect><path d="M20 17.5 29 22l-9 4.5Z" stroke="currentColor" stroke-opacity=".55"></path><path d="M17 40h14"></path></g>'),
@@ -262,7 +267,8 @@ const INTENTS = [
     cat: 'Model Deploy', intro: 'Quantize, validate and ship your own model.',
     pages: [
       { name: 'Model Deploy Overview', desc: 'The end-to-end path, explained', href: 'docs/model-deploy/overview.html' },
-      { name: 'Model Deploy · YOLO26', desc: 'Worked example, end to end', href: 'docs/model-deploy/yolo26.html' }
+      { name: 'Model Deploy · YOLO26', desc: 'Worked example, end to end', href: 'docs/model-deploy/yolo26.html' },
+      { name: 'iQ-Foundry Model Selection Guide', desc: 'Pick a model for your application', href: 'docs/model-deploy/iq-foundry-model-selection.html' }
     ] },
   { id: 'sdk', name: 'Customize & integrate via SDK', desc: 'Swap models, change inputs, or drive a demo through an API.',
     icon: IC('<g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m16 32 8-8-8-8" stroke="currentColor" stroke-opacity=".55"></path><path d="M28 32h12"></path></g>'),
@@ -274,12 +280,13 @@ const INTENTS = [
     ] },
   { id: 'eval', name: 'Evaluate performance data', desc: 'Review measured performance on real workloads.',
     icon: IC('<g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 40h30"></path><rect x="11" y="26" width="6.5" height="10" rx="2"></rect><rect x="20.5" y="18" width="6.5" height="18" rx="2" stroke="currentColor" stroke-opacity=".55"></rect><rect x="30" y="10" width="6.5" height="26" rx="2"></rect></g>'),
-    cat: 'Benchmarks', intro: 'Measured performance on QCS9075.',
+    cat: 'Benchmarks', intro: 'Reproducible performance tests for multi-stream inference and AI models, grouped by platform (IQ-9075 and IQ-8275).',
     pages: [
       { name: 'Benchmark · Multi-stream', desc: '9-channel throughput & efficiency', href: 'docs/benchmarks/multi-stream.html' },
       { name: 'Benchmark · Multi-stream Scaling', desc: 'Scaling at 720p, 1080p, 2K and 4K', href: 'docs/benchmarks/multistream-scaling.html' },
       { name: 'Benchmark · Perception', desc: 'Perception pipeline latency', href: 'docs/benchmarks/perception.html' },
-      { name: 'Benchmark · iQ-Foundry Models', desc: 'Accuracy, size and latency', href: 'docs/benchmarks/iq-foundry-models.html' }
+      { name: 'Benchmark · iQ-Foundry Models', desc: 'Accuracy, size and latency', href: 'docs/benchmarks/iq-foundry-models.html' },
+      { name: 'Benchmark · IQ-8275 Multi-stream', desc: 'Scaling at 720p to 4K vs Jetson Orin NX', href: 'docs/benchmarks/iq-8275-streampipe.html' }
     ] }
 ];
 
