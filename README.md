@@ -31,17 +31,19 @@ Not sure where to begin? The **Get Started** page routes you to the right guide 
 Every page is a self-contained HTML file. No installation or build step is needed:
 
 1. Clone or download this repository.
-2. Open `iQ-Studio Home A Datasheet.dc.html` in your browser.
+2. Open `index.html` in your browser.
 
 You can also serve the folder with any static web server.
 
 ## Repository layout
 
 ```
-*.dc.html        Website and documentation pages
-assets/logo/     Logos and favicon
+index.html       Home page
+*.html           Other top-level pages (Get Started, Benchmarks, Architecture, In the News)
+docs/            Documentation, grouped by topic
+                 starting-guides/  avl/  applications/  model-deploy/  sdks/  benchmarks/
+assets/          Logos (logo/), styles (css/) and scripts (js/)
 shared/          Shared navigation bar and footer
-*.css, *.js      Site styles and scripts
 ```
 
 ## About

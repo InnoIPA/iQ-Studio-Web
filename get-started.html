@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Get Started · iQ-Studio</title>
+<link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg">
+<meta name="description" content="Pick your product and get routed straight to the right iQ-Studio guide: booting, flashing, demos or benchmarks.">
+<script src="assets/js/support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/iq-tokens.css">
+<link rel="stylesheet" href="assets/css/iq-shell.css">
+<script src="assets/js/iq-tokens.js"></script>
+<script src="assets/js/iq-theme.js"></script>
+<script src="assets/js/iq-a11y.js"></script>
+<script src="assets/js/docs-search.js"></script>
+<style>
+  .gs-panel { scroll-margin-top:100px; }
+  @property --ac { syntax: '<color>'; inherits: true; initial-value: #4c92ff; }
+  @property --acSoft { syntax: '<color>'; inherits: true; initial-value: #8cc4ff; }
+  @property --acBg { syntax: '<color>'; inherits: true; initial-value: #1a6dff; }
+
+  body { margin:0; background:var(--iq-page-bg, #080a12); font-family:"Manrope",system-ui,sans-serif; }
+  a { color:var(--ac); text-decoration:none; } a:hover { color:var(--acSoft); }
+  @keyframes gsRise { from { opacity:0; transform:translateY(18px) } to { opacity:1; transform:translateY(0) } }
+  @media (max-width: 980px) {
+    .gs-grid3 { grid-template-columns: repeat(2,minmax(0,1fr)) !important; }
+    .gs-grid2 { grid-template-columns: 1fr !important; }
+  }
+  @media (max-width: 700px) {
+    .gs-grid3 { grid-template-columns: 1fr !important; }
+  }
+  @keyframes icFloat { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-5px) } }
+  @media (max-width: 880px) {
+    .gs-panel { margin-left:0 !important; padding:18px !important; }
+    .gs-repocard { flex-wrap:wrap !important; }
+    .gs-repocard > span:nth-child(2) { flex:1 1 60% !important; }
+    .gs-pgrow { display:grid !important; grid-template-columns:14px 1fr auto !important; align-items:center !important; column-gap:10px !important; row-gap:2px !important; }
+    .gs-pgrow > span:nth-child(2) { grid-column:2 !important; }
+    .gs-pgrow > span:nth-child(3) { grid-column:2 !important; grid-row:2 !important; }
+    .gs-pgrow > span:last-child { grid-column:3 !important; grid-row:1 / span 2 !important; }
+    .gs-intent { display:grid !important; grid-template-columns:32px 1fr !important; align-items:center !important; column-gap:14px !important; row-gap:2px !important; padding:14px 16px !important; }
+    .gs-intent > svg { grid-row:1 / span 2; width:28px !important; height:28px !important; }
+    .gs-intent > span:nth-of-type(2) { display:none !important; }
+    .gs-intent > span:nth-of-type(3) { margin-top:0 !important; font-size:10.5px !important; }
+    .gs-grid3 { gap:10px !important; margin-left:0 !important; }
+  }
+  @media (max-width: 700px) {
+    .gs-footer { flex-wrap: wrap !important; padding: 28px 18px !important; gap: 14px 20px !important; }
+    .gs-footlinks { margin-left: 0 !important; flex-wrap: wrap !important; gap: 10px 18px !important; }
+  }
+</style>
+</helmet>
+
+<div data-iq-theme="{{ themeName }}" style="--ac:{{ ac }}; --acSoft:{{ acSoft }}; --acBg:{{ acBg }}; transition:--ac .8s ease, --acSoft .8s ease, --acBg .8s ease; min-height:100vh; transition:background 1s ease, color 1s ease; background:{{ bg }}; color:{{ fg }}">
+
+  <!-- @shared:nav -->
+  <div class="iq-navwrap">
+  <div class="iq-nav">
+    <a class="iq-brand" href="index.html">
+      <img class="iq-brand__icon iq-brand__icon--dark" src="assets/logo/iQ-icon-mono-white.svg" alt="iQ">
+      <img class="iq-brand__icon iq-brand__icon--light" src="assets/logo/iQ-icon-mono-ink.svg" alt="iQ">
+      <span class="iq-brand__sep" aria-hidden="true"></span>
+      <span class="iq-brand__word">iQ STUDIO</span>
+    </a>
+    <div class="iq-nav__links">
+      <a class="iq-nav__link" href="index.html">Home</a>
+      <a class="iq-nav__link--current" href="get-started.html" aria-current="page">Get Started</a>
+      <a class="iq-nav__link" href="docs/index.html">Docs</a>
+      <a class="iq-nav__link" href="benchmarks.html">Benchmarks</a>
+      <a class="iq-nav__link" href="architecture.html">Architecture</a>
+      <a class="iq-nav__link" href="in-the-news.html">In the News</a>
+    </div>
+    <div class="iq-nav__actions">
+    <span class="gs-search iq-search">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+      <span class="gs-searchlbl">Search…</span>
+      <span class="iq-search__kbd">⌘K</span>
+    </span>
+    <span class="iq-pal">
+      <span class="iq-roundbtn" onClick="{{ togglePal }}" aria-label="Accent colour">
+        <span class="iq-pal__swatch"></span>
+      </span>
+      <sc-if value="{{ palOpen }}" hint-placeholder-val="{{ false }}">
+        <div class="iq-pal__menu">
+          <span class="iq-pal__title">Primary colour</span>
+          <sc-for list="{{ pals }}" as="p" hint-placeholder-count="5">
+            <span class="iq-pal__item" onClick="{{ p.pick }}">
+              <span class="iq-pal__dot" style="background:{{ p.sw }}"></span>{{ p.name }}
+              <span class="iq-pal__tick" style="opacity:{{ p.tickOp }}">✓</span>
+            </span>
+          </sc-for>
+        </div>
+      </sc-if>
+    </span>
+    
+    <span class="iq-roundbtn iq-roundbtn--menu" onClick="{{ navToggle }}" aria-label="Menu">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"></path></svg>
+    </span>
+    <span class="iq-roundbtn" onClick="{{ toggleTheme }}" aria-label="Toggle theme">
+      <sc-if value="{{ isDark }}" hint-placeholder-val="{{ true }}">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg>
+      </sc-if>
+      <sc-if value="{{ isLight }}" hint-placeholder-val="{{ false }}">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+      </sc-if>
+    </span>
+    <a href="https://github.com/InnoIPA/iQ-Studio" aria-label="GitHub" class="iq-roundbtn iq-roundbtn--github">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M12 1.5A10.5 10.5 0 0 0 8.7 22c.5.1.7-.2.7-.5v-1.7c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.7-1.4-2.3-.3-4.8-1.2-4.8-5.2 0-1.1.4-2.1 1-2.8-.1-.3-.5-1.3.1-2.7 0 0 .9-.3 2.8 1a9.6 9.6 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .6 1.4.2 2.4.1 2.7.7.7 1 1.7 1 2.8 0 4-2.5 4.9-4.8 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10.5 10.5 0 0 0 12 1.5Z"></path></svg>
+    </a>
+    </div>
+  </div>
+  <sc-if value="{{ navOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="iq-mobscrim" onClick="{{ navClose }}"></div>
+    <div class="iq-mobmenu">
+      <a href="index.html">Home</a>
+      <a href="get-started.html">Get Started</a>
+      <a href="docs/index.html">Docs</a>
+      <a href="benchmarks.html">Benchmarks</a>
+      <a href="architecture.html">Architecture</a>
+      <a href="in-the-news.html">In the News</a>
+      <a href="https://github.com/InnoIPA/iQ-Studio">GitHub ↗</a>
+    </div>
+  </sc-if>
+  </div>
+  <!-- @end:nav -->
+
+  <div style="min-width:0; max-width:1180px; margin:0 auto; padding:44px 56px 40px">
+    <div style="display:flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.08em; transition:color 1s ease; color:{{ fgMuted }}; animation:gsRise .7s cubic-bezier(.16,1,.3,1) both">
+      <a href="index.html">Home</a><span>/</span><span style="transition:color 1s ease; color:{{ fg }}">Get Started</span>
+    </div>
+    <span style="display:block; margin-top:26px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--ac); animation:gsRise .7s cubic-bezier(.16,1,.3,1) .05s both">Get Started</span>
+    <h1 style="margin:14px 0 0; max-width:16ch; font-size:58px; line-height:1.05; font-weight:700; letter-spacing:-.04em; animation:gsRise .7s cubic-bezier(.16,1,.3,1) .1s both">Let's get you to the right place.</h1>
+    <p style="margin:20px 0 0; max-width:62ch; font-size:16px; line-height:1.75; transition:color 1s ease; color:{{ fgMuted }}; animation:gsRise .7s cubic-bezier(.16,1,.3,1) .15s both">iQ-Studio runs on a range of products built on the Innodisk Qualcomm Dragonwing SoC. Answer a couple of questions and we'll route you straight to what you need — booting a fresh board, running a demo, customizing, or evaluating.</p>
+  </div>
+
+  <div style="min-width:0; max-width:1180px; margin:0 auto; padding:24px 56px 80px">
+    <div style="display:flex; align-items:baseline; gap:14px; animation:gsRise .7s cubic-bezier(.16,1,.3,1) .2s both">
+      <span style="display:grid; place-items:center; width:28px; height:28px; border-radius:50%; background:var(--acBg); color:#fff; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; flex:none; transform:translateY(4px)">1</span>
+      <h2 style="margin:0; font-size:26px; font-weight:600; letter-spacing:-.02em">What are you trying to do?</h2>
+    </div>
+    <p style="margin:10px 0 24px 42px; font-size:13.5px; transition:color 1s ease; color:{{ fgMuted }}">Pick whichever is closest — you can change it at any time.</p>
+    <div class="gs-grid3" style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; margin-left:42px">
+      <sc-for list="{{ intents }}" as="it" hint-placeholder-count="4">
+        <div class="gs-intent" onClick="{{ it.pick }}" style="min-width:0; display:flex; flex-direction:column; gap:10px; padding:22px; border-radius:14px; cursor:pointer; transition:background .3s ease, border-color .3s ease, transform .35s cubic-bezier(.2,1,.3,1); background:{{ it.bg }}; border:1px solid {{ it.line }}" style-hover="transform:translateY(-4px)">
+          <svg width="34" height="34" viewBox="0 0 48 48" style="overflow:visible; color:var(--ac); animation:icFloat 4.2s ease-in-out infinite; filter:drop-shadow(0 0 10px color-mix(in srgb, var(--ac) 35%, transparent))" dangerouslySetInnerHTML="{{ it.icon }}"></svg>
+          <span style="font-size:15px; font-weight:700; letter-spacing:-.01em">{{ it.name }}</span>
+          <span style="font-size:12.5px; line-height:1.6; transition:color 1s ease; color:{{ fgMuted }}">{{ it.desc }}</span>
+          <span style="display:flex; align-items:center; gap:8px; margin-top:8px; font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--ac)">{{ it.cat }} <span>→</span></span>
+        </div>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ hasIntent }}" hint-placeholder-val="{{ false }}">
+      <div class="gs-panel" style="margin:26px 0 0 42px; padding:26px; border-radius:18px; transition:background 1s ease, border-color 1s ease; background:{{ panelBg }}; border:1px solid {{ line }}; animation:gsRise .5s cubic-bezier(.16,1,.3,1) both">
+        <div style="display:flex; align-items:center; gap:14px">
+          <h3 style="margin:0; font-size:19px; font-weight:700; letter-spacing:-.015em">{{ catTitle }}</h3>
+          <span onClick="{{ clearIntent }}" style="margin-left:auto; padding:8px 14px; border-radius:8px; cursor:pointer; font-size:12.5px; font-weight:600; transition:border-color 1s ease, color 1s ease; border:1px solid {{ line }}; color:{{ fgMuted }}">← Change intent</span>
+        </div>
+        <p style="margin:10px 0 18px; font-size:13.5px; line-height:1.7; transition:color 1s ease; color:{{ fgMuted }}">{{ catIntro }}</p>
+        <sc-if value="{{ hasCatRepo }}" hint-placeholder-val="{{ false }}">
+          <span style="display:flex; align-items:center; gap:12px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; transition:color 1s ease; color:{{ fgFaint }}">Related repository<span style="flex:1; height:1px; transition:background 1s ease; background:{{ line }}"></span></span>
+          <a class="gs-repocard" href="{{ catRepoHref }}" style="display:flex; align-items:center; gap:14px; margin:10px 0 20px; padding:15px 18px; border-radius:12px; color:inherit; transition:border-color .3s ease; border:1px solid color-mix(in srgb, var(--acSoft) 35%, transparent)" style-hover="border-color:color-mix(in srgb, var(--acSoft) 70%, transparent)">
+            <span style="display:grid; place-items:center; width:34px; height:34px; border-radius:9px; flex:none; transition:background 1s ease; background:{{ chipBg }}; color:var(--ac)"><svg viewBox="0 0 48 48" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 8 8 16l16 8 16-8-16-8Z"></path><path d="m8 32 16 8 16-8M8 24l16 8 16-8"></path></svg></span>
+            <span style="display:flex; flex-direction:column; gap:3px; min-width:0">
+              <span style="font-size:13.5px; font-weight:600; color:var(--ac)">{{ catRepoName }}</span>
+              <span style="font-size:12.5px; line-height:1.5; transition:color 1s ease; color:{{ fgMuted }}">{{ catRepoDesc }}</span>
+            </span>
+            <span style="margin-left:auto; color:var(--ac)">↗</span>
+          </a>
+        </sc-if>
+        <div style="display:flex; flex-direction:column">
+          <sc-for list="{{ catPages }}" as="pg" hint-placeholder-count="3">
+            <a class="gs-pgrow" href="{{ pg.href }}" style="display:flex; align-items:center; gap:14px; padding:15px 6px; transition:border-color 1s ease; border-bottom:1px solid {{ line }}; color:inherit">
+              <span style="width:6px; height:6px; border-radius:50%; background:var(--ac); flex:none"></span>
+              <span style="font-size:14.5px; font-weight:600">{{ pg.name }}</span>
+              <span style="font-size:12.5px; transition:color 1s ease; color:{{ fgMuted }}">{{ pg.desc }}</span>
+              <span style="margin-left:auto; color:var(--ac)">→</span>
+            </a>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <div style="min-width:0; max-width:1180px; margin:0 auto; padding:80px 56px">
+    <span style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--ac)">Related repositories</span>
+    <h2 style="margin:14px 0 0; font-size:31px; font-weight:600; letter-spacing:-.028em">Sibling repos in the platform stack.</h2>
+    <p style="margin:12px 0 30px; font-size:14px; transition:color 1s ease; color:{{ fgMuted }}">Each one owns a specific layer — BSP, camera drivers, Ubuntu images, or model quantization.</p>
+    <div class="gs-grid2" style="display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px">
+      <sc-for list="{{ repos }}" as="rp" hint-placeholder-count="4">
+        <a href="{{ rp.href }}" style="display:flex; align-items:center; gap:16px; padding:18px 20px; border-radius:12px; color:inherit; transition:border-color .3s ease, background .3s ease, transform .35s cubic-bezier(.2,1,.3,1); border:1px solid {{ line }}" style-hover="transform:translateY(-4px); border-color:color-mix(in srgb, var(--acSoft) 60%, transparent)">
+          <span style="display:grid; place-items:center; width:38px; height:38px; border-radius:10px; flex:none; transition:background 1s ease; background:{{ chipBg }}; font-family:'JetBrains Mono',monospace; font-size:14px; color:var(--ac)">{{ rp.glyph }}</span>
+          <span style="display:flex; flex-direction:column; gap:3px">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:500">{{ rp.name }}</span>
+            <span style="font-size:12.5px; transition:color 1s ease; color:{{ fgMuted }}">{{ rp.desc }}</span>
+          </span>
+          <span style="margin-left:auto; color:var(--ac)">↗</span>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+
+  <footer class="gs-footer" style="display:flex; align-items:center; gap:36px; padding:40px 56px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; transition:border-color 1s ease, color 1s ease; border-top:1px solid {{ line }}; color:{{ fgMuted }}">
+    <span>© 2026 Innodisk Corporation · iQ-Studio</span>
+    <div class="gs-footlinks" style="display:flex; gap:22px; margin-left:auto">
+      <a href="index.html" style="letter-spacing:.1em">Home</a><a href="get-started.html" style="letter-spacing:.1em">Get Started</a><a href="docs/index.html" style="letter-spacing:.1em">Docs</a><a href="benchmarks.html" style="letter-spacing:.1em">Benchmarks</a><a href="architecture.html" style="letter-spacing:.1em">Architecture</a><a href="in-the-news.html" style="letter-spacing:.1em">In the News</a><a href="https://github.com/InnoIPA/iQ-Studio" style="letter-spacing:.1em">GitHub</a>
+    </div>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;'dark' | 'light'&quot;}}">
+const PALETTES = (window.IQ_TOKENS || {}).PALETTES || [{ id: 'blue', name: 'Blue', ac: '#4c92ff', soft: '#8cc4ff', bg: '#1a6dff' }];
+
+const THEMES = {
+  dark: {
+    bg: '#080a12', bg2: '#0b0e18', panelBg: 'rgba(255,255,255,.03)', chipBg: 'color-mix(in srgb, var(--ac) 12%, transparent)',
+    fg: '#eef3ff', fgMuted: 'rgba(190,203,226,.7)', line: 'rgba(255,255,255,.12)',
+    switchTrack: 'var(--acBg)', knobX: '14px', themeLabel: 'dark'
+  },
+  light: {
+    bg: '#ffffff', bg2: '#f2f5fa', panelBg: 'rgba(16,26,50,.03)', chipBg: 'color-mix(in srgb, var(--acBg) 10%, transparent)',
+    fg: '#0d1220', fgMuted: 'rgba(45,56,80,.72)', line: 'rgba(16,26,50,.13)',
+    switchTrack: 'rgba(16,24,48,.26)', knobX: '0px', themeLabel: 'light'
+  }
+};
+
+const IC = (paths) => ({ __html: paths });
+const INTENTS = [
+  // repo: index into REPOS shown inside the intent panel
+  { id: 'boot', repo: 0, name: 'Boot & install the system', desc: 'Get a brand-new board wired, booted, and choose Yocto or Ubuntu.',
+    icon: IC('<g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 6v16"></path><path d="M11 15a16 16 0 1 0 26 0" stroke="currentColor" stroke-opacity=".55"></path></g>'),
+    cat: 'Starting Guides', intro: 'Boot, flash and update your platform.',
+    pages: [
+      { name: 'Q911 Quick Start Guide', desc: 'From box to first boot', href: 'docs/starting-guides/q911-quick-start.html' },
+      { name: 'Q911 Image Flashing Guide', desc: 'Flash or recover the OS image', href: 'docs/starting-guides/q911-image-flashing.html' },
+      { name: 'Qualcomm OTA Guide', desc: 'Update devices over the air', href: 'docs/starting-guides/qualcomm-ota.html' }
+    ] },
+  { id: 'avl', repo: 1, name: 'Verify hardware & peripherals', desc: 'Verify your driver starts correctly and your camera, LAN, serial, or CAN Bus module is validated.',
+    icon: IC('<g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m17 23 4.5 4.5L32 17"></path><rect x="8" y="8" width="32" height="32" rx="7" stroke="currentColor" stroke-opacity=".55"></rect></g>'),
+    cat: 'AVL', intro: 'Approved vendor list — validated cameras and peripherals.',
+    pages: [
+      { name: 'Approved Vendor List', desc: 'Every validated module, by interface', href: 'docs/avl/vendor-list.html' },
+      { name: 'GMSL Camera', desc: 'Bring up a GMSL camera', href: 'docs/avl/gmsl-camera.html' },
+      { name: 'MIPI Camera', desc: 'Bring up a MIPI camera', href: 'docs/avl/mipi-camera.html' }
+    ] },
+  { id: 'demo', name: 'Run a ready-made AI demo', desc: 'See an AI inference demo running on the hardware in under ten minutes.',
+    icon: IC('<g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="9" width="34" height="26" rx="5"></rect><path d="M20 17.5 29 22l-9 4.5Z" stroke="currentColor" stroke-opacity=".55"></path><path d="M17 40h14"></path></g>'),
+    cat: 'Applications', intro: 'Ready-to-run demos & reference apps.',
+    pages: [
+      { name: 'iQS-VLM', desc: 'Vision-language inference on a live camera', href: 'docs/applications/iqs-vlm.html' },
+      { name: 'iQS-Streampipe', desc: 'Multi-stream GStreamer + OpenCV pipeline', href: 'docs/applications/iqs-streampipe.html' },
+      { name: 'YOLOv10n INT8 Inference', desc: 'Quantized object detection on the NPU', href: 'docs/applications/yolov10n.html' }
+    ] },
+  { id: 'model', repo: 3, name: 'Deploy my own AI model', desc: 'Turn a model you trained into a target-ready, on-device artifact.',
+    icon: IC('<g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 8 8 16l16 8 16-8-16-8Z"></path><path d="m8 32 16 8 16-8M8 24l16 8 16-8" stroke="currentColor" stroke-opacity=".55"></path></g>'),
+    cat: 'Model Deploy', intro: 'Quantize, validate and ship your own model.',
+    pages: [
+      { name: 'Model Deploy Overview', desc: 'The end-to-end path, explained', href: 'docs/model-deploy/overview.html' },
+      { name: 'Model Deploy · YOLO26', desc: 'Worked example, end to end', href: 'docs/model-deploy/yolo26.html' }
+    ] },
+  { id: 'sdk', name: 'Customize & integrate via SDK', desc: 'Swap models, change inputs, or drive a demo through an API.',
+    icon: IC('<g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m16 32 8-8-8-8" stroke="currentColor" stroke-opacity=".55"></path><path d="M28 32h12"></path></g>'),
+    cat: 'SDKs', intro: 'Customize the platform through its SDKs.',
+    pages: [
+      { name: 'SDK · GenieX', desc: 'Run your own LLM/VLM on the NPU', href: 'docs/sdks/geniex.html' },
+      { name: 'SDK · iQS-VLM Open WebUI', desc: 'Web front-end for the VLM stack', href: 'docs/sdks/iqs-vlm-open-webui.html' },
+      { name: 'SDK · iQS-Streampipe', desc: 'Build custom multi-stream pipelines', href: 'docs/sdks/iqs-streampipe.html' }
+    ] },
+  { id: 'eval', name: 'Evaluate performance data', desc: 'Review measured performance on real workloads.',
+    icon: IC('<g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 40h30"></path><rect x="11" y="26" width="6.5" height="10" rx="2"></rect><rect x="20.5" y="18" width="6.5" height="18" rx="2" stroke="currentColor" stroke-opacity=".55"></rect><rect x="30" y="10" width="6.5" height="26" rx="2"></rect></g>'),
+    cat: 'Benchmarks', intro: 'Measured performance on QCS9075.',
+    pages: [
+      { name: 'Benchmark · Multi-stream', desc: '9-channel throughput & efficiency', href: 'docs/benchmarks/multi-stream.html' },
+      { name: 'Benchmark · Multi-stream Scaling', desc: 'Scaling at 720p, 1080p, 2K and 4K', href: 'docs/benchmarks/multistream-scaling.html' },
+      { name: 'Benchmark · Perception', desc: 'Perception pipeline latency', href: 'docs/benchmarks/perception.html' },
+      { name: 'Benchmark · iQ-Foundry Models', desc: 'Accuracy, size and latency', href: 'docs/benchmarks/iq-foundry-models.html' }
+    ] }
+];
+
+const REPOS = [
+  { name: 'InnoIPA/meta-iQ__manifest', desc: 'Yocto-based BSP baseline for the platform.', glyph: 'BSP', href: 'https://github.com/InnoIPA/meta-iQ__manifest' },
+  { name: 'InnoIPA/iQ-Cam__manifest', desc: 'Camera driver patches consumed by the AVL tutorials.', glyph: 'CAM', href: 'https://github.com/InnoIPA/iQ-Cam__manifest' },
+  { name: 'InnoIPA/iQ-ubuntu__manifest', desc: 'Reference for Innodisk-provided Ubuntu image versions.', glyph: 'OS', href: 'https://github.com/InnoIPA/iQ-ubuntu__manifest' },
+  { name: 'InnoIPA/iQ-Foundry', desc: 'End-to-end model quantization and on-device validation for custom models.', glyph: 'MDL', href: 'https://github.com/InnoIPA/iQ-Foundry' }
+];
+
+class Component extends DCLogic {
+  state = { theme: IQ_THEME.saved.theme, intent: null, pal: IQ_THEME.saved.pal, palOpen: false, navOpen: false };
+
+  _applyDoc(name) {
+    const t = THEMES[name] || THEMES.dark;
+    document.documentElement.style.colorScheme = name === 'light' ? 'light' : 'dark';
+    document.documentElement.style.background = t.bg;
+    document.body.style.background = t.bg;
+  }
+  componentDidMount() { this._applyDoc(this.state.theme || this.props.theme || 'dark'); }
+
+  // The panel opens below the cards. On a short screen it would stay off-screen, so scroll to it when it is
+  // not already comfortably in view (top under the nav, starting in the lower half, or cut off at the bottom).
+  _revealPanel() {
+    setTimeout(() => {
+      const el = document.querySelector('.gs-panel');
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      if (r.top < 90 || r.top > vh * 0.45 || r.bottom > vh) {
+        const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        el.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
+      }
+    }, 80);
+  }
+
+  renderVals() {
+    const name = this.state.theme || this.props.theme || 'dark';
+    const t = Object.assign({}, THEMES[name] || THEMES.dark, ((window.IQ_TOKENS || {}).CORE || {})[name] || {});
+    const cur = INTENTS.find((i) => i.id === this.state.intent) || null;
+    const pal = PALETTES.find((p) => p.id === this.state.pal) || PALETTES[0];
+    return Object.assign({}, t, {
+      navOpen: this.state.navOpen,
+      navToggle: () => this.setState({ navOpen: !this.state.navOpen }),
+      navClose: () => this.setState({ navOpen: false }),
+      ac: pal.ac, acSoft: pal.soft, acBg: pal.bg,
+      isDark: name === 'dark', isLight: name === 'light', themeName: name,
+      navBg: name === 'dark' ? 'rgba(14,20,42,.62)' : 'rgba(255,255,255,.72)',
+      navPillBg: name === 'dark' ? 'rgba(255,255,255,.1)' : 'rgba(16,26,50,.07)',
+      menuBg: name === 'dark' ? '#10131f' : '#ffffff',
+      palOpen: this.state.palOpen,
+      togglePal: () => this.setState((st) => ({ palOpen: !st.palOpen })),
+      pals: PALETTES.map((p) => ({
+        name: p.name, sw: p.ac, tickOp: p.id === this.state.pal ? 1 : 0,
+        pick: () => { IQ_THEME.save({ pal: p.id }); this.setState({ pal: p.id, palOpen: false }); }
+      })),
+      toggleTheme: () => {
+        const next = name === 'dark' ? 'light' : 'dark';
+        this._applyDoc(next);
+        IQ_THEME.save({ theme: next });
+        this.setState({ theme: next });
+      },
+      intents: INTENTS.map((i) => ({
+        name: i.name, desc: i.desc, icon: i.icon, cat: i.cat,
+        bg: this.state.intent === i.id ? 'color-mix(in srgb, var(--acBg) 14%, transparent)' : t.panelBg,
+        line: this.state.intent === i.id ? 'color-mix(in srgb, var(--acSoft) 65%, transparent)' : t.line,
+        pick: () => { this.setState({ intent: i.id }); this._revealPanel(); }
+      })),
+      hasIntent: !!cur,
+      catTitle: cur ? cur.cat : '', catIntro: cur ? cur.intro : '', catPages: cur ? cur.pages : [],
+      hasCatRepo: !!(cur && cur.repo != null),
+      catRepoName: cur && cur.repo != null ? REPOS[cur.repo].name : '',
+      catRepoDesc: cur && cur.repo != null ? REPOS[cur.repo].desc : '',
+      catRepoHref: cur && cur.repo != null ? REPOS[cur.repo].href : '',
+      clearIntent: () => this.setState({ intent: null }),
+      repos: REPOS
+    });
+  }
+}
+
+</script>
+</body>
+</html>

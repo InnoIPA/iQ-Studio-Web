@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Q911 Quick Start Guide · iQ-Studio Docs</title>
+<link rel="icon" type="image/svg+xml" href="../../assets/logo/favicon.svg">
+<meta name="description" content="Cabling, first boot, serial console and network access for a new EXEC-Q911 or APEX-A100 board.">
+<script src="../../assets/js/support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/iq-tokens.css">
+<link rel="stylesheet" href="../../assets/css/iq-shell.css">
+<link rel="stylesheet" href="../../assets/css/iq-docs.css">
+<script src="../../assets/js/iq-tokens.js"></script>
+<script src="../../assets/js/iq-theme.js"></script>
+<script src="../../assets/js/iq-a11y.js"></script>
+<script src="../../assets/js/iq-docs.js"></script>
+<script src="../../assets/js/iq-pages.js"></script>
+<script src="../../assets/js/docs-search.js"></script>
+<script src="../../assets/js/code-hl.js"></script>
+<script src="../../assets/js/copy-btn.js"></script>
+<style>
+  .qs-rail { width:176px; }
+  @keyframes qsOrbit { 0%,100% { transform:scale(1) } 50% { transform:scale(1.45) } }
+</style>
+</helmet>
+
+<div data-iq-theme="{{ themeName }}" style="--ac:{{ ac }}; --acSoft:{{ acSoft }}; --acBg:{{ acBg }}; transition:--ac .8s ease, --acSoft .8s ease, --acBg .8s ease, background 1s ease, color 1s ease; min-height:100vh; background:{{ bg }}; color:{{ fg }}">
+
+  <!-- @shared:nav -->
+  <div class="iq-navwrap">
+  <div class="iq-nav">
+    <a class="iq-brand" href="../../index.html">
+      <img class="iq-brand__icon iq-brand__icon--dark" src="../../assets/logo/iQ-icon-mono-white.svg" alt="iQ">
+      <img class="iq-brand__icon iq-brand__icon--light" src="../../assets/logo/iQ-icon-mono-ink.svg" alt="iQ">
+      <span class="iq-brand__sep" aria-hidden="true"></span>
+      <span class="iq-brand__word">iQ STUDIO</span>
+    </a>
+    <div class="iq-nav__links">
+      <a class="iq-nav__link" href="../../index.html">Home</a>
+      <a class="iq-nav__link" href="../../get-started.html">Get Started</a>
+      <a class="iq-nav__link--current" href="../../docs/index.html" aria-current="page">Docs</a>
+      <a class="iq-nav__link" href="../../benchmarks.html">Benchmarks</a>
+      <a class="iq-nav__link" href="../../architecture.html">Architecture</a>
+      <a class="iq-nav__link" href="../../in-the-news.html">In the News</a>
+    </div>
+    <div class="iq-nav__actions">
+    <span class="gs-search iq-search">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+      <span class="gs-searchlbl">Search…</span>
+      <span class="iq-search__kbd">⌘K</span>
+    </span>
+    <span class="iq-pal">
+      <span class="iq-roundbtn" onClick="{{ togglePal }}" aria-label="Accent colour">
+        <span class="iq-pal__swatch"></span>
+      </span>
+      <sc-if value="{{ palOpen }}" hint-placeholder-val="{{ false }}">
+        <div class="iq-pal__menu">
+          <span class="iq-pal__title">Primary colour</span>
+          <sc-for list="{{ pals }}" as="p" hint-placeholder-count="5">
+            <span class="iq-pal__item" onClick="{{ p.pick }}">
+              <span class="iq-pal__dot" style="background:{{ p.sw }}"></span>{{ p.name }}
+              <span class="iq-pal__tick" style="opacity:{{ p.tickOp }}">✓</span>
+            </span>
+          </sc-for>
+        </div>
+      </sc-if>
+    </span>
+    
+    <span class="iq-roundbtn iq-roundbtn--menu" onClick="{{ navToggle }}" aria-label="Menu">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"></path></svg>
+    </span>
+    <span class="iq-roundbtn" onClick="{{ toggleTheme }}" aria-label="Toggle theme">
+      <sc-if value="{{ isDark }}" hint-placeholder-val="{{ true }}">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg>
+      </sc-if>
+      <sc-if value="{{ isLight }}" hint-placeholder-val="{{ false }}">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+      </sc-if>
+    </span>
+    <a href="https://github.com/InnoIPA/iQ-Studio" aria-label="GitHub" class="iq-roundbtn iq-roundbtn--github">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M12 1.5A10.5 10.5 0 0 0 8.7 22c.5.1.7-.2.7-.5v-1.7c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.7-1.4-2.3-.3-4.8-1.2-4.8-5.2 0-1.1.4-2.1 1-2.8-.1-.3-.5-1.3.1-2.7 0 0 .9-.3 2.8 1a9.6 9.6 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .6 1.4.2 2.4.1 2.7.7.7 1 1.7 1 2.8 0 4-2.5 4.9-4.8 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10.5 10.5 0 0 0 12 1.5Z"></path></svg>
+    </a>
+    </div>
+  </div>
+  <sc-if value="{{ navOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="iq-mobscrim" onClick="{{ navClose }}"></div>
+    <div class="iq-mobmenu">
+      <a href="../../index.html">Home</a>
+      <a href="../../get-started.html">Get Started</a>
+      <a href="../../docs/index.html">Docs</a>
+      <a href="../../benchmarks.html">Benchmarks</a>
+      <a href="../../architecture.html">Architecture</a>
+      <a href="../../in-the-news.html">In the News</a>
+      <a href="https://github.com/InnoIPA/iQ-Studio">GitHub ↗</a>
+    </div>
+  </sc-if>
+  </div>
+  <!-- @end:nav -->
+
+  <div class="docs-mobilebar" style="display:none; padding:12px 20px 0">
+    <button onClick="{{ sideToggle }}" style="display:flex; align-items:center; gap:8px; padding:9px 14px; border-radius:9px; border:1px solid {{ line }}; background:{{ panelBg }}; color:{{ fg }}; font:inherit; font-size:13px; font-weight:600; cursor:pointer">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"></path></svg>Docs menu
+    </button>
+  </div>
+  <div onClick="{{ sideClose }}" style="position:fixed; inset:0; z-index:90; background:rgba(4,8,18,.55); backdrop-filter:blur(3px); transition:opacity .25s ease; opacity:{{ scrimOp }}; pointer-events:{{ scrimPe }}"></div>
+  <div class="docs-drawer" style="position:fixed; left:0; top:0; bottom:0; z-index:95; width:min(300px, 84vw); overflow-y:auto; padding:18px 16px 24px; background:{{ bg }}; box-shadow:1px 0 0 {{ line }}, 0 0 60px rgba(0,0,0,.5); transition:transform .3s cubic-bezier(.2,1,.3,1); transform:{{ drawerX }}">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px">
+      <span style="font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; color:{{ fgFaint }}">Docs</span>
+      <button onClick="{{ sideClose }}" aria-label="Close" style="display:flex; padding:6px; border-radius:7px; border:1px solid {{ line }}; background:none; color:{{ fgMuted }}; cursor:pointer"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+    </div>
+    <sc-for list="{{ sideGroups }}" as="g" hint-placeholder-count="6">
+      <div style="display:flex; flex-direction:column; margin-bottom:14px">
+        <span style="padding:0 0 7px; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; color:{{ fgFaint }}">{{ g.name }}</span>
+        <sc-for list="{{ g.pages }}" as="pg" hint-placeholder-count="4">
+          <a href="{{ pg.href }}" style="display:block; padding:8px 10px; border-radius:8px; text-decoration:none; font-size:13.5px; line-height:1.4; background:{{ pg.bg }}; color:{{ pg.fg }}; font-weight:{{ pg.fw }}">{{ pg.name }}</a>
+        </sc-for>
+      </div>
+    </sc-for>
+  </div>
+  <div class="docs-grid" style="display:grid; grid-template-columns:260px minmax(0,1fr); gap:52px; max-width:1560px; margin:0 auto; padding:34px 48px 90px; align-items:start">
+
+    <aside class="docs-side" style="position:sticky; top:100px; max-height:calc(100vh - 130px); overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; scrollbar-width:none; display:flex; flex-direction:column; gap:22px; padding-right:8px; animation:gsRise .6s cubic-bezier(.16,1,.3,1) both">
+      <sc-for list="{{ sideGroups }}" as="g" hint-placeholder-count="6">
+        <div style="display:flex; flex-direction:column">
+          <span style="display:flex; align-items:center; gap:9px; padding:0 0 7px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; transition:color 1s ease; color:{{ fgMuted }}">
+            <span style="display:grid; grid-template-columns:1fr 1fr; gap:1.5px; width:10px; height:10px; flex:none; color:var(--ac)"><span style="background:currentColor; border-radius:1px"></span><span style="background:currentColor; border-radius:1px; opacity:.55"></span><span style="background:currentColor; border-radius:1px; opacity:.55"></span><span style="background:currentColor; border-radius:1px"></span></span>
+            {{ g.name }}
+          </span>
+          <div style="display:flex; flex-direction:column; gap:1px; margin-left:4px; padding-left:0; transition:border-color 1s ease; border-left:1px solid {{ line }}">
+            <sc-for list="{{ g.pages }}" as="pg" hint-placeholder-count="3">
+              <a href="{{ pg.href }}" aria-disabled="{{ pg.soon }}" style="position:relative; display:flex; align-items:center; gap:8px; margin-left:-1px; padding:7px 10px 7px 16px; border-radius:0 7px 7px 0; font-size:13px; font-weight:500; line-height:1.45; opacity:{{ pg.op }}; pointer-events:{{ pg.pe }}; transition:background .25s ease, color .25s ease, border-color 1s ease; background:{{ pg.bg }}; color:{{ pg.fg }}; border-left:2px solid {{ pg.edge }}" style-hover="color:var(--ac)"><span style="position:absolute; left:-4px; top:50%; width:6px; height:6px; margin-top:-3px; border-radius:50%; background:var(--ac); box-shadow:0 0 6px var(--ac); opacity:{{ pg.dotOp }}"></span>{{ pg.name }}<sc-if value="{{ pg.pending }}" hint-placeholder-val="{{ false }}"><span style="flex:none; margin-left:auto; padding:1px 6px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.1em; transition:background 1s ease; background:{{ chipBg }}">soon</span></sc-if></a>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </aside>
+
+    <main style="min-width:0; animation:gsRise .6s cubic-bezier(.16,1,.3,1) .05s both">
+      <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.08em; transition:color 1s ease; color:{{ fgMuted }}">
+        <a href="../index.html">Docs</a><span>/</span><span>Starting Guides</span><span>/</span><span style="transition:color 1s ease; color:{{ fg }}">Q911 Quick Start Guide</span>
+      </div>
+      <h1 style="margin:22px 0 0; font-size:40px; line-height:1.12; font-weight:700; letter-spacing:-.035em">Q911 Quick Start Guide</h1>
+      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:16px">
+        <span style="padding:5px 13px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; background:color-mix(in srgb, var(--acBg) 14%, transparent); color:var(--ac)">EXMP-Q911</span>
+        <span style="padding:5px 13px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; background:color-mix(in srgb, var(--acBg) 14%, transparent); color:var(--ac)">EXEC-Q911</span>
+        <span style="padding:5px 13px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; background:color-mix(in srgb, var(--acBg) 14%, transparent); color:var(--ac)">APEX-A100</span>
+        <span style="padding:5px 13px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; transition:background 1s ease, color 1s ease; background:{{ panelBg }}; color:{{ fgMuted }}; border:1px solid {{ line }}">Yocto · Ubuntu</span>
+      </div>
+      <p style="margin:18px 0 0; font-size:17px; line-height:1.8; transition:color 1s ease; color:{{ fgMuted }}">This guide covers cabling, first boot, serial console and network access for a new EXEC-Q911 or APEX-A100 board — start here while the board is still in the box; it ends with a shell prompt on the device.</p>
+
+      <section class="qs-sec" data-sec="#overview" style="position:relative; padding:46px 0 0; margin-top:46px; transition:border-color 1s ease, opacity .6s ease, transform .7s cubic-bezier(.16,1,.3,1); border-top:1px solid {{ line }}; opacity:{{ sec01.revOp }}; transform:{{ sec01.revTf }}">
+        <div style="min-width:0">
+          <span style="display:flex; align-items:center; gap:11px; margin-bottom:12px; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; transition:color .5s ease; color:{{ sec01.labFg }}">
+            <span style="display:inline-flex; align-items:center; justify-content:center; min-width:24px; height:19px; padding:0 6px; border-radius:5px; font-size:10.5px; font-weight:700; letter-spacing:.04em; transition:background .45s ease, color .45s ease, box-shadow .45s ease, transform .45s cubic-bezier(.3,1.5,.4,1); background:{{ sec01.numBg }}; color:{{ sec01.numFg }}; box-shadow:{{ sec01.numRing }}; transform:{{ sec01.numTf }}">01</span>Overview<span style="height:1px; border-radius:1px; transition:background .5s ease, width .5s ease; background:{{ sec01.barBg }}; width:{{ sec01.barW }}"></span>
+          </span>
+      <h2 id="overview" style="margin:0; font-size:clamp(28px, 2.4vw, 34px); font-weight:650; letter-spacing:-.03em; line-height:1.15">Overview</h2>
+      <p style="margin:16px 0 0; font-size:15.5px; line-height:1.85; transition:color 1s ease; color:{{ fgMuted }}">The Q911 family is built around the Qualcomm® IQ-9075 SoC. The product line currently has three versions. The table below provides an overview of their differences and the items included in each packing list.</p>
+      <div style="margin-top:22px; border-radius:12px; overflow-x:auto; transition:border-color 1s ease; border:1px solid {{ line }}">
+        <div style="min-width:720px">
+          <div style="display:grid; grid-template-columns:130px 170px 1fr 1.4fr; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.16em; text-transform:uppercase; transition:color 1s ease, border-color 1s ease, background 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }}; background:{{ panelBg }}">
+            <span style="padding:13px 16px">Model</span><span style="padding:13px 16px">P/N</span><span style="padding:13px 16px">Description</span><span style="padding:13px 16px">Packing List</span>
+          </div>
+          <div style="display:grid; grid-template-columns:130px 170px 1fr 1.4fr; font-size:13.5px; line-height:1.7; transition:border-color 1s ease; border-bottom:1px solid {{ line }}">
+            <span style="padding:14px 16px"><a href="https://www.innodisk.com/en/products/computing/qualcomm-solution/exmp-q911">EXMP-Q911</a></span>
+            <span style="padding:14px 16px; font-family:'JetBrains Mono',monospace; font-size:11.5px; transition:color 1s ease; color:{{ fgMuted }}">EXMP-Q911-00A1-W1</span>
+            <span style="padding:14px 16px; transition:color 1s ease; color:{{ fgMuted }}">COM-HPC Mini Module By Qualcomm IQ-9075</span>
+            <span style="padding:14px 16px; transition:color 1s ease; color:{{ fgMuted }}">1x IQ9 COM-HPC Mini Module<br>1x Cooler with Fan (secured onto the module)</span>
+          </div>
+          <div style="display:grid; grid-template-columns:130px 170px 1fr 1.4fr; font-size:13.5px; line-height:1.7; transition:border-color 1s ease; border-bottom:1px solid {{ line }}">
+            <span style="padding:14px 16px"><a href="https://www.innodisk.com/en/products/computing/qualcomm-solution/exec-q911">EXEC-Q911</a></span>
+            <span style="padding:14px 16px; font-family:'JetBrains Mono',monospace; font-size:11.5px; transition:color 1s ease; color:{{ fgMuted }}">EXEC-Q911-00A1-W1</span>
+            <span style="padding:14px 16px; transition:color 1s ease; color:{{ fgMuted }}">COM-HPC Mini EVK By Qualcomm IQ-9075</span>
+            <span style="padding:14px 16px; transition:color 1s ease; color:{{ fgMuted }}">1x IQ9 COM-HPC Mini Module<br>1x 3.5” COM-HPC Mini Carrier (secured with the module)<br>1x Cooler with Fan (secured onto the module)<br>1x 60W power adapter<br>1x US power cord<br>1x Speaker*2 cable<br>1x D-SUB(F) cable (GPIO)<br>1x D-SUB(M) cable (CAN FD)<br>1x USB 2.0 A-TYPE(F)*2 cable<br>1x D-SUB(M) cable (COM)</span>
+          </div>
+          <div style="display:grid; grid-template-columns:130px 170px 1fr 1.4fr; font-size:13.5px; line-height:1.7">
+            <span style="padding:14px 16px; transition:color 1s ease; color:{{ fg }}">APEX-A100</span>
+            <span style="padding:14px 16px; font-family:'JetBrains Mono',monospace; font-size:11.5px; transition:color 1s ease; color:{{ fgMuted }}">EXOC-Q911-00A1-W1</span>
+            <span style="padding:14px 16px; transition:color 1s ease; color:{{ fgMuted }}">Edge AI System By Qualcomm IQ-9075</span>
+            <span style="padding:14px 16px; transition:color 1s ease; color:{{ fgMuted }}">1x Fanless Edge AI System based on EXMP-Q911 module<br>1x 60W power adapter<br>1x US power cord</span>
+          </div>
+        </div>
+      </div>
+      <p style="margin:16px 0 0; font-size:15.5px; line-height:1.85; transition:color 1s ease; color:{{ fgMuted }}">This guide focuses on the EXEC-Q911 and APEX-A100 platforms, providing an overview of their hardware and helping you get the system up and running quickly.</p>
+      <p style="margin:16px 0 0; font-size:15.5px; line-height:1.85; transition:color 1s ease; color:{{ fgMuted }}">Each device ships with either Yocto Linux or Ubuntu pre-flashed on the UFS storage, allowing you to power on the system and log in immediately. If you need to re-flash or update the system image, please refer to the <a href="q911-image-flashing.html">Q911 Image Flashing Guide</a>.</p>
+        </div>
+      </section>
+
+      <section class="qs-sec" data-sec="#box" style="position:relative; padding:58px 0 0; margin-top:0px; transition:border-color 1s ease, opacity .6s ease, transform .7s cubic-bezier(.16,1,.3,1); border-top:1px solid {{ line }}; opacity:{{ sec02.revOp }}; transform:{{ sec02.revTf }}">
+        <div style="min-width:0">
+          <span style="display:flex; align-items:center; gap:11px; margin-bottom:12px; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; transition:color .5s ease; color:{{ sec02.labFg }}">
+            <span style="display:inline-flex; align-items:center; justify-content:center; min-width:24px; height:19px; padding:0 6px; border-radius:5px; font-size:10.5px; font-weight:700; letter-spacing:.04em; transition:background .45s ease, color .45s ease, box-shadow .45s ease, transform .45s cubic-bezier(.3,1.5,.4,1); background:{{ sec02.numBg }}; color:{{ sec02.numFg }}; box-shadow:{{ sec02.numRing }}; transform:{{ sec02.numTf }}">02</span>The box<span style="height:1px; border-radius:1px; transition:background .5s ease, width .5s ease; background:{{ sec02.barBg }}; width:{{ sec02.barW }}"></span>
+          </span>
+      <h2 id="box" style="margin:0; font-size:clamp(28px, 2.4vw, 34px); font-weight:650; letter-spacing:-.03em; line-height:1.15">What’s in the Box</h2>
+      <p style="margin:16px 0 0; font-size:15.5px; line-height:1.85; transition:color 1s ease; color:{{ fgMuted }}">You can refer to the packing list above to see what is included in the Q911 family.</p>
+        </div>
+      </section>
+
+      <section class="qs-sec" data-sec="#hardware" style="position:relative; padding:58px 0 0; margin-top:0px; transition:border-color 1s ease, opacity .6s ease, transform .7s cubic-bezier(.16,1,.3,1); border-top:1px solid {{ line }}; opacity:{{ sec03.revOp }}; transform:{{ sec03.revTf }}">
+        <div style="min-width:0">
+          <span style="display:flex; align-items:center; gap:11px; margin-bottom:12px; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; transition:color .5s ease; color:{{ sec03.labFg }}">
+            <span style="display:inline-flex; align-items:center; justify-content:center; min-width:24px; height:19px; padding:0 6px; border-radius:5px; font-size:10.5px; font-weight:700; letter-spacing:.04em; transition:background .45s ease, color .45s ease, box-shadow .45s ease, transform .45s cubic-bezier(.3,1.5,.4,1); background:{{ sec03.numBg }}; color:{{ sec03.numFg }}; box-shadow:{{ sec03.numRing }}; transform:{{ sec03.numTf }}">03</span>Hardware<span style="height:1px; border-radius:1px; transition:background .5s ease, width .5s ease; background:{{ sec03.barBg }}; width:{{ sec03.barW }}"></span>
+          </span>
+      <h2 id="hardware" style="margin:0; font-size:clamp(28px, 2.4vw, 34px); font-weight:650; letter-spacing:-.03em; line-height:1.15">EXEC-Q911 / APEX-A100 Hardware</h2>
+      <div class="docs-fig2" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:22px">
+        <sc-for list="{{ hwFigs }}" as="f" hint-placeholder-count="4">
+          <figure style="margin:0; border-radius:4px; overflow:hidden; transition:transform .45s cubic-bezier(.2,1,.3,1), box-shadow .45s ease; box-shadow:0 0 0 1px {{ line }}" style-hover="transform:translateY(-4px); box-shadow:0 0 0 1px color-mix(in srgb, var(--acSoft) 55%, transparent), 0 16px 34px -18px rgba(0,0,0,.5)">
+            <img src="{{ f.src }}" alt="{{ f.cap }}" loading="lazy" style="display:block; width:100%">
+            <figcaption style="padding:9px 13px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; transition:color 1s ease; color:{{ fgMuted }}">{{ f.cap }}</figcaption>
+          </figure>
+        </sc-for>
+      </div>
+        </div>
+      </section>
+
+      <section class="qs-sec" data-sec="#step1" style="position:relative; padding:58px 0 0; margin-top:0px; transition:border-color 1s ease, opacity .6s ease, transform .7s cubic-bezier(.16,1,.3,1); border-top:1px solid {{ line }}; opacity:{{ sec04.revOp }}; transform:{{ sec04.revTf }}">
+        <div style="min-width:0">
+          <span style="display:flex; align-items:center; gap:11px; margin-bottom:12px; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; transition:color .5s ease; color:{{ sec04.labFg }}">
+            <span style="display:inline-flex; align-items:center; justify-content:center; min-width:24px; height:19px; padding:0 6px; border-radius:5px; font-size:10.5px; font-weight:700; letter-spacing:.04em; transition:background .45s ease, color .45s ease, box-shadow .45s ease, transform .45s cubic-bezier(.3,1.5,.4,1); background:{{ sec04.numBg }}; color:{{ sec04.numFg }}; box-shadow:{{ sec04.numRing }}; transform:{{ sec04.numTf }}">04</span>Prepare<span style="height:1px; border-radius:1px; transition:background .5s ease, width .5s ease; background:{{ sec04.barBg }}; width:{{ sec04.barW }}"></span>
+          </span>
+      <h2 id="step1" style="margin:0; font-size:clamp(28px, 2.4vw, 34px); font-weight:650; letter-spacing:-.03em; line-height:1.15">Step 1: Prepare Required Items</h2>
+      <p style="margin:16px 0 0; font-size:15.5px; line-height:1.85; transition:color 1s ease; color:{{ fgMuted }}">Before you get started, please make sure you have the following items:</p>
+      <ul style="margin:14px 0 0; padding-left:22px; font-size:15.5px; line-height:2; transition:color 1s ease; color:{{ fgMuted }}">
+        <li>DisplayPort (DP) monitor</li><li>USB keyboard &amp; mouse</li><li>Ethernet cable</li><li>USB Type-C cable</li><li>USB-to-TTL serial adapter</li><li>60W power adapter</li>
+      </ul>
+        </div>
+      </section>
+
+      <section class="qs-sec" data-sec="#step2" style="position:relative; padding:58px 0 0; margin-top:0px; transition:border-color 1s ease, opacity .6s ease, transform .7s cubic-bezier(.16,1,.3,1); border-top:1px solid {{ line }}; opacity:{{ sec05.revOp }}; transform:{{ sec05.revTf }}">
+        <div style="min-width:0">
+          <span style="display:flex; align-items:center; gap:11px; margin-bottom:12px; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; transition:color .5s ease; color:{{ sec05.labFg }}">
+            <span style="display:inline-flex; align-items:center; justify-content:center; min-width:24px; height:19px; padding:0 6px; border-radius:5px; font-size:10.5px; font-weight:700; letter-spacing:.04em; transition:background .45s ease, color .45s ease, box-shadow .45s ease, transform .45s cubic-bezier(.3,1.5,.4,1); background:{{ sec05.numBg }}; color:{{ sec05.numFg }}; box-shadow:{{ sec05.numRing }}; transform:{{ sec05.numTf }}">05</span>Power on<span style="height:1px; border-radius:1px; transition:background .5s ease, width .5s ease; background:{{ sec05.barBg }}; width:{{ sec05.barW }}"></span>
+          </span>
+      <h2 id="step2" style="margin:0; font-size:clamp(28px, 2.4vw, 34px); font-weight:650; letter-spacing:-.03em; line-height:1.15">Step 2: Power On</h2>
+      <p style="margin:16px 0 0; font-size:15.5px; line-height:1.85; transition:color 1s ease; color:{{ fgMuted }}">Please follow the steps below to boot the system.</p>
+      <ol style="list-style:none; margin:16px 0 0; padding:0; display:flex; flex-direction:column; gap:12px; font-size:15.5px; line-height:1.7; transition:color 1s ease; color:{{ fgMuted }}">
+        <li style="display:flex; gap:12px; align-items:flex-start"><span style="flex:none; width:20px; height:20px; margin-top:1px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; background:color-mix(in srgb, var(--ac) 20%, transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ac) 45%, transparent); color:var(--ac)">1</span><div style="flex:1; min-width:0">Please ensure that the jumper on the bottom side of the board is set to <code style="font-family:'JetBrains Mono',monospace; font-size:13px; padding:2px 7px; border-radius:5px; background:color-mix(in srgb, var(--ac) 12%, transparent); color:var(--ac)">Normal mode</code>.<br><code style="font-family:'JetBrains Mono',monospace; font-size:13px; padding:2px 7px; border-radius:5px; background:color-mix(in srgb, var(--ac) 12%, transparent); color:var(--ac)">EDL mode</code> should be used when flashing the system image.
+          <div class="docs-fig2" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:14px">
+            <sc-for list="{{ jumperFigs }}" as="f" hint-placeholder-count="2">
+              <figure style="margin:0; border-radius:4px; overflow:hidden; transition:transform .45s cubic-bezier(.2,1,.3,1), box-shadow .45s ease; box-shadow:0 0 0 1px {{ line }}" style-hover="transform:translateY(-4px); box-shadow:0 0 0 1px color-mix(in srgb, var(--acSoft) 55%, transparent), 0 16px 34px -18px rgba(0,0,0,.5)">
+                <img src="{{ f.src }}" alt="{{ f.cap }}" loading="lazy" style="display:block; width:100%">
+                <figcaption style="padding:9px 13px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; transition:color 1s ease; color:{{ fgMuted }}">{{ f.cap }}</figcaption>
+              </figure>
+            </sc-for>
+          </div></div></li>
+        <li style="display:flex; gap:12px; align-items:flex-start"><span style="flex:none; width:20px; height:20px; margin-top:1px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; background:color-mix(in srgb, var(--ac) 20%, transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ac) 45%, transparent); color:var(--ac)">2</span><div style="flex:1; min-width:0">Please ensure that all boot mode DIP switches are set to <code style="font-family:'JetBrains Mono',monospace; font-size:13px; padding:2px 7px; border-radius:5px; background:color-mix(in srgb, var(--ac) 12%, transparent); color:var(--ac)">ON</code>, so the system boots from <code style="font-family:'JetBrains Mono',monospace; font-size:13px; padding:2px 7px; border-radius:5px; background:color-mix(in srgb, var(--ac) 12%, transparent); color:var(--ac)">UFS</code>.
+          <figure style="margin:14px 0 0; max-width:520px; border-radius:4px; overflow:hidden; transition:transform .45s cubic-bezier(.2,1,.3,1), box-shadow .45s ease; box-shadow:0 0 0 1px {{ line }}" style-hover="transform:translateY(-4px); box-shadow:0 0 0 1px color-mix(in srgb, var(--acSoft) 55%, transparent), 0 16px 34px -18px rgba(0,0,0,.5)">
+            <img src="https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/tutorials/starting-guides/q911/fig/boot_mode_ufs.png" alt="Boot mode set to UFS" loading="lazy" style="display:block; width:100%">
+            <figcaption style="padding:9px 13px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; transition:color 1s ease; color:{{ fgMuted }}">Boot mode set to UFS</figcaption>
+          </figure></div></li>
+        <li style="display:flex; gap:12px; align-items:flex-start"><span style="flex:none; width:20px; height:20px; margin-top:1px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; background:color-mix(in srgb, var(--ac) 20%, transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ac) 45%, transparent); color:var(--ac)">3</span><div style="flex:1; min-width:0">Connect the power supply and press the power button to boot the system.
+          <div class="docs-fig2" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:14px">
+            <sc-for list="{{ bootFigs }}" as="f" hint-placeholder-count="2">
+              <figure style="margin:0; border-radius:4px; overflow:hidden; transition:transform .45s cubic-bezier(.2,1,.3,1), box-shadow .45s ease; box-shadow:0 0 0 1px {{ line }}" style-hover="transform:translateY(-4px); box-shadow:0 0 0 1px color-mix(in srgb, var(--acSoft) 55%, transparent), 0 16px 34px -18px rgba(0,0,0,.5)">
+                <img src="{{ f.src }}" alt="{{ f.cap }}" loading="lazy" style="display:block; width:100%">
+                <figcaption style="padding:9px 13px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; transition:color 1s ease; color:{{ fgMuted }}">{{ f.cap }}</figcaption>
+              </figure>
+            </sc-for>
+          </div></div></li>
+      </ol>
+        </div>
+      </section>
+
+      <section class="qs-sec" data-sec="#step3" style="position:relative; padding:58px 0 0; margin-top:0px; transition:border-color 1s ease, opacity .6s ease, transform .7s cubic-bezier(.16,1,.3,1); border-top:1px solid {{ line }}; opacity:{{ sec06.revOp }}; transform:{{ sec06.revTf }}">
+        <div style="min-width:0">
+          <span style="display:flex; align-items:center; gap:11px; margin-bottom:12px; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; transition:color .5s ease; color:{{ sec06.labFg }}">
+            <span style="display:inline-flex; align-items:center; justify-content:center; min-width:24px; height:19px; padding:0 6px; border-radius:5px; font-size:10.5px; font-weight:700; letter-spacing:.04em; transition:background .45s ease, color .45s ease, box-shadow .45s ease, transform .45s cubic-bezier(.3,1.5,.4,1); background:{{ sec06.numBg }}; color:{{ sec06.numFg }}; box-shadow:{{ sec06.numRing }}; transform:{{ sec06.numTf }}">06</span>Interact<span style="height:1px; border-radius:1px; transition:background .5s ease, width .5s ease; background:{{ sec06.barBg }}; width:{{ sec06.barW }}"></span>
+          </span>
+      <h2 id="step3" style="margin:0; font-size:clamp(28px, 2.4vw, 34px); font-weight:650; letter-spacing:-.03em; line-height:1.15">Step 3: Interact with the System</h2>
+      <p style="margin:16px 0 0; font-size:15.5px; line-height:1.85; transition:color 1s ease; color:{{ fgMuted }}">After the system boots, you can access the platform using one of the following methods:</p>
+      <ul style="margin:14px 0 0; padding-left:22px; font-size:15.5px; line-height:2; transition:color 1s ease; color:{{ fgMuted }}">
+        <li><a href="#dp">DisplayPort monitor</a></li><li><a href="#ssh">SSH over Ethernet</a></li><li><a href="#adb">ADB over USB Type-C</a></li><li><a href="#uart">UART Debug Console</a></li>
+      </ul>
+      <p style="margin:16px 0 0; font-size:15.5px; line-height:1.85; transition:color 1s ease; color:{{ fgMuted }}">Please refer to the <a href="q911-image-flashing.html#step6">Q911 Image Flashing Guide: Boot into the System</a> for detailed instructions on flashing the image. For the networking steps Ubuntu needs on first boot, see <a href="#first-boot">First-Boot Network Setup</a>.</p>
+
+      <p style="margin:14px 0 0; font-size:15.5px; line-height:1.85; transition:color 1s ease; color:{{ fgMuted }}">Whether a login is required depends on the operating system and the access method:</p>
+      <div style="margin-top:16px; overflow-x:auto; border-radius:12px; transition:border-color 1s ease; border:1px solid {{ line }}">
+        <table style="width:100%; border-collapse:collapse; font-size:14.5px">
+          <thead><tr><th style="text-align:left; padding:13px 16px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.16em; text-transform:uppercase; font-weight:400; transition:color 1s ease, border-color 1s ease, background 1s ease; color:{{ fgFaint }}; background:{{ chipBg }}; border-bottom:1px solid {{ line }}">Usage method</th><th style="text-align:left; padding:13px 16px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.16em; text-transform:uppercase; font-weight:400; transition:color 1s ease, border-color 1s ease, background 1s ease; color:{{ fgFaint }}; background:{{ chipBg }}; border-bottom:1px solid {{ line }}">Yocto Linux: login required</th><th style="text-align:left; padding:13px 16px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.16em; text-transform:uppercase; font-weight:400; transition:color 1s ease, border-color 1s ease, background 1s ease; color:{{ fgFaint }}; background:{{ chipBg }}; border-bottom:1px solid {{ line }}">Ubuntu: login required</th></tr></thead>
+          <tbody>
+            <tr><td style="padding:14px 16px; line-height:1.7; vertical-align:top; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }}">Desktop</td><td style="padding:14px 16px; line-height:1.7; vertical-align:top; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }}">No</td><td style="padding:14px 16px; line-height:1.7; vertical-align:top; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }}">Yes</td></tr>
+            <tr><td style="padding:14px 16px; line-height:1.7; vertical-align:top; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }}">SSH</td><td style="padding:14px 16px; line-height:1.7; vertical-align:top; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }}">Yes</td><td style="padding:14px 16px; line-height:1.7; vertical-align:top; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }}">Yes</td></tr>
+            <tr><td style="padding:14px 16px; line-height:1.7; vertical-align:top; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }}">ADB</td><td style="padding:14px 16px; line-height:1.7; vertical-align:top; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }}">No</td><td style="padding:14px 16px; line-height:1.7; vertical-align:top; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }}">Not supported</td></tr>
+            <tr><td style="padding:14px 16px; line-height:1.7; vertical-align:top; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }};">UART</td><td style="padding:14px 16px; line-height:1.7; vertical-align:top; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }};">No</td><td style="padding:14px 16px; line-height:1.7; vertical-align:top; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }};">Yes</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="credentials" style="margin:36px 0 0; font-size:21px; font-weight:600; letter-spacing:-.018em">Default Credentials</h3>
+      <div style="margin-top:14px; border-radius:10px; overflow:hidden; transition:border-color 1s ease; border:1px solid {{ line }}">
+        <div style="display:flex; align-items:center; gap:10px; padding:8px 14px; font-family:'JetBrains Mono',monospace; font-size:11px; background:#0d1326; color:#8ea3d6; border-bottom:1px solid rgba(255,255,255,.08)">
+          <span style="color:var(--ac)">Yocto Linux</span>
+        </div>
+        <pre style="margin:0; padding:14px 16px; overflow-x:auto; font-family:'JetBrains Mono',monospace; font-size:13px; line-height:1.7; background:#0a0e1c; color:#dfe8ff">Username: root
+Password: oelinux123</pre>
+      </div>
+      <div style="margin-top:14px; border-radius:10px; overflow:hidden; transition:border-color 1s ease; border:1px solid {{ line }}">
+        <div style="display:flex; align-items:center; gap:10px; padding:8px 14px; font-family:'JetBrains Mono',monospace; font-size:11px; background:#0d1326; color:#8ea3d6; border-bottom:1px solid rgba(255,255,255,.08)">
+          <span style="color:var(--ac)">Ubuntu</span>
+        </div>
+        <pre style="margin:0; padding:14px 16px; overflow-x:auto; font-family:'JetBrains Mono',monospace; font-size:13px; line-height:1.7; background:#0a0e1c; color:#dfe8ff">Username: ubuntu
+Password: ubuntu</pre>
+      </div>
+
+      <h3 id="first-boot" style="margin:36px 0 0; font-size:21px; font-weight:600; letter-spacing:-.018em">First-Boot Network Setup (Ubuntu)</h3>
+      <div style="display:flex; gap:12px; margin-top:16px; padding:14px 16px; border-radius:10px; background:color-mix(in srgb, var(--ac) 8%, transparent); border:1px solid color-mix(in srgb, var(--ac) 30%, transparent)"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="var(--ac)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none; margin-top:2px"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-4M12 8h.01"></path></svg><p style="margin:0; font-size:13.5px; line-height:1.75; transition:color 1s ease; color:{{ fgMuted }}">Ubuntu does not bring up Ethernet on first boot. Before any network operation, install the <code style="font-family:'JetBrains Mono',monospace; font-size:13px; padding:2px 7px; border-radius:5px; background:color-mix(in srgb, var(--ac) 12%, transparent); color:var(--ac)">iq-ubuntu*.deb</code> post-flash networking package. The install steps are in the Debian package part of <a href="https://github.com/InnoIPA/iQ-ubuntu__manifest">iQ-ubuntu__manifest</a> (no longer maintained since v2.5.1; merged into <a href="https://github.com/InnoIPA/meta-iQ__manifest">meta-iQ__manifest</a>).</p></div>
+
+      <div id="methods">
+      <div style="display:flex; align-items:baseline; gap:14px; margin-top:30px; padding-top:18px; transition:border-color 1s ease; border-top:1px solid {{ line }}">
+        <span style="flex:none; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700; letter-spacing:.04em; color:var(--ac)">01</span>
+        <span style="flex:none; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.18em; transition:color 1s ease; color:{{ fgFaint }}">DP DISPLAY</span>
+      </div>
+      <h3 id="dp" style="margin:10px 0 0; font-size:21px; font-weight:600; letter-spacing:-.018em">Interact with the System Using a DP Display</h3>
+      <p style="margin:14px 0 0; font-size:15.5px; line-height:1.85; transition:color 1s ease; color:{{ fgMuted }}">If you are accessing the system using a DP display, please follow the steps below to set it up.</p>
+      <ol style="list-style:none; margin:16px 0 0; padding:0; display:flex; flex-direction:column; gap:12px; font-size:15.5px; line-height:1.7; transition:color 1s ease; color:{{ fgMuted }}">
+        <li style="display:flex; gap:12px; align-items:flex-start"><span style="flex:none; width:20px; height:20px; margin-top:1px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; background:color-mix(in srgb, var(--ac) 20%, transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ac) 45%, transparent); color:var(--ac)">1</span><div style="flex:1; min-width:0">Connect the DP display and USB keyboard/mouse. Then, connect the power cable and press the power button to boot the system.</div></li>
+        <li style="display:flex; gap:12px; align-items:flex-start"><span style="flex:none; width:20px; height:20px; margin-top:1px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; background:color-mix(in srgb, var(--ac) 20%, transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ac) 45%, transparent); color:var(--ac)">2</span><div style="flex:1; min-width:0">After the device boots up, you should see the output displayed on the DisplayPort (DP) monitor.
+          <ul style="margin:8px 0 0; padding-left:20px; line-height:1.85">
+            <li>In Yocto Linux, you can click the icon in the upper-left corner to open the terminal.</li>
+            <li>In Ubuntu, you can interact with the system just as you would on a standard amd64 Ubuntu installation.</li>
+          </ul></div></li>
+      </ol>
+      <div class="docs-fig2" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px">
+        <sc-for list="{{ dpFigs }}" as="f" hint-placeholder-count="4">
+          <figure style="margin:0; border-radius:4px; overflow:hidden; transition:transform .45s cubic-bezier(.2,1,.3,1), box-shadow .45s ease; box-shadow:0 0 0 1px {{ line }}" style-hover="transform:translateY(-4px); box-shadow:0 0 0 1px color-mix(in srgb, var(--acSoft) 55%, transparent), 0 16px 34px -18px rgba(0,0,0,.5)">
+            <img src="{{ f.src }}" alt="{{ f.cap }}" loading="lazy" style="display:block; width:100%">
+            <figcaption style="padding:9px 13px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; transition:color 1s ease; color:{{ fgMuted }}">{{ f.cap }}</figcaption>
+          </figure>
+        </sc-for>
+      </div>
+
+      <div style="display:flex; align-items:baseline; gap:14px; margin-top:52px; padding-top:18px; transition:border-color 1s ease; border-top:1px solid {{ line }}">
+        <span style="flex:none; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700; letter-spacing:.04em; color:var(--ac)">02</span>
+        <span style="flex:none; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.18em; transition:color 1s ease; color:{{ fgFaint }}">SSH · ETHERNET</span>
+      </div>
+      <h3 id="ssh" style="margin:10px 0 0; font-size:21px; font-weight:600; letter-spacing:-.018em">Interact with the System Using SSH over Ethernet</h3>
+      <p style="margin:14px 0 0; font-size:15.5px; line-height:1.85; transition:color 1s ease; color:{{ fgMuted }}">If you are accessing the system using SSH to interact with the system, please follow the steps below to set it up. If Ubuntu does not have network connectivity, install the <code style="font-family:'JetBrains Mono',monospace; font-size:13px; padding:2px 7px; border-radius:5px; background:color-mix(in srgb, var(--ac) 12%, transparent); color:var(--ac)">iq-ubuntu*.deb</code> package. See <a href="#first-boot">First-Boot Network Setup</a>.</p>
+      <p style="margin:14px 0 0; font-size:15.5px; line-height:1.85; transition:color 1s ease; color:{{ fgMuted }}">Please connect an Ethernet cable and ensure that the device is reachable over the network. Then, connect the power cable and press the power button to boot the system. After the device boots up, you can access the device via SSH from any machine on the same network.</p>
+      <sc-for list="{{ sshBlocks }}" as="cb" hint-placeholder-count="2">
+        <div style="margin-top:14px; border-radius:10px; overflow:hidden; transition:border-color 1s ease; border:1px solid {{ line }}">
+          <div style="display:flex; align-items:center; gap:10px; padding:8px 14px; font-family:'JetBrains Mono',monospace; font-size:11px; transition:background 1s ease, color 1s ease, border-color 1s ease; background:#0d1326; color:#8ea3d6; border-bottom:1px solid rgba(255,255,255,.08)">
+            <span style="color:var(--ac)">{{ cb.fname }}</span>
+            <span class="iq-copy" onClick="{{ cb.copy }}"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></span>
+            <span>bash</span>
+          </div>
+          <pre style="margin:0; padding:14px 16px; overflow-x:auto; font-family:'JetBrains Mono',monospace; font-size:13px; line-height:1.7; background:#0a0e1c; color:#dfe8ff"><code-hl code="{{ cb.code }}"></code-hl></pre>
+        </div>
+      </sc-for>
+      <div class="docs-fig2" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px">
+        <sc-for list="{{ sshFigs }}" as="f" hint-placeholder-count="2">
+          <figure style="margin:0; border-radius:4px; overflow:hidden; transition:transform .45s cubic-bezier(.2,1,.3,1), box-shadow .45s ease; box-shadow:0 0 0 1px {{ line }}" style-hover="transform:translateY(-4px); box-shadow:0 0 0 1px color-mix(in srgb, var(--acSoft) 55%, transparent), 0 16px 34px -18px rgba(0,0,0,.5)">
+            <img src="{{ f.src }}" alt="{{ f.cap }}" loading="lazy" style="display:block; width:100%">
+            <figcaption style="padding:9px 13px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; transition:color 1s ease; color:{{ fgMuted }}">{{ f.cap }}</figcaption>
+          </figure>
+        </sc-for>
+      </div>
+
+      <div style="display:flex; align-items:baseline; gap:14px; margin-top:52px; padding-top:18px; transition:border-color 1s ease; border-top:1px solid {{ line }}">
+        <span style="flex:none; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700; letter-spacing:.04em; color:var(--ac)">03</span>
+        <span style="flex:none; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.18em; transition:color 1s ease; color:{{ fgFaint }}">ADB · USB-C</span>
+      </div>
+      <h3 id="adb" style="margin:10px 0 0; font-size:21px; font-weight:600; letter-spacing:-.018em">Interact with the System Using ADB over USB Type-C</h3>
+      <p style="margin:14px 0 0; font-size:15.5px; line-height:1.85; transition:color 1s ease; color:{{ fgMuted }}">If you are accessing the system using <code style="font-family:'JetBrains Mono',monospace; font-size:13px; padding:2px 7px; border-radius:5px; background:color-mix(in srgb, var(--ac) 12%, transparent); color:var(--ac)">adb</code> to interact with the system, please follow the steps below to set it up. The USB Type-C port on both platforms supports <code style="font-family:'JetBrains Mono',monospace; font-size:13px; padding:2px 7px; border-radius:5px; background:color-mix(in srgb, var(--ac) 12%, transparent); color:var(--ac)">Flash / ADB</code>.</p>
+      <div style="display:flex; gap:12px; margin-top:16px; padding:14px 16px; border-radius:10px; background:color-mix(in srgb, var(--ac) 8%, transparent); border:1px solid color-mix(in srgb, var(--ac) 30%, transparent)"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="var(--ac)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none; margin-top:2px"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-4M12 8h.01"></path></svg><p style="margin:0; font-size:13.5px; line-height:1.75; transition:color 1s ease; color:{{ fgMuted }}">ADB is not supported on Ubuntu. Use DP, SSH, or UART instead.</p></div>
+      <p style="margin:14px 0 0; font-size:15.5px; line-height:1.85; transition:color 1s ease; color:{{ fgMuted }}">Connect the USB Type-C cable between the host and the device. Then, connect the power cable and press the power button to boot the system. After the device boots up, use the following commands on the host to verify the device connection and open an interactive shell. You can run Linux commands from the <code style="font-family:'JetBrains Mono',monospace; font-size:13px; padding:2px 7px; border-radius:5px; background:color-mix(in srgb, var(--ac) 12%, transparent); color:var(--ac)">adb</code> shell — the example below checks the BSP version.</p>
+      <sc-for list="{{ adbBlocks }}" as="cb" hint-placeholder-count="2">
+        <div style="margin-top:14px; border-radius:10px; overflow:hidden; transition:border-color 1s ease; border:1px solid {{ line }}">
+          <div style="display:flex; align-items:center; gap:10px; padding:8px 14px; font-family:'JetBrains Mono',monospace; font-size:11px; transition:background 1s ease, color 1s ease, border-color 1s ease; background:#0d1326; color:#8ea3d6; border-bottom:1px solid rgba(255,255,255,.08)">
+            <span style="color:var(--ac)">{{ cb.fname }}</span>
+            <span class="iq-copy" onClick="{{ cb.copy }}"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg></span>
+            <span>bash</span>
+          </div>
+          <pre style="margin:0; padding:14px 16px; overflow-x:auto; font-family:'JetBrains Mono',monospace; font-size:13px; line-height:1.7; background:#0a0e1c; color:#dfe8ff"><code-hl code="{{ cb.code }}"></code-hl></pre>
+        </div>
+      </sc-for>
+      <figure style="margin:16px 0 0; max-width:640px; border-radius:4px; overflow:hidden; transition:transform .45s cubic-bezier(.2,1,.3,1), box-shadow .45s ease; box-shadow:0 0 0 1px {{ line }}" style-hover="transform:translateY(-4px); box-shadow:0 0 0 1px color-mix(in srgb, var(--acSoft) 55%, transparent), 0 16px 34px -18px rgba(0,0,0,.5)">
+        <img src="https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/tutorials/starting-guides/q911/fig/adb_usage_example.png" alt="ADB usage example" loading="lazy" style="display:block; width:100%">
+        <figcaption style="padding:9px 13px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; transition:color 1s ease; color:{{ fgMuted }}">ADB usage example</figcaption>
+      </figure>
+
+      <div style="display:flex; align-items:baseline; gap:14px; margin-top:52px; padding-top:18px; transition:border-color 1s ease; border-top:1px solid {{ line }}">
+        <span style="flex:none; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700; letter-spacing:.04em; color:var(--ac)">04</span>
+        <span style="flex:none; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.18em; transition:color 1s ease; color:{{ fgFaint }}">UART · 115200 8N1</span>
+      </div>
+      <h3 id="uart" style="margin:10px 0 0; font-size:21px; font-weight:600; letter-spacing:-.018em">Interact with the System Using UART Debug Console</h3>
+      <p style="margin:14px 0 0; font-size:15.5px; line-height:1.85; transition:color 1s ease; color:{{ fgMuted }}">If you are accessing the system using UART debug console to interact with the system, please follow the steps below to set it up.</p>
+      <div style="display:flex; gap:12px; margin-top:16px; padding:14px 16px; border-radius:10px; background:color-mix(in srgb, var(--ac) 8%, transparent); border:1px solid color-mix(in srgb, var(--ac) 30%, transparent)">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="var(--ac)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none; margin-top:2px"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V18h6v-1.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2Z"></path></svg>
+        <p style="margin:0; font-size:13.5px; line-height:1.75; transition:color 1s ease; color:{{ fgMuted }}">You can refer to the <a href="https://docs.qualcomm.com/doc/80-70014-253/topic/ubuntu_host.html#set-up-debug-uart">Qualcomm guide on setting up a debug UART</a> for detailed instructions on how to connect using minicom.</p>
+      </div>
+      <p style="margin:14px 0 0; font-size:15.5px; line-height:1.85; transition:color 1s ease; color:{{ fgMuted }}">Please connect the USB-to-TTL serial adapter to the UART pins on the bottom side of the board. Then, connect the power cable and press the power button to boot the system. After the device boots up, you will see a screen similar to the one shown below.</p>
+      <div style="display:flex; gap:12px; margin-top:16px; padding:14px 16px; border-radius:10px; background:color-mix(in srgb, var(--ac) 8%, transparent); border:1px solid color-mix(in srgb, var(--ac) 30%, transparent)">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="var(--ac)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none; margin-top:2px"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V18h6v-1.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2Z"></path></svg>
+        <p style="margin:0; font-size:13.5px; line-height:1.75; transition:color 1s ease; color:{{ fgMuted }}">Set your serial terminal to 115200 baud, 8 data bits, no parity, 1 stop bit, no flow control</p>
+      </div>
+      <div class="docs-fig2" style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px">
+        <sc-for list="{{ uartFigs }}" as="f" hint-placeholder-count="2">
+          <figure style="margin:0; border-radius:4px; overflow:hidden; transition:transform .45s cubic-bezier(.2,1,.3,1), box-shadow .45s ease; box-shadow:0 0 0 1px {{ line }}" style-hover="transform:translateY(-4px); box-shadow:0 0 0 1px color-mix(in srgb, var(--acSoft) 55%, transparent), 0 16px 34px -18px rgba(0,0,0,.5)">
+            <img src="{{ f.src }}" alt="{{ f.cap }}" loading="lazy" style="display:block; width:100%">
+            <figcaption style="padding:9px 13px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; transition:color 1s ease; color:{{ fgMuted }}">{{ f.cap }}</figcaption>
+          </figure>
+        </sc-for>
+      </div>
+
+      </div>
+        </div>
+      </section>
+
+      <section class="qs-sec" data-sec="#next-steps" style="position:relative; padding:58px 0 0; margin-top:0px; transition:border-color 1s ease, opacity .6s ease, transform .7s cubic-bezier(.16,1,.3,1); border-top:1px solid {{ line }}; opacity:{{ sec07.revOp }}; transform:{{ sec07.revTf }}">
+        <div style="min-width:0">
+          <span style="display:flex; align-items:center; gap:11px; margin-bottom:12px; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; transition:color .5s ease; color:{{ sec07.labFg }}">
+            <span style="display:inline-flex; align-items:center; justify-content:center; min-width:24px; height:19px; padding:0 6px; border-radius:5px; font-size:10.5px; font-weight:700; letter-spacing:.04em; transition:background .45s ease, color .45s ease, box-shadow .45s ease, transform .45s cubic-bezier(.3,1.5,.4,1); background:{{ sec07.numBg }}; color:{{ sec07.numFg }}; box-shadow:{{ sec07.numRing }}; transform:{{ sec07.numTf }}">07</span>Next<span style="height:1px; border-radius:1px; transition:background .5s ease, width .5s ease; background:{{ sec07.barBg }}; width:{{ sec07.barW }}"></span>
+          </span>
+      <h2 id="next-steps" style="margin:0; font-size:clamp(28px, 2.4vw, 34px); font-weight:650; letter-spacing:-.03em; line-height:1.15">Next Steps</h2>
+      <p style="margin:16px 0 0; font-size:15.5px; line-height:1.85; transition:color 1s ease; color:{{ fgMuted }}">Depending on your needs:</p>
+      <ul style="margin:14px 0 0; padding-left:22px; font-size:15.5px; line-height:1.95; transition:color 1s ease; color:{{ fgMuted }}">
+        <li><a href="../../index.html">iQ-Studio</a>: It helps users quickly understand, explore, and prototype ideas by showcasing the platform’s performance and capabilities—inspiring innovation through hands-on experience.</li>
+        <li><a href="../applications/overview.html">Application</a> — Reference ready-to-run demos illustrating how to build applications on the platform.</li>
+        <li><a href="../sdks/overview.html">SDK</a> — Learn how to develop and integrate your own solutions with the platform SDK.</li>
+        <li><a href="../avl/vendor-list.html">AVL(Approved Vendor List)</a> — Provides guidance on verifying that the driver starts correctly on the system and quickly demonstrating the validated results.</li>
+        <li><a href="../../index.html">Benchmark</a> — Review performance metrics for AI and system workloads.</li>
+      </ul>
+        </div>
+      </section>
+      <div class="docs-pager" style="display:flex; gap:14px; margin-top:44px; padding-top:22px; transition:border-color 1s ease; border-top:1px solid {{ line }}">
+        <a href="../index.html" style="flex:1; display:flex; flex-direction:column; gap:4px; padding:14px 18px; border-radius:12px; text-decoration:none; transition:border-color .3s ease, transform .3s ease; border:1px solid {{ line }}" style-hover="transform:translateY(-2px); border-color:color-mix(in srgb, var(--acSoft) 60%, transparent)">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ac)">← Previous</span>
+          <span style="font-size:14px; font-weight:600; transition:color 1s ease; color:{{ fg }}">Starting Guides Overview</span>
+        </a>
+        <a href="q911-image-flashing.html" style="flex:1; display:flex; flex-direction:column; align-items:flex-end; gap:4px; padding:14px 18px; border-radius:12px; text-decoration:none; transition:border-color .3s ease, transform .3s ease; border:1px solid {{ line }}" style-hover="transform:translateY(-2px); border-color:color-mix(in srgb, var(--acSoft) 60%, transparent)">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ac)">Next →</span>
+          <span style="font-size:14px; font-weight:600; text-align:right; transition:color 1s ease; color:{{ fg }}">Q911 Image Flashing Guide</span>
+        </a>
+      </div>
+    </main>
+
+  </div>
+
+  <div class="qs-dock" onMouseEnter="{{ dockEnter }}" onMouseLeave="{{ dockLeave }}" onFocus="{{ dockEnter }}" onBlur="{{ dockLeave }}" style="position:fixed; right:24px; top:92px; z-index:60; display:flex; flex-direction:column; gap:10px; width:236px; padding:12px 14px 11px; border-radius:16px; transition:background .25s ease, box-shadow .4s ease, transform .4s cubic-bezier(.2,1,.3,1); background:{{ dockBg }}; backdrop-filter:blur(16px) saturate(1.3); box-shadow:inset 0 1px 0 rgba(255,255,255,.055), 0 0 0 1px {{ line }}, 0 24px 52px -26px rgba(0,0,0,.6); max-height:calc(100vh - 120px)" style-hover="transform:translateY(-3px)">
+    <span style="display:flex; align-items:center; gap:7px; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; transition:color 1s ease; color:{{ fgFaint }}">
+      <span style="width:5px; height:5px; border-radius:50%; background:var(--ac); box-shadow:0 0 7px var(--ac); animation:qsWobble 2.2s ease-in-out infinite"></span>You are here
+      <span style="margin-left:auto; display:flex; align-items:baseline; gap:3px; font-size:10.5px; letter-spacing:.04em; color:var(--ac)"><b style="font-size:12.5px; font-weight:700">{{ railNum }}</b><span style="opacity:.5">/ {{ railTotal }}</span></span>
+    </span>
+    <div class="qs-reelbox" style="position:relative; overflow-x:hidden; overflow-y:{{ dockOv }}; margin:0 -3px; transition:{{ dockTrH }}; height:{{ dockH }}; max-height:calc(100vh - 210px); scrollbar-width:none">
+      <span style="position:absolute; left:0; right:0; top:0; height:36px; border-radius:8px; overflow:hidden; transition:opacity .25s ease; opacity:{{ dockHl }}; background:color-mix(in srgb, var(--ac) 11%, transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ac) 28%, transparent)">
+        <span style="position:absolute; top:0; bottom:0; width:44%; background:linear-gradient(100deg, transparent, color-mix(in srgb, var(--ac) 26%, transparent), transparent); animation:qsSweep 4.6s cubic-bezier(.5,0,.5,1) infinite"></span>
+      </span>
+      <div style="position:relative; transition:{{ dockTrS }}; transform:{{ dockShift }}">
+        <sc-for list="{{ railItems }}" as="ri" hint-placeholder-count="11">
+          <a href="{{ ri.href }}" style="display:flex; align-items:center; gap:9px; height:36px; padding:0 9px; border-radius:8px; text-decoration:none; white-space:nowrap; transition:opacity .42s ease, color .42s ease, filter .42s ease, transform .42s cubic-bezier(.2,1,.3,1), background .25s ease; transition-delay:{{ ri.delay }}; opacity:{{ ri.rowOp }}; color:{{ ri.rowFg }}; filter:{{ ri.rowBlur }}; transform:translateX({{ ri.rowDx }})" style-hover="opacity:1; color:var(--ac); background:color-mix(in srgb, var(--ac) 9%, transparent)">
+            <span style="flex:none; width:17px; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; letter-spacing:.02em; transition:color .4s ease, opacity .4s ease; color:{{ ri.numFg }}; opacity:{{ ri.numOp }}">{{ ri.num }}</span>
+            <span style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; font-size:13.5px; font-weight:{{ ri.rowFw }}; line-height:1.2; letter-spacing:-.005em">{{ ri.name }}</span>
+          </a>
+        </sc-for>
+      </div>
+    </div>
+    <span style="display:flex; gap:8px; align-items:center">
+      <span style="flex:1; height:3px; border-radius:2px; overflow:hidden; transition:background 1s ease; background:{{ line }}"><span style="display:block; height:100%; border-radius:2px; background:var(--ac); box-shadow:0 0 8px color-mix(in srgb, var(--ac) 60%, transparent); transition:width .4s ease; width:{{ railTop }}"></span></span>
+      <span style="margin-left:2px; font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.02em; color:var(--ac)">{{ railPct }}</span>
+    </span>
+  </div>
+
+  <!-- @shared:footer -->
+  <footer class="iq-footer">
+    <span>© 2026 Innodisk Corporation · iQ-Studio</span>
+    <div class="iq-footer__links">
+      <a href="../../index.html">Home</a><a href="../../get-started.html">Get Started</a><a href="../../docs/index.html">Docs</a><a href="../../benchmarks.html">Benchmarks</a><a href="../../architecture.html">Architecture</a><a href="../../in-the-news.html">In the News</a><a href="https://github.com/InnoIPA/iQ-Studio">GitHub</a>
+    </div>
+  </footer>
+  <!-- @end:footer -->
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;'dark' | 'light'&quot;}}">
+const SIDE = IQ_PAGES.SIDE;
+const ACTIVE = 'Q911 Quick Start Guide';
+
+const FIG = 'https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/tutorials/starting-guides/q911/fig/';
+const TOC = [
+  ['Overview', '#overview', 0], ['What’s in the Box', '#box', 0], ['EXEC-Q911 / APEX-A100 Hardware', '#hardware', 0],
+  ['Step 1: Prepare Required Items', '#step1', 0], ['Step 2: Power On', '#step2', 0], ['Step 3: Interact with the System', '#step3', 0],
+  ['Default Credentials', '#credentials', 1], ['First-Boot Network Setup', '#first-boot', 1], ['DP Display', '#dp', 1], ['SSH over Ethernet', '#ssh', 1], ['ADB over USB Type-C', '#adb', 1], ['UART Debug Console', '#uart', 1],
+  ['Next Steps', '#next-steps', 0]
+];
+
+class Component extends DCLogic {
+  state = { theme: IQ_THEME.saved.theme, pal: IQ_THEME.saved.pal, palOpen: false, prog: 0, activeSec: TOC.length ? TOC[0][1] : null, tab: 'dp', dockOpen: false, pending: null, revealed: {}, sideOpen: false, navOpen: false };
+
+  componentDidMount() {
+    IQ_DOCS.mount(this, TOC);
+    this._sweepScroll = () => { if (this._sweep) this._sweep(); };
+    window.addEventListener('scroll', this._sweepScroll, { passive: true });
+    this._reveal = (ids) => {
+      if (!ids.length) return;
+      const next = Object.assign({}, this.state.revealed);
+      let changed = false;
+      ids.forEach((id) => { if (!next[id]) { next[id] = true; changed = true; } });
+      if (changed) this.setState({ revealed: next });
+    };
+    this._sweep = () => {
+      if (!this.state.pending) return;
+      const hit = [];
+      document.querySelectorAll('.qs-sec').forEach((el) => {
+        const id = el.getAttribute('data-sec');
+        if (id && !this.state.revealed[id] && el.getBoundingClientRect().top < window.innerHeight * 0.9) hit.push(id);
+      });
+      this._reveal(hit);
+    };
+    this._revealTimer = setTimeout(() => {
+      const secs = Array.from(document.querySelectorAll('.qs-sec'));
+      if (!secs.length || !('IntersectionObserver' in window)) return;
+      // only sections still below the fold start hidden — everything else stays visible
+      const pending = {};
+      secs.forEach((el) => {
+        const id = el.getAttribute('data-sec');
+        if (id && el.getBoundingClientRect().top >= window.innerHeight * 0.9) pending[id] = true;
+      });
+      if (!Object.keys(pending).length) return;
+      this.setState({ pending });
+      this._io = new IntersectionObserver((ents) => {
+        const hit = [];
+        ents.forEach((e) => { if (e.isIntersecting) { const id = e.target.getAttribute('data-sec'); if (id) hit.push(id); this._io.unobserve(e.target); } });
+        this._reveal(hit);
+      }, { rootMargin: '0px 0px -10% 0px', threshold: 0.03 });
+      secs.forEach((el) => this._io.observe(el));
+    }, 120);
+  }
+  componentWillUnmount() { IQ_DOCS.unmount(this); window.removeEventListener('scroll', this._sweepScroll); clearTimeout(this._revealTimer); if (this._io) this._io.disconnect(); }
+
+  _secVals(id, t) {
+    const hidden = !!(this.state.pending && this.state.pending[id] && !this.state.revealed[id]);
+    const order = ['#overview', '#box', '#hardware', '#step1', '#step2', '#step3', '#next-steps'];
+    const cur = order.indexOf(this.state.activeSec);
+    const me = order.indexOf(id);
+    const on = cur === me;
+    const past = cur > me;
+    return {
+      numFg: on ? '#04101f' : past ? 'var(--ac)' : t.fgFaint,
+      numBg: on ? 'var(--ac)' : past ? 'color-mix(in srgb, var(--ac) 18%, transparent)' : 'transparent',
+      numRing: on ? '0 0 0 3px color-mix(in srgb, var(--ac) 16%, transparent)' : 'inset 0 0 0 1px ' + t.line,
+      numTf: on ? 'scale(1.06)' : 'scale(1)',
+      labFg: on ? 'var(--ac)' : t.fgFaint,
+      revOp: hidden ? 0 : 1,
+      revTf: hidden ? 'translateY(22px)' : 'none',
+      barBg: on ? 'var(--ac)' : t.line,
+      barW: on ? '56px' : '20px'
+    };
+  }
+
+  renderVals() {
+    const name = this.state.theme || this.props.theme || 'dark';
+    const { t, pal } = IQ_THEME.resolve(name, this.state.pal);
+    const fig = (file, cap) => ({ src: FIG + file, cap });
+    const block = (id, fname, code) => ({
+      fname, code,
+      copy: IQ_COPY.make(code)
+    });
+    return Object.assign({}, t, {
+      ...IQ_DOCS.vals(this, { TOC, ACTIVE, SIDE, t, name, pal }),
+      sec01: this._secVals('#overview', t),
+      sec02: this._secVals('#box', t),
+      sec03: this._secVals('#hardware', t),
+      sec04: this._secVals('#step1', t),
+      sec05: this._secVals('#step2', t),
+      sec06: this._secVals('#step3', t),
+      sec07: this._secVals('#next-steps', t),
+      ringDash: (144.5 * (1 - this.state.prog)).toFixed(1),
+      ringAngle: (this.state.prog * 360).toFixed(1) + 'deg',
+      railShift: 'translateY(' + (-Math.max(0, TOC.findIndex((x) => x[1] === this.state.activeSec)) * 30) + 'px)',
+      railName: (TOC.find((x) => x[1] === this.state.activeSec) || TOC[0])[0],
+      railDeg: (this.state.prog * 1080).toFixed(1) + 'deg',
+      railRibbon: (30 + this.state.prog * 46).toFixed(1) + 'vh',
+      railWavePts: (() => {
+        const n = TOC.length, w = 320, h = 34;
+        return TOC.map((x, i) => {
+          const px = (i / (n - 1)) * w;
+          const py = h / 2 + (i % 2 ? -1 : 1) * (i === 0 || i === n - 1 ? 3 : 9);
+          return px.toFixed(1) + ',' + py.toFixed(1);
+        }).join(' ');
+      })(),
+      railNodes: TOC.map(([nm, href, sub], i) => {
+        const on = this.state.activeSec === href;
+        const n = TOC.length, h = 34;
+        const py = h / 2 + (i % 2 ? -1 : 1) * (i === 0 || i === n - 1 ? 3 : 9);
+        return {
+          name: nm, href, on,
+          short: nm.replace('Step 1: ', '').replace('Step 2: ', '').replace('Step 3: ', '').replace(' over Ethernet', '').replace(' over USB Type-C', '').replace(' Debug Console', ''),
+          left: ((i / (n - 1)) * 100).toFixed(2) + '%',
+          top: (5 + py).toFixed(1) + 'px',
+          size: on ? '9px' : sub ? '3.5px' : '5px',
+          bg: on ? 'var(--ac)' : 'color-mix(in srgb, var(--ac) 34%, transparent)',
+          glow: on ? '0 0 10px color-mix(in srgb, var(--ac) 75%, transparent)' : 'none',
+          anim: on ? 'qsPing 2.2s ease-in-out infinite' : 'none'
+        };
+      }),
+      hwFigs: [fig('exec_q911_front.png', 'EXEC-Q911 Front'), fig('exec_q911_back.png', 'EXEC-Q911 Back'), fig('qpex_a100_front.png', 'APEX-A100 Front'), fig('qpex_a100_back.png', 'APEX-A100 Back')],
+      jumperFigs: [fig('jumper_mode_normal.png', 'Normal mode'), fig('jumper_mode_edl.png', 'EDL mode')],
+      bootFigs: [fig('exec_q911_boot.png', 'EXEC-Q911'), fig('a100_boot.png', 'APEX-A100')],
+      dpFigs: [fig('connect_dp_boot.png', 'EXEC-Q911'), fig('connect_dp_boot_a100.png', 'APEX-A100'), fig('ycoto_desktop_icon.png', 'Yocto Linux desktop icon'), fig('ubuntu.png', 'Ubuntu desktop')],
+      sshFigs: [fig('SSH_terminal.png', 'SSH terminal (Yocto Linux)'), fig('ubuntu_teminal.png', 'SSH terminal (Ubuntu)')],
+      uartFigs: [fig('debug_port_pin.png', 'UART debug port pins'), fig('debug_port_view.png', 'UART debug console output')],
+      sshBlocks: [
+        block('ssh1', 'Yocto Linux', 'ssh root@<target device ip address>'),
+        block('ssh2', 'Ubuntu', 'ssh ubuntu@<target device ip address>')
+      ],
+      adbBlocks: [
+        block('adb1', 'host', 'adb devices\nadb shell'),
+        block('adb2', 'host', 'adb shell\nsh-5.2# cat /etc/innodisk/BSP-version')
+      ]
+    });
+  }
+}
+
+</script>
+</body>
+</html>

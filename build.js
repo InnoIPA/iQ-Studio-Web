@@ -19,13 +19,15 @@ for (const f of fs.readdirSync(SHARED).filter(f => f.endsWith('.html'))) {
 
 // The shared nav marks "Docs" as the current page; pages outside the docs say which item is theirs instead.
 const NAV_CURRENT = {
-  'iQ-Studio Home A Datasheet.dc.html': 'Home',
-  'iQ-Studio Get Started.dc.html': 'Get Started',
-  'iQ-Studio Benchmarks.dc.html': 'Benchmarks',
-  'iQ-Studio Architecture.dc.html': 'Architecture',
-  'iQ-Studio In the News.dc.html': 'In the News'
+  'index.html': 'Home',
+  'get-started.html': 'Get Started',
+  'benchmarks.html': 'Benchmarks',
+  'architecture.html': 'Architecture',
+  'in-the-news.html': 'In the News'
 };
+// Links in shared/ are written as  @root/<path from the site root>  and resolved per page depth (docs/sdks/x.html -> ../../).
 function forPage(file, name, text) {
+  text = text.replace(/@root\//g, '../'.repeat(file.split('/').length - 1));
   const cur = NAV_CURRENT[file];
   if (name !== 'nav' || !cur) return text;
   const docs = /<a class="iq-nav__link--current" href="([^"]*)" aria-current="page">Docs<\/a>/;
@@ -34,7 +36,16 @@ function forPage(file, name, text) {
   return text.replace(docs, '<a class="iq-nav__link" href="$1">Docs</a>').replace(item, '<a class="iq-nav__link--current" href="$1" aria-current="page">' + cur + '</a>');
 }
 
-const pages = fs.readdirSync(ROOT).filter(f => /^iQ-Studio .*\.dc\.html$/.test(f));
+// every .html page of the site (paths relative to the root, using /), except tool / support folders
+const SKIP = new Set(['assets', 'shared', 'backup', 'node_modules', '.git']);
+const pages = [];
+(function walk(dir) {
+  for (const e of fs.readdirSync(path.join(ROOT, dir), { withFileTypes: true })) {
+    const rel = dir ? dir + '/' + e.name : e.name;
+    if (e.isDirectory()) { if (!SKIP.has(e.name)) walk(rel); }
+    else if (e.name.endsWith('.html')) pages.push(rel);
+  }
+})('');
 const BLOCK = /([ \t]*)<!-- @shared:([\w-]+) -->\n[\s\S]*?\n[ \t]*<!-- @end:\2 -->/g;
 let stale = 0, changed = 0;
 
@@ -52,7 +63,7 @@ for (const f of pages) {
 // ── iQ-Studio architecture diagram on the home page: regenerate it from iq-family-data.js (the same data the Architecture page reads) ──
 const vm = require('vm');
 const familyWin = {};
-vm.runInNewContext(fs.readFileSync(path.join(ROOT, 'iq-family-data.js'), 'utf8'), { window: familyWin });
+vm.runInNewContext(fs.readFileSync(path.join(ROOT, 'assets/js/iq-family-data.js'), 'utf8'), { window: familyWin });
 
 function familyHtml(F) {
   const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
@@ -101,7 +112,7 @@ function familyHtml(F) {
 
 {
   const FAMILY_BLOCK = /([ \t]*)<!-- @family -->\n[\s\S]*?\n[ \t]*<!-- @end:family -->/;
-  const file = 'iQ-Studio Home A Datasheet.dc.html';
+  const file = 'index.html';
   const src = fs.readFileSync(path.join(ROOT, file), 'utf8');
   if (!FAMILY_BLOCK.test(src)) throw new Error(file + ': missing <!-- @family --> block');
   const out = src.replace(FAMILY_BLOCK, (all, indent) => indent + '<!-- @family -->\n' + familyHtml(familyWin.IQ_FAMILY) + '\n' + indent + '<!-- @end:family -->');
@@ -113,7 +124,7 @@ function familyHtml(F) {
 
 // ── search index: docs-search.js lists every page + its sections; rebuild it from iq-pages.js and each page's TOC ──
 const win = {};
-vm.runInNewContext(fs.readFileSync(path.join(ROOT, 'iq-pages.js'), 'utf8'), { window: win });
+vm.runInNewContext(fs.readFileSync(path.join(ROOT, 'assets/js/iq-pages.js'), 'utf8'), { window: win });
 const INDEX = [];
 for (const g of win.IQ_PAGES.SIDE) {
   for (const [title, file] of g.pages) {
@@ -124,7 +135,7 @@ for (const g of win.IQ_PAGES.SIDE) {
     INDEX.push({ f: file, title, group: g.name, secs: toc.map(t => [t[0], t[1]]) });
   }
 }
-const SEARCH = path.join(ROOT, 'docs-search.js');
+const SEARCH = path.join(ROOT, 'assets/js/docs-search.js');
 const sSrc = fs.readFileSync(SEARCH, 'utf8');
 const sOut = sSrc.replace(/^  var INDEX = .*;$/m, () => '  var INDEX = ' + JSON.stringify(INDEX) + ';');
 if (sOut !== sSrc) {

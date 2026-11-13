@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iQ-Foundry Model Selection Guide · iQ-Studio Docs</title>
+<link rel="icon" type="image/svg+xml" href="../../assets/logo/favicon.svg">
+<meta name="description" content="Choose the iQ-Foundry model precision and runtime that best match your accuracy, speed, and deployment requirements.">
+<script src="../../assets/js/support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/iq-tokens.css">
+<link rel="stylesheet" href="../../assets/css/iq-shell.css">
+<link rel="stylesheet" href="../../assets/css/iq-docs.css">
+<script src="../../assets/js/iq-tokens.js"></script>
+<script src="../../assets/js/iq-theme.js"></script>
+<script src="../../assets/js/iq-a11y.js"></script>
+<script src="../../assets/js/iq-docs.js"></script>
+<script src="../../assets/js/iq-pages.js"></script>
+<script src="../../assets/js/docs-search.js"></script>
+<script src="../../assets/js/image-slot.js"></script>
+<script src="../../assets/js/code-hl.js"></script>
+<script src="../../assets/js/copy-btn.js"></script>
+<style>
+</style>
+</helmet>
+
+<div data-iq-theme="{{ themeName }}" style="--ac:{{ ac }}; --acSoft:{{ acSoft }}; --acBg:{{ acBg }}; transition:--ac .8s ease, --acSoft .8s ease, --acBg .8s ease, background 1s ease, color 1s ease; min-height:100vh; background:{{ bg }}; color:{{ fg }}">
+
+  <!-- @shared:nav -->
+  <div class="iq-navwrap">
+  <div class="iq-nav">
+    <a class="iq-brand" href="../../index.html">
+      <img class="iq-brand__icon iq-brand__icon--dark" src="../../assets/logo/iQ-icon-mono-white.svg" alt="iQ">
+      <img class="iq-brand__icon iq-brand__icon--light" src="../../assets/logo/iQ-icon-mono-ink.svg" alt="iQ">
+      <span class="iq-brand__sep" aria-hidden="true"></span>
+      <span class="iq-brand__word">iQ STUDIO</span>
+    </a>
+    <div class="iq-nav__links">
+      <a class="iq-nav__link" href="../../index.html">Home</a>
+      <a class="iq-nav__link" href="../../get-started.html">Get Started</a>
+      <a class="iq-nav__link--current" href="../../docs/index.html" aria-current="page">Docs</a>
+      <a class="iq-nav__link" href="../../benchmarks.html">Benchmarks</a>
+      <a class="iq-nav__link" href="../../architecture.html">Architecture</a>
+      <a class="iq-nav__link" href="../../in-the-news.html">In the News</a>
+    </div>
+    <div class="iq-nav__actions">
+    <span class="gs-search iq-search">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+      <span class="gs-searchlbl">Search…</span>
+      <span class="iq-search__kbd">⌘K</span>
+    </span>
+    <span class="iq-pal">
+      <span class="iq-roundbtn" onClick="{{ togglePal }}" aria-label="Accent colour">
+        <span class="iq-pal__swatch"></span>
+      </span>
+      <sc-if value="{{ palOpen }}" hint-placeholder-val="{{ false }}">
+        <div class="iq-pal__menu">
+          <span class="iq-pal__title">Primary colour</span>
+          <sc-for list="{{ pals }}" as="p" hint-placeholder-count="5">
+            <span class="iq-pal__item" onClick="{{ p.pick }}">
+              <span class="iq-pal__dot" style="background:{{ p.sw }}"></span>{{ p.name }}
+              <span class="iq-pal__tick" style="opacity:{{ p.tickOp }}">✓</span>
+            </span>
+          </sc-for>
+        </div>
+      </sc-if>
+    </span>
+    
+    <span class="iq-roundbtn iq-roundbtn--menu" onClick="{{ navToggle }}" aria-label="Menu">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"></path></svg>
+    </span>
+    <span class="iq-roundbtn" onClick="{{ toggleTheme }}" aria-label="Toggle theme">
+      <sc-if value="{{ isDark }}" hint-placeholder-val="{{ true }}">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg>
+      </sc-if>
+      <sc-if value="{{ isLight }}" hint-placeholder-val="{{ false }}">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+      </sc-if>
+    </span>
+    <a href="https://github.com/InnoIPA/iQ-Studio" aria-label="GitHub" class="iq-roundbtn iq-roundbtn--github">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M12 1.5A10.5 10.5 0 0 0 8.7 22c.5.1.7-.2.7-.5v-1.7c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.7-1.4-2.3-.3-4.8-1.2-4.8-5.2 0-1.1.4-2.1 1-2.8-.1-.3-.5-1.3.1-2.7 0 0 .9-.3 2.8 1a9.6 9.6 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .6 1.4.2 2.4.1 2.7.7.7 1 1.7 1 2.8 0 4-2.5 4.9-4.8 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10.5 10.5 0 0 0 12 1.5Z"></path></svg>
+    </a>
+    </div>
+  </div>
+  <sc-if value="{{ navOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="iq-mobscrim" onClick="{{ navClose }}"></div>
+    <div class="iq-mobmenu">
+      <a href="../../index.html">Home</a>
+      <a href="../../get-started.html">Get Started</a>
+      <a href="../../docs/index.html">Docs</a>
+      <a href="../../benchmarks.html">Benchmarks</a>
+      <a href="../../architecture.html">Architecture</a>
+      <a href="../../in-the-news.html">In the News</a>
+      <a href="https://github.com/InnoIPA/iQ-Studio">GitHub ↗</a>
+    </div>
+  </sc-if>
+  </div>
+  <!-- @end:nav -->
+
+  <div class="docs-mobilebar" style="display:none; padding:12px 20px 0">
+    <button onClick="{{ sideToggle }}" style="display:flex; align-items:center; gap:8px; padding:9px 14px; border-radius:9px; border:1px solid {{ line }}; background:{{ panelBg }}; color:{{ fg }}; font:inherit; font-size:13px; font-weight:600; cursor:pointer">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"></path></svg>Docs menu
+    </button>
+  </div>
+  <div onClick="{{ sideClose }}" style="position:fixed; inset:0; z-index:90; background:rgba(4,8,18,.55); backdrop-filter:blur(3px); transition:opacity .25s ease; opacity:{{ scrimOp }}; pointer-events:{{ scrimPe }}"></div>
+  <div class="docs-drawer" style="position:fixed; left:0; top:0; bottom:0; z-index:95; width:min(300px, 84vw); overflow-y:auto; padding:18px 16px 24px; background:{{ bg }}; box-shadow:1px 0 0 {{ line }}, 0 0 60px rgba(0,0,0,.5); transition:transform .3s cubic-bezier(.2,1,.3,1); transform:{{ drawerX }}">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px">
+      <span style="font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; color:{{ fgFaint }}">Docs</span>
+      <button onClick="{{ sideClose }}" aria-label="Close" style="display:flex; padding:6px; border-radius:7px; border:1px solid {{ line }}; background:none; color:{{ fgMuted }}; cursor:pointer"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+    </div>
+    <sc-for list="{{ sideGroups }}" as="g" hint-placeholder-count="6">
+      <div style="display:flex; flex-direction:column; margin-bottom:14px">
+        <span style="padding:0 0 7px; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; color:{{ fgFaint }}">{{ g.name }}</span>
+        <sc-for list="{{ g.pages }}" as="pg" hint-placeholder-count="4">
+          <a href="{{ pg.href }}" style="display:block; padding:8px 10px; border-radius:8px; text-decoration:none; font-size:13.5px; line-height:1.4; background:{{ pg.bg }}; color:{{ pg.fg }}; font-weight:{{ pg.fw }}">{{ pg.name }}</a>
+        </sc-for>
+      </div>
+    </sc-for>
+  </div>
+  <div class="docs-grid" style="display:grid; grid-template-columns:260px minmax(0,1fr); gap:44px; max-width:1560px; margin:0 auto; padding:34px 48px 90px; align-items:start">
+
+    <aside class="docs-side" style="position:sticky; top:100px; max-height:calc(100vh - 130px); overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; scrollbar-width:none; display:flex; flex-direction:column; gap:22px; padding-right:8px; animation:gsRise .6s cubic-bezier(.16,1,.3,1) both">
+      <sc-for list="{{ sideGroups }}" as="g" hint-placeholder-count="6">
+        <div style="display:flex; flex-direction:column">
+          <span style="display:flex; align-items:center; gap:9px; padding:0 0 7px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; transition:color 1s ease; color:{{ fgMuted }}">
+            <span style="display:grid; grid-template-columns:1fr 1fr; gap:1.5px; width:10px; height:10px; flex:none; color:var(--ac)"><span style="background:currentColor; border-radius:1px"></span><span style="background:currentColor; border-radius:1px; opacity:.55"></span><span style="background:currentColor; border-radius:1px; opacity:.55"></span><span style="background:currentColor; border-radius:1px"></span></span>
+            {{ g.name }}
+          </span>
+          <div style="display:flex; flex-direction:column; gap:1px; margin-left:4px; padding-left:0; transition:border-color 1s ease; border-left:1px solid {{ line }}">
+            <sc-for list="{{ g.pages }}" as="pg" hint-placeholder-count="3">
+              <a href="{{ pg.href }}" aria-disabled="{{ pg.soon }}" style="position:relative; display:flex; align-items:center; gap:8px; margin-left:-1px; padding:7px 10px 7px 16px; border-radius:0 7px 7px 0; font-size:13px; font-weight:500; line-height:1.45; opacity:{{ pg.op }}; pointer-events:{{ pg.pe }}; transition:background .25s ease, color .25s ease, border-color 1s ease; background:{{ pg.bg }}; color:{{ pg.fg }}; border-left:2px solid {{ pg.edge }}" style-hover="color:var(--ac)"><span style="position:absolute; left:-4px; top:50%; width:6px; height:6px; margin-top:-3px; border-radius:50%; background:var(--ac); box-shadow:0 0 6px var(--ac); opacity:{{ pg.dotOp }}"></span>{{ pg.name }}<sc-if value="{{ pg.pending }}" hint-placeholder-val="{{ false }}"><span style="flex:none; margin-left:auto; padding:1px 6px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.1em; transition:background 1s ease; background:{{ chipBg }}">soon</span></sc-if></a>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </aside>
+
+    <main style="min-width:0; animation:gsRise .6s cubic-bezier(.16,1,.3,1) .05s both">
+      <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.08em; transition:color 1s ease; color:{{ fgMuted }}">
+        <a href="../index.html">Docs</a><span>/</span><span>Model Deploy</span><span>/</span><span style="transition:color 1s ease; color:{{ fg }}">iQ-Foundry Model Selection Guide</span>
+      </div>
+      <h1 style="margin:22px 0 0; font-size:34px; line-height:1.2; font-weight:700; letter-spacing:-.03em">iQ-Foundry Model Selection Guide</h1>
+      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:18px"><span style="padding:5px 13px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; background:color-mix(in srgb, var(--acBg) 14%, transparent); color:var(--ac)">Model Deploy</span><span style="padding:5px 13px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; background:color-mix(in srgb, var(--acBg) 14%, transparent); color:var(--ac)">iQ-Foundry</span></div>
+      <p style="margin:18px 0 0; font-size:17px; line-height:1.8; transition:color 1s ease; color:{{ fgMuted }}">Choose the model precision and runtime that best match your application's accuracy, speed, and deployment requirements.</p>
+      
+      <h2 id="purpose" style="margin:44px 0 0; font-size:26px; font-weight:600; letter-spacing:-.02em; padding-top:22px; transition:border-color 1s ease; border-top:1px solid {{ line }}">Purpose of This Guide</h2>
+      <p style="margin:14px 0 0; font-size:15.5px; line-height:1.85; transition:color 1s ease; color:{{ fgMuted }}">This iQ-Studio guide helps you choose an <a href="https://github.com/InnoIPA/iQ-Foundry" target="_blank" rel="noopener">iQ-Foundry</a> model based on accuracy, performance, size, memory, precision, runtime, and acceptable accuracy change. The best choice depends on the application, so treat each recommendation as a starting point.</p>
+      
+      <h2 id="supported" style="margin:44px 0 0; font-size:26px; font-weight:600; letter-spacing:-.02em; padding-top:22px; transition:border-color 1s ease; border-top:1px solid {{ line }}">Supported Models and Deployment Choices</h2>
+      <p style="margin:14px 0 0; font-size:15.5px; line-height:1.85; transition:color 1s ease; color:{{ fgMuted }}">iQ-Foundry supports the <b>YOLOv10n</b>, <b>YOLOv11n</b>, and <b>YOLOv26n</b> model variants.</p>
+      <div style="margin-top:18px; overflow-x:auto; border-radius:12px; transition:border-color 1s ease; border:1px solid {{ line }}">
+        <table style="width:100%; border-collapse:collapse; font-size:13.5px">
+          <thead><tr><th style="text-align:left; padding:12px 15px; white-space:nowrap; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; font-weight:400; transition:color 1s ease, background 1s ease, border-color 1s ease; color:{{ fgMuted }}; background:{{ panelBg }}; border-bottom:1px solid {{ line }}">Runtime</th><th style="text-align:center; padding:12px 15px; white-space:nowrap; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; font-weight:400; transition:color 1s ease, background 1s ease, border-color 1s ease; color:{{ fgMuted }}; background:{{ panelBg }}; border-bottom:1px solid {{ line }}">FP32</th><th style="text-align:center; padding:12px 15px; white-space:nowrap; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; font-weight:400; transition:color 1s ease, background 1s ease, border-color 1s ease; color:{{ fgMuted }}; background:{{ panelBg }}; border-bottom:1px solid {{ line }}">INT8</th><th style="text-align:center; padding:12px 15px; white-space:nowrap; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; font-weight:400; transition:color 1s ease, background 1s ease, border-color 1s ease; color:{{ fgMuted }}; background:{{ panelBg }}; border-bottom:1px solid {{ line }}">W8A16</th></tr></thead>
+          <tbody><tr><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; border-bottom:1px solid {{ line }}; font-weight:600;">LiteRT</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:center; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">✓</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:center; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">✓</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:center; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">✗</td></tr>
+            <tr><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; font-weight:600;">ONNX Runtime</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:center; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }};">✓</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:center; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }};">✗</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:center; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }};">✓</td></tr></tbody>
+        </table>
+      </div>
+      <div style="display:flex; gap:12px; margin-top:18px; padding:14px 16px; border-radius:10px; background:color-mix(in srgb, var(--ac) 8%, transparent); border:1px solid color-mix(in srgb, var(--ac) 30%, transparent)"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="var(--ac)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none; margin-top:2px"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-4M12 8h.01"></path></svg><div style="margin:0; font-size:13.5px; line-height:1.75; transition:color 1s ease; color:{{ fgMuted }}"><b>Note:</b> All model conversion, quality checks, and testing are performed using <a href="https://github.com/InnoIPA/iQ-Foundry" target="_blank" rel="noopener">iQ-Foundry</a>.</div></div>
+      
+      <h2 id="precision" style="margin:44px 0 0; font-size:26px; font-weight:600; letter-spacing:-.02em; padding-top:22px; transition:border-color 1s ease; border-top:1px solid {{ line }}">Which Precision Should You Choose?</h2>
+      <figure style="margin:18px 0 0; border-radius:10px; overflow:hidden; transition:border-color 1s ease, background 1s ease; border:1px solid {{ line }}; background:{{ panelBg }}"><img src="https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/tutorials/model-deploy/iqf-model-guide/fig/precision_choices.png" alt="Choose between FP32, W8A16, and INT8" loading="lazy" style="display:block; width:100%"></figure>
+      <div style="display:flex; gap:12px; margin-top:18px; padding:14px 16px; border-radius:10px; background:color-mix(in srgb, var(--ac) 8%, transparent); border:1px solid color-mix(in srgb, var(--ac) 30%, transparent)"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="var(--ac)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none; margin-top:2px"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-4M12 8h.01"></path></svg><div style="margin:0; font-size:13.5px; line-height:1.75; transition:color 1s ease; color:{{ fgMuted }}"><b>Note:</b> The image shows simple starting points. It does not guarantee accuracy, speed, or suitability for an application. Actual results depend on the model and application data.</div></div>
+      <div style="margin-top:18px; overflow-x:auto; border-radius:12px; transition:border-color 1s ease; border:1px solid {{ line }}">
+        <table style="width:100%; border-collapse:collapse; font-size:13.5px">
+          <thead><tr><th style="text-align:left; padding:12px 15px; white-space:nowrap; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; font-weight:400; transition:color 1s ease, background 1s ease, border-color 1s ease; color:{{ fgMuted }}; background:{{ panelBg }}; border-bottom:1px solid {{ line }}">Starting Choice</th><th style="text-align:left; padding:12px 15px; white-space:nowrap; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; font-weight:400; transition:color 1s ease, background 1s ease, border-color 1s ease; color:{{ fgMuted }}; background:{{ panelBg }}; border-bottom:1px solid {{ line }}">Choose It When</th><th style="text-align:left; padding:12px 15px; white-space:nowrap; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; font-weight:400; transition:color 1s ease, background 1s ease, border-color 1s ease; color:{{ fgMuted }}; background:{{ panelBg }}; border-bottom:1px solid {{ line }}">Key Trade-offs</th></tr></thead>
+          <tbody><tr><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; border-bottom:1px solid {{ line }}; font-weight:600;">FP32</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">Accuracy is the main priority, or calibration images are unavailable.</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">Largest model and usually slower; works with LiteRT or ONNX Runtime.</td></tr>
+            <tr><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; border-bottom:1px solid {{ line }}; font-weight:600;">W8A16 + ONNX Runtime</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">You need a balance, or INT8 loses too much accuracy.</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">Smaller than FP32; requires calibration; results depend on the model.</td></tr>
+            <tr><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; font-weight:600;">INT8 + LiteRT</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }};">Speed, size, and power efficiency are the main priorities.</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }};">Smallest option; requires calibration and may reduce accuracy more.</td></tr></tbody>
+        </table>
+      </div>
+      
+      <h2 id="use-cases" style="margin:44px 0 0; font-size:26px; font-weight:600; letter-spacing:-.02em; padding-top:22px; transition:border-color 1s ease; border-top:1px solid {{ line }}">Recommendations by Use Case</h2>
+      <div style="margin-top:18px; overflow-x:auto; border-radius:12px; transition:border-color 1s ease; border:1px solid {{ line }}">
+        <table style="width:100%; border-collapse:collapse; font-size:13.5px">
+          <thead><tr><th style="text-align:left; padding:12px 15px; white-space:nowrap; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; font-weight:400; transition:color 1s ease, background 1s ease, border-color 1s ease; color:{{ fgMuted }}; background:{{ panelBg }}; border-bottom:1px solid {{ line }}">Use Case</th><th style="text-align:left; padding:12px 15px; white-space:nowrap; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; font-weight:400; transition:color 1s ease, background 1s ease, border-color 1s ease; color:{{ fgMuted }}; background:{{ panelBg }}; border-bottom:1px solid {{ line }}">Recommended Choice</th><th style="text-align:left; padding:12px 15px; white-space:nowrap; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; font-weight:400; transition:color 1s ease, background 1s ease, border-color 1s ease; color:{{ fgMuted }}; background:{{ panelBg }}; border-bottom:1px solid {{ line }}">Why</th></tr></thead>
+          <tbody><tr><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; border-bottom:1px solid {{ line }}; font-weight:600;">Medical image analysis</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">FP32 (LiteRT or ONNX Runtime)</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">Accuracy is more important than speed. Start with FP32, then complete strict validation using application-specific data and requirements.</td></tr>
+            <tr><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; border-bottom:1px solid {{ line }}; font-weight:600;">Industrial defect inspection</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">FP32 or W8A16</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">Small defects may be difficult to detect. Use FP32 when accuracy is the priority, or evaluate W8A16 when a smaller model is needed.</td></tr>
+            <tr><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; border-bottom:1px solid {{ line }}; font-weight:600;">Traffic monitoring</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">INT8 + LiteRT</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">Multiple camera streams require fast inference and efficient hardware use. A measured accuracy reduction may be acceptable for the application.</td></tr>
+            <tr><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; border-bottom:1px solid {{ line }}; font-weight:600;">Retail customer counting</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">INT8 + LiteRT</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">Real-time processing, low latency, and low power use are often more important than maximum precision for continuous customer counting.</td></tr>
+            <tr><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; border-bottom:1px solid {{ line }}; font-weight:600;">Smart security camera</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">INT8 + LiteRT</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">Continuous inference benefits from a small, efficient model when the camera has limited power, memory, or storage.</td></tr>
+            <tr><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; border-bottom:1px solid {{ line }}; font-weight:600;">Autonomous mobile robot</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">INT8 or W8A16</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">Fast reactions are important. Start with INT8 for low latency, or evaluate W8A16 when INT8 does not meet the required accuracy.</td></tr>
+            <tr><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; border-bottom:1px solid {{ line }}; font-weight:600;">Warehouse object detection</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">INT8 + LiteRT</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">Continuous video streams require fast detection of boxes, pallets, and workers while using hardware resources efficiently.</td></tr>
+            <tr><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; border-bottom:1px solid {{ line }}; font-weight:600;">Drone-based detection</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">INT8 + LiteRT</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }}; border-bottom:1px solid {{ line }};">Drones have limited power, memory, and cooling capacity. A smaller model helps reduce the resources needed for continuous detection.</td></tr>
+            <tr><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:inherit; font-weight:600;">Quality inspection with similar-looking defects</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }};">W8A16 + ONNX Runtime</td><td style="padding:13px 15px; line-height:1.65; vertical-align:top; text-align:left; transition:border-color 1s ease, color 1s ease; color:{{ fgMuted }};">W8A16 can balance a smaller model with better accuracy retention than full INT8. Confirm the result using images of the target defects.</td></tr></tbody>
+        </table>
+      </div>
+      <div style="display:flex; gap:12px; margin-top:18px; padding:14px 16px; border-radius:10px; background:color-mix(in srgb, var(--ac) 8%, transparent); border:1px solid color-mix(in srgb, var(--ac) 30%, transparent)"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="var(--ac)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none; margin-top:2px"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-4M12 8h.01"></path></svg><div style="margin:0; font-size:13.5px; line-height:1.75; transition:color 1s ease; color:{{ fgMuted }}"><b>Important:</b> These are starting points, not safety or compliance guarantees. Test the final model with the actual camera, environment, dataset, and application requirements.</div></div>
+      <div style="display:flex; gap:12px; margin-top:18px; padding:14px 16px; border-radius:10px; background:color-mix(in srgb, var(--ac) 8%, transparent); border:1px solid color-mix(in srgb, var(--ac) 30%, transparent)"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="var(--ac)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none; margin-top:2px"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-4M12 8h.01"></path></svg><div style="margin:0; font-size:13.5px; line-height:1.75; transition:color 1s ease; color:{{ fgMuted }}"><b>Tip:</b> <b>Faster postprocessing:</b> YOLOv10 and YOLOv26 users can evaluate the O2O output head with the MinMax setting. O2O can reduce NMS work that removes overlapping detections, but its accuracy must be compared with the default O2M head. YOLOv11 uses its default output head, and O2O does not guarantee lower model invocation latency or a faster complete application. See <a href="https://github.com/InnoIPA/iQ-Foundry/blob/main/docs/qc_mode.md" target="_blank" rel="noopener"><code style="font-family:'JetBrains Mono',monospace; font-size:13px; padding:2px 7px; border-radius:5px; transition:background 1s ease; background:{{ chipBg }}; color:var(--ac)">qc_mode.md</code></a> for guidance on choosing output flags and quantization schemes.</div></div>
+      
+      <h2 id="process" style="margin:44px 0 0; font-size:26px; font-weight:600; letter-spacing:-.02em; padding-top:22px; transition:border-color 1s ease; border-top:1px solid {{ line }}">Recommended Selection Process</h2>
+      <ol style="list-style:none; margin:16px 0 0; padding:0; display:flex; flex-direction:column; gap:12px; font-size:15.5px; line-height:1.7; transition:color 1s ease; color:{{ fgMuted }}">
+        <li style="display:flex; gap:12px; align-items:flex-start"><span style="flex:none; width:20px; height:20px; margin-top:1px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; background:color-mix(in srgb, var(--ac) 20%, transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ac) 45%, transparent); color:var(--ac)">1</span><div style="flex:1; min-width:0">Choose the main priority: accuracy, balance, or efficiency.</div></li>
+        <li style="display:flex; gap:12px; align-items:flex-start"><span style="flex:none; width:20px; height:20px; margin-top:1px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; background:color-mix(in srgb, var(--ac) 20%, transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ac) 45%, transparent); color:var(--ac)">2</span><div style="flex:1; min-width:0">Select a compatible runtime and precision.</div></li>
+        <li style="display:flex; gap:12px; align-items:flex-start"><span style="flex:none; width:20px; height:20px; margin-top:1px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; background:color-mix(in srgb, var(--ac) 20%, transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ac) 45%, transparent); color:var(--ac)">3</span><div style="flex:1; min-width:0">Review the <a href="../benchmarks/iq-foundry-models.html">iQ-Foundry Model Benchmark</a>.</div></li>
+        <li style="display:flex; gap:12px; align-items:flex-start"><span style="flex:none; width:20px; height:20px; margin-top:1px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; background:color-mix(in srgb, var(--ac) 20%, transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ac) 45%, transparent); color:var(--ac)">4</span><div style="flex:1; min-width:0">Use <a href="https://github.com/InnoIPA/iQ-Foundry" target="_blank" rel="noopener">iQ-Foundry</a> to test with real application images, then select the smallest, fastest model that meets the required accuracy.</div></li>
+      </ol>
+      
+      <div class="docs-pager" style="display:flex; gap:14px; margin-top:44px; padding-top:22px; transition:border-color 1s ease; border-top:1px solid {{ line }}">
+        <a href="yolo26.html" style="flex:1; display:flex; flex-direction:column; gap:4px; padding:14px 18px; border-radius:12px; text-decoration:none; transition:border-color .3s ease, transform .3s ease; border:1px solid {{ line }}" style-hover="transform:translateY(-2px); border-color:color-mix(in srgb, var(--acSoft) 60%, transparent)">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ac)">← Previous</span>
+          <span style="font-size:14px; font-weight:600; transition:color 1s ease; color:{{ fg }}">Model Deploy: How to Convert, Optimize, and Perform Inference with YOLO26 Models</span>
+        </a>
+        
+      </div>
+    </main>
+
+  <div class="qs-dock" onMouseEnter="{{ dockEnter }}" onMouseLeave="{{ dockLeave }}" onFocus="{{ dockEnter }}" onBlur="{{ dockLeave }}" style="position:fixed; right:24px; top:92px; z-index:60; display:flex; flex-direction:column; gap:10px; width:236px; padding:12px 14px 11px; border-radius:16px; transition:background .25s ease, box-shadow .4s ease, transform .4s cubic-bezier(.2,1,.3,1); background:{{ dockBg }}; backdrop-filter:blur(16px) saturate(1.3); box-shadow:inset 0 1px 0 rgba(255,255,255,.055), 0 0 0 1px {{ line }}, 0 24px 52px -26px rgba(0,0,0,.6); max-height:calc(100vh - 120px)" style-hover="transform:translateY(-3px)">
+    <span style="display:flex; align-items:center; gap:7px; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; transition:color 1s ease; color:{{ fgFaint }}">
+      <span style="width:5px; height:5px; border-radius:50%; background:var(--ac); box-shadow:0 0 7px var(--ac); animation:qsWobble 2.2s ease-in-out infinite"></span>You are here
+      <span style="margin-left:auto; display:flex; align-items:baseline; gap:3px; font-size:10.5px; letter-spacing:.04em; color:var(--ac)"><b style="font-size:12.5px; font-weight:700">{{ railNum }}</b><span style="opacity:.5">/ {{ railTotal }}</span></span>
+    </span>
+    <div class="qs-reelbox" style="position:relative; overflow-x:hidden; overflow-y:{{ dockOv }}; margin:0 -3px; transition:{{ dockTrH }}; height:{{ dockH }}; max-height:calc(100vh - 210px); scrollbar-width:none">
+      <span style="position:absolute; left:0; right:0; top:0; height:36px; border-radius:8px; overflow:hidden; transition:opacity .25s ease; opacity:{{ dockHl }}; background:color-mix(in srgb, var(--ac) 11%, transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ac) 28%, transparent)">
+        <span style="position:absolute; top:0; bottom:0; width:44%; background:linear-gradient(100deg, transparent, color-mix(in srgb, var(--ac) 26%, transparent), transparent); animation:qsSweep 4.6s cubic-bezier(.5,0,.5,1) infinite"></span>
+      </span>
+      <div style="position:relative; transition:{{ dockTrS }}; transform:{{ dockShift }}">
+        <sc-for list="{{ railItems }}" as="ri" hint-placeholder-count="11">
+          <a href="{{ ri.href }}" style="display:flex; align-items:center; gap:9px; height:36px; padding:0 9px; border-radius:8px; text-decoration:none; white-space:nowrap; transition:opacity .42s ease, color .42s ease, filter .42s ease, transform .42s cubic-bezier(.2,1,.3,1), background .25s ease; transition-delay:{{ ri.delay }}; opacity:{{ ri.rowOp }}; color:{{ ri.rowFg }}; filter:{{ ri.rowBlur }}; transform:translateX({{ ri.rowDx }})" style-hover="opacity:1; color:var(--ac); background:color-mix(in srgb, var(--ac) 9%, transparent)">
+            <span style="flex:none; width:17px; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; letter-spacing:.02em; transition:color .4s ease, opacity .4s ease; color:{{ ri.numFg }}; opacity:{{ ri.numOp }}">{{ ri.num }}</span>
+            <span style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; font-size:13.5px; font-weight:{{ ri.rowFw }}; line-height:1.2; letter-spacing:-.005em">{{ ri.name }}</span>
+          </a>
+        </sc-for>
+      </div>
+    </div>
+    <span style="display:flex; gap:8px; align-items:center">
+      <span style="flex:1; height:3px; border-radius:2px; overflow:hidden; transition:background 1s ease; background:{{ line }}"><span style="display:block; height:100%; border-radius:2px; background:var(--ac); box-shadow:0 0 8px color-mix(in srgb, var(--ac) 60%, transparent); transition:width .4s ease; width:{{ railTop }}"></span></span>
+      <span style="margin-left:2px; font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.02em; color:var(--ac)">{{ railPct }}</span>
+    </span>
+  </div>
+  </div>
+
+  <!-- @shared:footer -->
+  <footer class="iq-footer">
+    <span>© 2026 Innodisk Corporation · iQ-Studio</span>
+    <div class="iq-footer__links">
+      <a href="../../index.html">Home</a><a href="../../get-started.html">Get Started</a><a href="../../docs/index.html">Docs</a><a href="../../benchmarks.html">Benchmarks</a><a href="../../architecture.html">Architecture</a><a href="../../in-the-news.html">In the News</a><a href="https://github.com/InnoIPA/iQ-Studio">GitHub</a>
+    </div>
+  </footer>
+  <!-- @end:footer -->
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;'dark' | 'light'&quot;}}">
+const SIDE = IQ_PAGES.SIDE;
+const ACTIVE = 'iQ-Foundry Model Selection Guide';
+
+const FIG = 'https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/tutorials/starting-guides/q911/fig/';
+const TOC = [
+  ['Purpose of This Guide', '#purpose', 0],
+  ['Supported Models and Deployment Choices', '#supported', 0],
+  ['Which Precision Should You Choose?', '#precision', 0],
+  ['Recommendations by Use Case', '#use-cases', 0],
+  ['Recommended Selection Process', '#process', 0]
+];
+
+class Component extends DCLogic {
+  state = { theme: IQ_THEME.saved.theme, pal: IQ_THEME.saved.pal, palOpen: false, prog: 0, activeSec: TOC.length ? TOC[0][1] : null, sideOpen: false, navOpen: false };
+
+  componentDidMount() { IQ_DOCS.mount(this, TOC); }
+  componentWillUnmount() { IQ_DOCS.unmount(this); }
+
+  renderVals() {
+    const name = this.state.theme || this.props.theme || 'dark';
+    const { t, pal } = IQ_THEME.resolve(name, this.state.pal);
+    const fig = (file, cap) => ({ src: FIG + file, cap });
+    const block = (id, fname, code) => ({
+      fname, code,
+      copy: IQ_COPY.make(code)
+    });
+    return Object.assign({}, t, {
+      ...IQ_DOCS.vals(this, { TOC, ACTIVE, SIDE, t, name, pal }),
+      cb1: { fname: 'host', code: '$ git clone https://github.com/InnoIPA/iQ-Foundry.git\n$ cd iQ-Foundry\n$ source setup.sh', copy: IQ_COPY.make('git clone https://github.com/InnoIPA/iQ-Foundry.git\ncd iQ-Foundry\nsource setup.sh') },
+      cb2: { fname: 'host', code: '$ qai-hub configure --api_token YOUR_API_TOKEN', copy: IQ_COPY.make('qai-hub configure --api_token YOUR_API_TOKEN') },
+      cb3: { fname: 'host', code: '$ python3 cli.py --type yolov26 --configure qc', copy: IQ_COPY.make('python3 cli.py --type yolov26 --configure qc') },
+      cb4: { fname: 'host', code: '$ python3 cli.py --type yolov26 --mode qc', copy: IQ_COPY.make('python3 cli.py --type yolov26 --mode qc') },
+      cb5: { fname: 'host', code: '$ python3 cli.py --type yolov26 --configure mAP', copy: IQ_COPY.make('python3 cli.py --type yolov26 --configure mAP') },
+      cb6: { fname: 'host', code: '$ python3 cli.py --type yolov26 --mode mAP', copy: IQ_COPY.make('python3 cli.py --type yolov26 --mode mAP') },
+      cb7: { fname: 'host', code: '$ python3 cli.py --type yolov26 --mode mAP --max-images 5', copy: IQ_COPY.make('python3 cli.py --type yolov26 --mode mAP --max-images 5') },
+      cb8: { fname: 'host', code: '$ python3 cli.py --type yolov26 --configure test', copy: IQ_COPY.make('python3 cli.py --type yolov26 --configure test') },
+      cb9: { fname: 'host', code: '$ python3 cli.py --type yolov26 --mode test', copy: IQ_COPY.make('python3 cli.py --type yolov26 --mode test') }
+    });
+  }
+}
+
+</script>
+</body>
+</html>
