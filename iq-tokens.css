@@ -1,0 +1,40 @@
+/* iQ-Studio shared design tokens — the single CSS source.
+   Colours live HERE. Pages reference var(--core-*) / var(--ac*) inline;
+   dark/light is switched by the data-iq-theme attribute on the page root. */
+
+[data-iq-theme="dark"] {
+  --core-fg: #eef3ff;
+  --core-fg-muted: rgba(190, 203, 226, .7);
+  --core-line: rgba(255, 255, 255, .12);
+  --core-menu-bg: #0e1428;
+  --core-nav-bg: rgba(14, 20, 42, .62);
+  --core-nav-pill: rgba(255, 255, 255, .1);
+  --core-nav-pill-hover: rgba(255, 255, 255, .18);
+  --core-copied: #4ade80;
+  --core-bg: #080a12;
+  --core-panel-bg: rgba(255, 255, 255, .03);
+  --core-chip-bg: color-mix(in srgb, var(--ac) 12%, transparent);
+}
+
+[data-iq-theme="light"] {
+  --core-fg: #0d1220;
+  --core-fg-muted: rgba(45, 56, 80, .72);
+  --core-line: rgba(16, 26, 50, .13);
+  --core-menu-bg: #ffffff;
+  --core-nav-bg: rgba(255, 255, 255, .72);
+  --core-nav-pill: rgba(16, 26, 50, .07);
+  --core-nav-pill-hover: rgba(16, 26, 50, .13);
+  --core-copied: #16a34a;
+  --core-bg: #ffffff;
+  --core-panel-bg: rgba(16, 26, 50, .03);
+  --core-chip-bg: color-mix(in srgb, var(--acBg) 10%, transparent);
+}
+
+/* Shared copy button (logic: copy-btn.js). Label text lives here so every page stays in sync. */
+.iq-copy { margin-left:auto; display:flex; align-items:center; gap:6px; padding:3px 10px; border-radius:6px; cursor:pointer; border:1px solid var(--core-line); transition:border-color 1s ease, color .2s ease; }
+.iq-copy::after { content:"Copy"; }
+.iq-copy:hover { color:var(--ac); border-color:var(--ac); }
+.iq-copy.is-copied, .iq-copy.is-copied:hover { color:var(--core-copied); border-color:var(--core-copied); transition:border-color .2s ease, color .2s ease; }
+.iq-copy.is-copied::after { content:"Copied!"; }
+.iq-copy.is-failed, .iq-copy.is-failed:hover { color:#ff7a7a; border-color:#ff7a7a; transition:border-color .2s ease, color .2s ease; }
+.iq-copy.is-failed::after { content:"Copy failed"; }

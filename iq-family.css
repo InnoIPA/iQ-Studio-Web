@@ -1,0 +1,131 @@
+/* iQ-Studio architecture diagram: layered blocks (home page, section 04).
+   Colours come from iq-tokens.css (--core-*) and the page's --ac / --acSoft.
+   Qualcomm-provided items use their own purple, defined per theme below. */
+
+[data-iq-theme="dark"]  .fam { --qc: #a98bff; --qc-bg: rgba(169, 139, 255, .12) }
+[data-iq-theme="light"] .fam { --qc: #6a3fd1; --qc-bg: rgba(106, 63, 209, .07) }
+
+.fam { --lbl: 128px; position: relative; display: flex; flex-direction: column; font-family: 'JetBrains Mono', monospace; color: var(--core-fg) }
+
+@keyframes famRise { from { opacity: 0; transform: translateY(26px) } to { opacity: 1; transform: translateY(0) } }
+@keyframes famFlow { to { background-position: 0 6px } }
+@keyframes famSheen { 0%, 55% { transform: translateX(-130%) } 100% { transform: translateX(130%) } }
+
+/* legend: top-right of the diagram */
+.fam-key { position: absolute; top: -46px; right: 0; display: flex; gap: 18px; font-size: 11px; color: var(--core-fg-muted) }
+.fam-key span { display: inline-flex; align-items: center; gap: 8px }
+.fam-key i { width: 22px; height: 12px; border-radius: 2px; border: 1px solid var(--core-line); background: var(--core-panel-bg) }
+.fam-key i.plan { border: 1px dashed var(--core-fg-muted); background: transparent }
+.fam-key i.ext { border-color: var(--qc); background: var(--qc-bg) }
+
+/* switch: light up what Innodisk built, push Qualcomm-provided parts back (pure CSS, no script) */
+.fam-switch { position: relative; display: inline-flex; align-items: center; gap: 9px; margin-right: 10px; cursor: pointer; color: var(--core-fg) }
+.fam-switch input { position: absolute; opacity: 0; width: 0; height: 0 }
+.fam-sw { position: relative; width: 30px; height: 16px; border-radius: 999px; border: 1px solid var(--core-fg-muted); transition: background .3s ease, border-color .3s ease }
+.fam-sw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 10px; height: 10px; border-radius: 50%; background: var(--core-fg-muted); transition: transform .3s cubic-bezier(.2,1,.3,1), background .3s ease }
+.fam-switch input:checked + .fam-sw { background: color-mix(in srgb, var(--ac) 30%, transparent); border-color: var(--ac) }
+.fam-switch input:checked + .fam-sw::after { transform: translateX(14px); background: var(--ac); box-shadow: 0 0 8px var(--ac) }
+.fam-switch input:focus-visible + .fam-sw { outline: 2px solid var(--ac); outline-offset: 2px }
+.fam-blk.ext, .fam-band { transition: opacity .35s ease, filter .35s ease }
+.fam:has(.fam-switch input:checked) .fam-blk.ext, .fam:has(.fam-switch input:checked) .fam-band { opacity: .3; filter: saturate(.4) }
+.fam:has(.fam-switch input:checked) .fam-blk:not(.ext) { border-color: var(--ac); box-shadow: 0 0 0 1px color-mix(in srgb, var(--ac) 35%, transparent), 0 0 26px color-mix(in srgb, var(--ac) 22%, transparent) }
+.fam:has(.fam-switch input:checked) .fam-blk:not(.ext) .fam-tile:not(.plan) { border-color: color-mix(in srgb, var(--ac) 55%, transparent); background: color-mix(in srgb, var(--ac) 9%, transparent) }
+.fam:has(.fam-switch input:checked) .fam-blk:not(.ext) .fam-tile.plan { border-color: color-mix(in srgb, var(--ac) 60%, transparent) }
+
+/* rows. The gap between rows is the row's own bottom padding, so hover never falls into a dead zone. */
+.fam-row { position: relative; display: grid; grid-template-columns: var(--lbl) minmax(0, 1fr); gap: 20px; align-items: stretch; padding-bottom: 8px; transition: opacity .3s ease }
+.fam-row:last-child { padding-bottom: 0 }
+@media (hover: hover) {
+  .fam:has(.fam-row:hover) .fam-row:not(:hover) { opacity: .42 }
+}
+
+/* spine: a node per layer, joined by a line; dashed "runs on" flow between layers */
+.fam-row::before { content: ""; position: absolute; left: 3px; top: -8px; bottom: 0; border-left: 1px solid var(--core-line) }
+.fam-row:first-child::before { top: 15px }
+.fam-row:last-child::before { bottom: auto; height: 23px }
+.fam-row:not(:first-child)::after { content: ""; position: absolute; left: calc(var(--lbl) + 20px + 32px); top: -8px; width: 1px; height: 8px; background: repeating-linear-gradient(to bottom, var(--ac) 0 3px, transparent 3px 6px); background-size: 1px 6px; animation: famFlow 1s linear infinite }
+.fam-lbl { position: relative; padding: 11px 0 0 22px; font-size: 10px; line-height: 1.5; letter-spacing: .18em; text-transform: uppercase; color: var(--core-fg-muted) }
+.fam-lbl::before { content: ""; position: absolute; left: 0; top: 12px; width: 7px; height: 7px; border-radius: 50%; background: var(--ac); box-shadow: 0 0 8px var(--ac) }
+
+/* blocks */
+.fam-body { display: flex; flex-direction: column; gap: 8px; min-width: 0 }
+.fam-line { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0 }
+.fam-blk { flex: 1 1 0; min-width: 0; box-sizing: border-box; padding: 9px 14px 10px; border: 1px solid var(--core-fg-muted); border-radius: 4px; background: var(--core-panel-bg); transition: border-color .3s ease, box-shadow .3s ease }
+.fam-blk:not(.entry):not(.plan):not(.ext):hover { border-color: var(--ac) }
+.fam-blk.ext { border-color: var(--qc); background: var(--qc-bg) }
+.fam-blk.plan { border: 1px dashed var(--core-fg-muted); background: transparent }
+.fam-blk.entry { position: relative; overflow: hidden; border: 1.5px solid var(--ac); background: linear-gradient(135deg, color-mix(in srgb, var(--ac) 13%, transparent), var(--core-panel-bg) 62%); box-shadow: 0 10px 40px color-mix(in srgb, var(--ac) 16%, transparent) }
+.fam-blk.entry::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(105deg, transparent 42%, color-mix(in srgb, var(--acSoft) 16%, transparent) 50%, transparent 58%); animation: famSheen 7s ease-in-out infinite }
+.fam-hd { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px }
+.fam-ttl { display: inline-block; font-family: 'Manrope', system-ui, sans-serif; font-size: 17px; font-weight: 700; letter-spacing: -.015em; color: var(--core-fg) }
+.fam-blk.entry .fam-ttl { color: var(--ac) }
+.fam-blk.plan .fam-ttl { color: var(--core-fg-muted); font-weight: 600 }
+.fam-blk.plan .fam-ttl::after { content: "· soon"; margin-left: 8px; font: 500 10.5px 'JetBrains Mono', monospace; letter-spacing: .06em; opacity: .75 }
+a.fam-ttl:hover { color: var(--ac) }
+a.fam-ttl::after { content: "→"; margin-left: 7px; font-size: 13px; opacity: .5 }
+a.fam-ttl[target]::after { content: "↗" }
+.fam-hd > div:first-child { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 16px; min-width: 0 }
+.fam-dsc { margin-top: 0; font-size: 11.5px; line-height: 1.6; color: var(--core-fg-muted) }
+.fam-tags { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end }
+.fam-tag { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; color: var(--core-fg-muted) }
+
+/* groups of tiles inside a block */
+.fam-secs { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 8px }
+.fam-sec { display: flex; align-items: center; gap: 12px; min-width: 0; max-width: 100% }
+.fam-grp { flex: none; white-space: nowrap; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--core-fg-muted) }
+
+/* tiles: links get an arrow and lift on hover; plain tiles are flat; planned tiles are dashed and say so */
+.fam-tiles { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0 }
+.fam-tile { display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; min-height: 26px; padding: 3px 10px; border: 1px solid var(--core-line); border-radius: 4px; background: var(--core-panel-bg); font-size: 11.5px; letter-spacing: .02em; color: var(--core-fg); text-align: center; transition: border-color .25s ease, color .25s ease, transform .25s ease, box-shadow .25s ease }
+span.fam-tile:not(.plan):not(.ext) { border-color: transparent }
+.fam-tile.ext { border-color: var(--qc); background: var(--qc-bg) }
+.fam-tile.plan { border-style: dashed; border-color: var(--core-fg-muted); background: transparent; color: var(--core-fg-muted) }
+.fam-tile.plan::after { content: "· soon"; margin-left: 7px; font-size: 10px; letter-spacing: .04em; opacity: .75 }
+.fam-blk.plan .fam-tile.plan::after { content: none }
+a.fam-tile:hover { border-color: var(--ac); color: var(--ac); transform: translateY(-1px); box-shadow: 0 6px 16px color-mix(in srgb, var(--ac) 22%, transparent) }
+a.fam-tile::after { content: "→"; margin-left: 8px; opacity: .45; transition: transform .25s ease, opacity .25s ease }
+a.fam-tile:hover::after { opacity: 1; transform: translateX(2px) }
+a.fam-tile[target]::after { content: "↗" }
+.fam-tile.live::before { content: ""; width: 6px; height: 6px; margin-right: 9px; border-radius: 50%; background: #3ddc97; box-shadow: 0 0 6px #3ddc97 }
+
+/* Qualcomm Linux: a band across the bottom of the operating-system layer */
+.fam-band { box-sizing: border-box; min-height: 28px; display: flex; align-items: center; justify-content: center; padding: 6px 12px; border: 1px solid var(--qc); border-radius: 4px; background: var(--qc-bg); color: var(--qc); font-size: 12px; letter-spacing: .06em }
+a.fam-band { text-decoration: none; transition: box-shadow .25s ease, transform .25s ease }
+a.fam-band::after { content: "↗"; margin-left: 8px; opacity: .6 }
+a.fam-band:hover { color: var(--qc); box-shadow: 0 6px 16px color-mix(in srgb, var(--qc) 28%, transparent); transform: translateY(-1px) }
+
+/* hardware layer drawn as a chip package with pins */
+.fam-hw { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; padding: 6px }
+.fam-hw::before, .fam-hw::after { content: ""; position: absolute; left: 18px; right: 18px; height: 5px; background: repeating-linear-gradient(90deg, var(--core-fg-muted) 0 2px, transparent 2px 10px); opacity: .55; pointer-events: none }
+.fam-hw::before { top: -6px }
+.fam-hw::after { bottom: -6px }
+.fam-hw .fam-tile { min-height: 28px }
+/* title and tiles on one line (SDKs) */
+.fam-blk.inline { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 28px }
+.fam-blk.inline .fam-secs { margin-top: 0 }
+@media (min-width: 1600px) { .fam-hw { grid-template-columns: repeat(4, minmax(0, 1fr)) } }
+
+/* scroll-in: animate the row's children so the spine and flow lines stay put */
+@supports (animation-timeline: view()) {
+  .fam-rise > .fam-lbl, .fam-rise > .fam-body { animation: famRise linear both; animation-timeline: view(); animation-range: entry 0% entry 55% }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fam-rise > .fam-lbl, .fam-rise > .fam-body, .fam-blk.entry::after, .fam-row::after { animation: none !important }
+}
+
+@media (max-width: 1280px) {
+  .fam { --lbl: 112px }
+  .fam-lbl { letter-spacing: .12em }
+}
+@media (max-width: 1024px) {
+  .fam-key { position: static; justify-content: flex-end; flex-wrap: wrap; margin-bottom: 14px }
+}
+@media (max-width: 760px) {
+  .fam-row { grid-template-columns: 1fr; gap: 8px }
+  .fam-row::before, .fam-row::after { display: none !important }
+  .fam-lbl { padding: 6px 0 0 }
+  .fam-lbl::before { display: none }
+  .fam-line { flex-direction: column }
+  .fam-blk { flex-basis: auto !important }
+  .fam-hw { grid-template-columns: 1fr }
+}

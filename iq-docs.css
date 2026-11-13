@@ -1,0 +1,63 @@
+/* iQ-Studio docs — page chrome styles shared by every docs page (sidebar, TOC dock, responsive layout).
+   Page-specific rules stay in each page's own <style>. */
+@property --ac { syntax: '<color>'; inherits: true; initial-value: #4c92ff; }
+@property --acSoft { syntax: '<color>'; inherits: true; initial-value: #8cc4ff; }
+@property --acBg { syntax: '<color>'; inherits: true; initial-value: #1a6dff; }
+body { margin:0; background:var(--iq-page-bg, #080a12); font-family:"Manrope",system-ui,sans-serif; }
+a { color:var(--ac); text-decoration:none; }
+a:hover { color:var(--acSoft); }
+.docs-toc::-webkit-scrollbar, .docs-side::-webkit-scrollbar { width: 0; height: 0; }
+@keyframes tocSpin { to { transform: rotate(405deg) } }
+@keyframes tocCheer { 0% { transform: rotate(45deg) scale(1) } 45% { transform: rotate(225deg) scale(1.8) } 100% { transform: rotate(405deg) scale(1) } }
+@keyframes tocSpark { 0% { opacity:1; transform: translate(0,0) scale(1) } 100% { opacity:0; transform: translate(var(--tx), var(--ty)) scale(.3) } }
+@keyframes tocPop { 0% { transform: translateX(0) scale(1) } 40% { transform: translateX(4px) scale(1.06) } 100% { transform: translateX(0) scale(1) } }
+@keyframes gsRise { from { opacity:0; transform:translateY(18px) } to { opacity:1; transform:translateY(0) } }
+@keyframes gsSheen { 0% { transform:translateX(-60%) } 100% { transform:translateX(260%) } }
+@media (max-width: 1100px) {
+    .docs-toc { display: none !important; }
+    .docs-grid { grid-template-columns: 260px minmax(0,1fr) !important; }
+  }
+@media (max-width: 880px) {
+    .docs-side { display: none !important; }
+    .docs-grid { grid-template-columns: minmax(0,1fr) !important; }
+    .docs-fig2 { grid-template-columns: 1fr !important; }
+    .docs-pager { flex-direction: column !important; }
+  }
+@keyframes qsWobble { 0%,100% { transform:scale(1) } 50% { transform:scale(1.5) } }
+@keyframes qsSweep { 0% { transform:translateX(-120%) } 55%,100% { transform:translateX(320%) } }
+/* laptop: narrower sidebar, tighter gutters — give the text column the space */
+  @media (max-width: 1500px) { .docs-grid { grid-template-columns:224px minmax(0,1fr) !important; gap:36px !important; padding:30px 32px 80px !important; } }
+@media (max-width: 1200px) { .docs-grid { grid-template-columns:200px minmax(0,1fr) !important; gap:28px !important; padding:26px 24px 70px !important; } }
+@media (max-width: 1500px) { .qs-dock { width:184px !important; padding:10px 11px 9px !important; right:16px !important; top:84px !important; } }
+.docs-grid > main { padding-right:180px; }
+@media (max-width: 1500px) { .docs-grid > main { padding-right:120px; } }
+@media (max-width: 1200px) { .docs-grid > main { padding-right:240px; } }
+@media (max-width: 900px) { .docs-grid > main { padding-right:0; } }
+/* ── tablet ── */
+  @media (max-width: 900px) {
+    .docs-grid { grid-template-columns:minmax(0,1fr) !important; gap:0 !important; padding:22px 20px 64px !important; }
+    .docs-side { display:none !important; }
+    .docs-grid > main { padding-right:0 !important; }
+    .docs-mobilebar { display:block !important; }
+    .qs-dock { display:none !important; }
+    .qs-dock { top:auto !important; bottom:16px !important; right:16px !important; width:min(236px, calc(100vw - 32px)) !important; }
+    main h1 { font-size:clamp(28px, 6vw, 38px) !important; }
+    main table { display:block; overflow-x:auto; }
+    main pre { overflow-x:auto !important; -webkit-overflow-scrolling:touch; }
+  }
+/* ── phone ── */
+  @media (max-width: 600px) {
+    .docs-grid { padding:16px 14px 96px !important; gap:0 !important; }
+    main h1 { font-size:clamp(24px, 7.5vw, 30px) !important; letter-spacing:-.02em !important; }
+    main h2 { font-size:clamp(19px, 5.5vw, 23px) !important; }
+    main img { max-width:100% !important; height:auto !important; }
+    .docs-fig2 { grid-template-columns:1fr !important; }
+    .docs-pager a { width:100% !important; box-sizing:border-box !important; }
+    .qs-dock { left:14px !important; right:14px !important; bottom:14px !important; width:auto !important; }
+  }
+@media (max-width: 900px) { body { overflow-x:clip; } main pre, main .code-block { max-width:100%; } }
+@keyframes tocJellyA { 0% { transform:translateY(-50%) scale(1.8, .4) } 45% { transform:translateY(-50%) scale(.7, 1.35) } 100% { transform:translateY(-50%) scale(1, 1) } }
+@keyframes tocJellyB { 0% { transform:translateY(-50%) scale(1.8, .4) } 45% { transform:translateY(-50%) scale(.7, 1.35) } 100% { transform:translateY(-50%) scale(1, 1) } }
+
+/* phone: long inline code (paths, commands) wraps instead of widening the page */
+@media (max-width: 700px) { main p code, main li code, main td code, main div code { overflow-wrap:anywhere; } }

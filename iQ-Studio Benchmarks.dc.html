@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Benchmarks · iQ-Studio</title>
+<link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg">
+<meta name="description" content="Numbers with their method attached: QCS9075 vs Jetson AGX Orin, the limits of one board, and which model to deploy.">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./iq-tokens.css">
+<link rel="stylesheet" href="./iq-shell.css">
+<link rel="stylesheet" href="./iq-docs.css">
+<script src="./iq-tokens.js"></script>
+<script src="./iq-theme.js"></script>
+<script src="./iq-a11y.js"></script>
+<script src="./iq-docs.js"></script>
+<script src="./docs-search.js"></script>
+<style>
+  .bmd-top { max-width:1160px; margin:0 auto; padding:34px 48px 56px; }
+  .bmd-eyebrow { display:inline-block; padding:5px 13px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; background:color-mix(in srgb, var(--ac) 12%, transparent); color:var(--ac); border:1px solid color-mix(in srgb, var(--ac) 35%, transparent); }
+  .bmd-grad { background:linear-gradient(100deg, var(--ac), var(--acSoft) 55%, var(--ac)); background-size:200% 100%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent; animation:bmdSheen 8s linear infinite; }
+  @keyframes bmdSheen { to { background-position:-200% 0; } }
+  .bmd-ask { margin:40px 0 0; font-size:24px; font-weight:600; letter-spacing:-.02em; }
+  .bmd-askp { margin:8px 0 0; font-size:13.5px; }
+  .bmd-toc { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:12px; margin-top:20px; }
+  .bmd-toc a { display:flex; flex-direction:column; gap:6px; padding:16px 18px; border-radius:14px; text-decoration:none; transition:border-color .3s ease, transform .3s ease; }
+  .bmd-toc a:hover { border-color:var(--ac) !important; transform:translateY(-2px); }
+  .bmd-toc__top { display:flex; align-items:center; justify-content:space-between; }
+  .bmd-toc__ic { color:var(--ac); filter:drop-shadow(0 0 8px color-mix(in srgb, var(--ac) 35%, transparent)); transition:transform .35s cubic-bezier(.2,1,.3,1); }
+  .bmd-toc a:hover .bmd-toc__ic { transform:translateY(-2px) rotate(-6deg); }
+  .bmd-toc__lead { margin-top:4px; font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.04em; color:var(--ac); }
+  .bmd-toc__go { display:flex; align-items:center; gap:6px; margin-top:6px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ac); }
+  .bmd-toc__go span { transition:transform .3s ease; }
+  .bmd-toc a:hover .bmd-toc__go span { transform:translateY(3px); }
+  .bmd-toc__n { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.16em; color:var(--ac); }
+  .bmd-toc__t { font-size:15px; font-weight:650; letter-spacing:-.01em; }
+  .bmd-toc__d { font-size:12.5px; line-height:1.55; }
+  .bmd-sec { display:grid; grid-template-columns:320px minmax(0,1fr); align-items:start; padding-inline:max(0px, calc((100% - 1660px) / 2)); scroll-margin-top:84px; transition:background 1s ease, color 1s ease, border-color 1s ease; }
+  .bmd-rail { align-self:stretch; padding:84px 30px 84px 48px; display:flex; flex-direction:column; gap:13px; }
+  .bmd-label { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em; color:var(--ac); text-transform:none; }
+  .bmd-h2 { margin:0; font-size:26px; line-height:1.25; font-weight:600; letter-spacing:-.025em; }
+  .bmd-rp { margin:0; font-size:13.5px; line-height:1.8; transition:color 1s ease; }
+  .bmd-metrics { display:flex; flex-direction:column; gap:6px; margin-top:12px; }
+  .bmd-metric { padding:11px 14px; border-radius:5px; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; transition:background .3s ease, color .3s ease; }
+  .bmd-content { padding:84px 56px 84px 40px; display:flex; flex-direction:column; min-width:0; }
+  .bmd-bento { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:18px; margin-bottom:52px; }
+  .bmd-card { box-sizing:border-box; display:flex; flex-direction:column; gap:10px; padding:22px; border-radius:18px; transition:background 1s ease, border-color 1s ease, color 1s ease; min-width:0; }
+  .bmd-card--hot { background:linear-gradient(155deg, color-mix(in srgb, var(--ac) 75%, var(--acBg)), var(--acBg) 78%); color:#fff; box-shadow:0 18px 50px color-mix(in srgb, var(--acBg) 30%, transparent); }
+  .bmd-card__t { font-size:22px; font-weight:700; letter-spacing:-.02em; line-height:1.25; }
+  .bmd-card__d { font-size:12.5px; line-height:1.7; transition:color 1s ease; }
+  .bmd-mini { display:flex; align-items:flex-end; gap:10px; height:110px; margin-top:auto; padding:14px 12px 12px; border-radius:14px; }
+  .bmd-cap { font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; }
+  .bmd-power { display:flex; flex-direction:column; gap:8px; margin-top:auto; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.06em; }
+  .bmd-pbar { display:block; height:10px; border-radius:3px; background:rgba(150,170,220,.16); overflow:hidden; }
+  .bmd-pbar i { display:block; height:100%; border-radius:3px; }
+  .bmd-trow { display:grid; grid-template-columns:150px minmax(0,1fr) 120px 120px 90px; gap:18px; align-items:center; }
+  .bmd-thead { padding-bottom:12px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; }
+  .bmd-tbody { padding:20px 0; }
+  .bmd-legend { display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+  .bmd-legend span { display:flex; align-items:center; gap:7px; text-transform:none; letter-spacing:.06em; }
+  .bmd-legend i { display:block; width:16px; height:7px; border-radius:2px; }
+  .bmd-bars2 { display:flex; flex-direction:column; gap:5px; }
+  .bmd-b { display:block; height:10px; border-radius:2px; transition:width .6s cubic-bezier(.2,.9,.25,1); }
+  .bmd-mono { font-family:'JetBrains Mono',monospace; font-size:12.5px; }
+  .bmd-rowlink { display:block; font-size:14.5px; font-weight:650; text-decoration:none; color:inherit; }
+  .bmd-rowlink:hover { color:var(--ac); }
+  .bmd-sub { display:block; margin-top:4px; font-size:12px; line-height:1.5; }
+  .bmd-method { display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px; padding-top:18px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; transition:color 1s ease; }
+  .bmd-tiles { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:14px; }
+  .bmd-tiles--3 { grid-template-columns:repeat(3, minmax(0,1fr)); }
+  .bmd-tile { padding:22px 22px 20px; border-radius:16px; }
+  .bmd-tilen { font-size:48px; line-height:1; font-weight:750; letter-spacing:-.04em; color:var(--ac); }
+  .bmd-tilet { margin-top:8px; font-size:20px; font-weight:700; letter-spacing:-.02em; }
+  .bmd-tilel { margin-top:8px; font-size:13px; line-height:1.6; }
+  .bmd-q { font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.16em; color:var(--ac); }
+  .bmd-reports { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:12px; }
+  .bmd-reports a { display:flex; flex-direction:column; gap:4px; padding:14px 18px; border-radius:14px; font-size:14.5px; font-weight:650; text-decoration:none; transition:border-color .3s ease, transform .3s ease; }
+  .bmd-reports a span + span { font-size:12.5px; font-weight:400; }
+  .bmd-reports a:hover { border-color:var(--ac) !important; transform:translateY(-2px); }
+  @media (max-width: 1100px) {
+    .bmd-bento { grid-template-columns:repeat(2, minmax(0,1fr)); }
+    .bmd-toc { grid-template-columns:repeat(2, minmax(0,1fr)); }
+  }
+  @media (max-width: 900px) {
+    .bmd-sec { grid-template-columns:1fr; }
+    .bmd-rail { padding:44px 24px 8px; border-right:0 !important; }
+    .bmd-content { padding:24px 24px 52px; }
+    .bmd-metrics { flex-direction:row; flex-wrap:wrap; }
+    .bmd-tiles, .bmd-tiles--3 { grid-template-columns:repeat(2, minmax(0,1fr)); }
+  }
+  @media (max-width: 700px) {
+    .bmd-top { padding:24px 18px 40px; }
+    .bmd-rail { padding:36px 18px 4px; }
+    .bmd-content { padding:20px 18px 44px; }
+    .bmd-bento { grid-template-columns:1fr; gap:14px; margin-bottom:36px; }
+    .bmd-toc { grid-template-columns:1fr; }
+    .bmd-thead { display:none; }
+    .bmd-trow { grid-template-columns:minmax(0,1fr) auto auto; gap:6px 12px; }
+    .bmd-trow > :nth-child(2) { grid-column:1 / -1; grid-row:2; }
+    .bmd-trow > :nth-child(1) { grid-column:1; grid-row:1; }
+    .bmd-trow > :nth-child(3) { grid-column:2; grid-row:1; }
+    .bmd-trow > :nth-child(4) { display:none; }
+    .bmd-trow > :nth-child(5) { grid-column:3; grid-row:1; }
+    .bmd-tbody { padding:16px 0; }
+    .bmd-tiles, .bmd-tiles--3 { grid-template-columns:1fr; }
+    .bmd-tiles:not(.bmd-tiles--3) { grid-template-columns:repeat(2, minmax(0,1fr)); }
+  }
+  .bmd-facts { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); border-radius:16px; overflow:hidden; margin-bottom:22px; }
+  .bmd-fact { padding:20px 22px; min-width:0; }
+  .bmd-fact:last-child { border-right:0 !important; }
+  .bmd-fact__n { font-size:36px; line-height:1.05; font-weight:750; letter-spacing:-.035em; }
+  .bmd-fact__l { margin-top:8px; font-size:12.5px; line-height:1.5; }
+  .bmd-chart { padding:20px 24px 16px; border-radius:16px; }
+  .bmd-chart__head { display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px 20px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; }
+  .bmd-plot { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:26px; margin-top:20px; }
+  .bmd-grp { display:flex; flex-direction:column; min-width:0; }
+  .bmd-delta { text-align:center; font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; height:22px; }
+  .bmd-pair { display:flex; align-items:flex-end; justify-content:center; gap:10px; height:250px; padding-top:30px; box-sizing:border-box; }
+  .bmd-col { position:relative; flex:1 1 0; max-width:64px; height:100%; }
+  .bmd-bar { position:absolute; left:0; right:0; bottom:0; border-radius:5px 5px 0 0; transition:height .6s cubic-bezier(.2,.9,.25,1); }
+  .bmd-bar em { position:absolute; left:50%; bottom:100%; transform:translateX(-50%); padding-bottom:5px; font-style:normal; font-family:'JetBrains Mono',monospace; font-size:11.5px; white-space:nowrap; }
+  .bmd-grp__l { margin-top:10px; text-align:center; font-family:'JetBrains Mono',monospace; font-size:12px; }
+  .bmd-rowname { display:block; font-size:14.5px; font-weight:650; }
+  .bmd-ftable { border-radius:14px; overflow:hidden; }
+  .bmd-frow { display:grid; grid-template-columns:1.1fr .8fr .9fr .9fr .9fr .8fr; gap:12px; padding:14px 18px; align-items:center; }
+  .bmd-frow:last-child { border-bottom:0 !important; }
+  .bmd-fhead { font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; }
+  @media (max-width: 1100px) {
+    .bmd-facts { grid-template-columns:repeat(2, minmax(0,1fr)); }
+    .bmd-fact:nth-child(2) { border-right:0 !important; }
+    .bmd-fact:nth-child(-n+2) { border-bottom:1px solid var(--core-line, rgba(150,170,220,.2)); }
+  }
+  @media (max-width: 700px) {
+    .bmd-chart { padding:16px 12px 12px; }
+    .bmd-plot { gap:8px; }
+    .bmd-pair { height:210px; gap:4px; }
+    .bmd-bar em { font-size:9.5px; }
+    .bmd-delta { font-size:11px; }
+    .bmd-fact { padding:16px 14px; }
+    .bmd-fact__n { font-size:28px; }
+    .bmd-frow { grid-template-columns:1fr 1fr 1fr; gap:6px 10px; padding:12px 14px; }
+    .bmd-fhead span:nth-child(3), .bmd-frow > :nth-child(3) { display:none; }
+  }
+
+  .bmd-take { margin:20px 0 0; max-width:none; font-size:19px; line-height:1.6; font-weight:600; letter-spacing:-.01em; transition:color 1s ease; }
+  .bmd-facts { grid-template-columns:repeat(2, minmax(0,1fr)) !important; }
+  .bmd-ltable { margin-top:22px; border-radius:14px; overflow:hidden; }
+  .bmd-lrow { display:grid; grid-template-columns:1fr 1fr 1fr 1.3fr 1fr 1fr; gap:12px; padding:13px 18px; align-items:center; }
+  .bmd-lrow:last-child { border-bottom:0 !important; }
+  .bmd-fcharts { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; }
+  .bmd-fchart { padding:18px 18px 14px; border-radius:16px; min-width:0; }
+  .bmd-fchart__t { font-size:15px; font-weight:700; letter-spacing:-.01em; }
+  .bmd-fchart__s { margin-top:4px; margin-bottom:12px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.06em; }
+  .bmd-fm { padding:9px 0; }
+  .bmd-fm__n { font-family:'JetBrains Mono',monospace; font-size:11px; margin-bottom:5px; }
+  .bmd-fb { display:grid; grid-template-columns:34px minmax(0,1fr) auto; align-items:center; gap:8px; margin-top:4px; font-size:11.5px; }
+  .bmd-fb__k { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em; }
+  .bmd-fb__track { display:block; height:8px; border-radius:2px; background:rgba(150,170,220,.12); overflow:hidden; }
+  .bmd-fb__track i { display:block; height:100%; border-radius:2px; transition:width .6s cubic-bezier(.2,.9,.25,1); }
+  .bmd-foot { padding-inline:max(0px, calc((100% - 1660px) / 2)); }
+  .bmd-foot__in { display:flex; flex-wrap:wrap; align-items:center; gap:10px; max-width:1160px; margin:0 auto; padding:34px 48px 48px; }
+  .bmd-foot__t { margin-right:6px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; }
+  .bmd-foot__in > a { padding:8px 16px; border-radius:999px; font-size:13px; font-weight:600; text-decoration:none; transition:border-color .25s ease, color .25s ease; }
+  .bmd-foot__in > a:hover { border-color:var(--ac) !important; color:var(--ac) !important; }
+  @media (max-width: 900px) {
+    .bmd-fcharts { grid-template-columns:1fr; }
+  }
+  @media (max-width: 700px) {
+    .bmd-take { font-size:16.5px; }
+    .bmd-foot__in { padding:28px 18px 40px; }
+    .bmd-lrow { grid-template-columns:repeat(3, minmax(0,1fr)); gap:4px 10px; padding:11px 14px; }
+    .bmd-lrow > :nth-child(3), .bmd-lrow > :nth-child(6) { display:none; }
+  }
+  .bmd-method { align-items:center; }
+  .bmd-method { padding-top:22px; }
+  .bmd-method { flex-direction:column; align-items:flex-start; gap:14px; padding-top:20px; }
+
+  /* chart refinements */
+  .bmd-method .iq-btn { font-family:'Manrope',system-ui,sans-serif; letter-spacing:0; text-transform:none; }
+  .bmd-facts .bmd-fact { padding:16px 22px; }
+  .bmd-fact__n { font-size:30px; }
+  .bmd-chart { padding:22px 26px 14px; }
+  .bmd-plot { margin-top:26px; gap:36px; }
+  .bmd-delta { width:fit-content; margin:0 auto 14px; height:auto; padding:3px 11px; border-radius:999px; font-size:12px; background:color-mix(in srgb, currentColor 13%, transparent); }
+  .bmd-pair { height:210px; padding-top:0; gap:8px; position:relative; background-image:linear-gradient(to bottom, rgba(150,170,220,.13) 1px, transparent 1px); background-size:100% 25%; background-repeat:repeat-y; }
+  .bmd-col { max-width:46px; }
+  .bmd-bar { border-radius:6px 6px 0 0; }
+  .bmd-bar em { font-size:12px; padding-bottom:6px; }
+  .bmd-grp__l { margin-top:12px; font-size:12.5px; }
+  @media (max-width: 700px) {
+    .bmd-plot { gap:10px; }
+    .bmd-pair { height:180px; gap:3px; }
+    .bmd-bar em { font-size:10px; }
+  }
+</style>
+</helmet>
+
+<div data-iq-theme="{{ themeName }}" style="--ac:{{ ac }}; --acSoft:{{ acSoft }}; --acBg:{{ acBg }}; transition:--ac .8s ease, --acSoft .8s ease, --acBg .8s ease, background 1s ease, color 1s ease; min-height:100vh; background:{{ bg }}; color:{{ fg }}; font-family:'Manrope',system-ui,sans-serif">
+
+  <!-- @shared:nav -->
+  <div class="iq-navwrap">
+  <div class="iq-nav">
+    <a class="iq-brand" href="iQ-Studio Home A Datasheet.dc.html">
+      <img class="iq-brand__icon iq-brand__icon--dark" src="assets/logo/iQ-icon-mono-white.svg" alt="iQ">
+      <img class="iq-brand__icon iq-brand__icon--light" src="assets/logo/iQ-icon-mono-ink.svg" alt="iQ">
+      <span class="iq-brand__sep" aria-hidden="true"></span>
+      <span class="iq-brand__word">iQ STUDIO</span>
+    </a>
+    <div class="iq-nav__links">
+      <a class="iq-nav__link" href="iQ-Studio Home A Datasheet.dc.html">Home</a>
+      <a class="iq-nav__link" href="iQ-Studio Get Started.dc.html">Get Started</a>
+      <a class="iq-nav__link" href="iQ-Studio Docs.dc.html">Docs</a>
+      <a class="iq-nav__link--current" href="iQ-Studio Benchmarks.dc.html" aria-current="page">Benchmarks</a>
+      <a class="iq-nav__link" href="iQ-Studio Architecture.dc.html">Architecture</a>
+      <a class="iq-nav__link" href="iQ-Studio In the News.dc.html">In the News</a>
+    </div>
+    <div class="iq-nav__actions">
+    <span class="gs-search iq-search">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+      <span class="gs-searchlbl">Search…</span>
+      <span class="iq-search__kbd">⌘K</span>
+    </span>
+    <span class="iq-pal">
+      <span class="iq-roundbtn" onClick="{{ togglePal }}" aria-label="Accent colour">
+        <span class="iq-pal__swatch"></span>
+      </span>
+      <sc-if value="{{ palOpen }}" hint-placeholder-val="{{ false }}">
+        <div class="iq-pal__menu">
+          <span class="iq-pal__title">Primary colour</span>
+          <sc-for list="{{ pals }}" as="p" hint-placeholder-count="5">
+            <span class="iq-pal__item" onClick="{{ p.pick }}">
+              <span class="iq-pal__dot" style="background:{{ p.sw }}"></span>{{ p.name }}
+              <span class="iq-pal__tick" style="opacity:{{ p.tickOp }}">✓</span>
+            </span>
+          </sc-for>
+        </div>
+      </sc-if>
+    </span>
+    
+    <span class="iq-roundbtn iq-roundbtn--menu" onClick="{{ navToggle }}" aria-label="Menu">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"></path></svg>
+    </span>
+    <span class="iq-roundbtn" onClick="{{ toggleTheme }}" aria-label="Toggle theme">
+      <sc-if value="{{ isDark }}" hint-placeholder-val="{{ true }}">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg>
+      </sc-if>
+      <sc-if value="{{ isLight }}" hint-placeholder-val="{{ false }}">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+      </sc-if>
+    </span>
+    <a href="https://github.com/InnoIPA/iQ-Studio" aria-label="GitHub" class="iq-roundbtn iq-roundbtn--github">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M12 1.5A10.5 10.5 0 0 0 8.7 22c.5.1.7-.2.7-.5v-1.7c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.7-1.4-2.3-.3-4.8-1.2-4.8-5.2 0-1.1.4-2.1 1-2.8-.1-.3-.5-1.3.1-2.7 0 0 .9-.3 2.8 1a9.6 9.6 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .6 1.4.2 2.4.1 2.7.7.7 1 1.7 1 2.8 0 4-2.5 4.9-4.8 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10.5 10.5 0 0 0 12 1.5Z"></path></svg>
+    </a>
+    </div>
+  </div>
+  <sc-if value="{{ navOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="iq-mobscrim" onClick="{{ navClose }}"></div>
+    <div class="iq-mobmenu">
+      <a href="iQ-Studio Home A Datasheet.dc.html">Home</a>
+      <a href="iQ-Studio Get Started.dc.html">Get Started</a>
+      <a href="iQ-Studio Docs.dc.html">Docs</a>
+      <a href="iQ-Studio Benchmarks.dc.html">Benchmarks</a>
+      <a href="iQ-Studio Architecture.dc.html">Architecture</a>
+      <a href="iQ-Studio In the News.dc.html">In the News</a>
+      <a href="https://github.com/InnoIPA/iQ-Studio">GitHub ↗</a>
+    </div>
+  </sc-if>
+  </div>
+  <!-- @end:nav -->
+
+  <main class="bmd-main" style="animation:gsRise .6s cubic-bezier(.16,1,.3,1) both">
+
+    <div class="bmd-top">
+      <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.08em; transition:color 1s ease; color:{{ fgMuted }}">
+        <a href="iQ-Studio Home A Datasheet.dc.html">Home</a><span>/</span><span style="transition:color 1s ease; color:{{ fg }}">Benchmarks</span>
+      </div>
+      <header style="max-width:none; margin-top:22px">
+        <span class="bmd-eyebrow">Benchmarks</span>
+        <h1 style="margin:16px 0 0; font-size:clamp(32px, 4.4vw, 50px); line-height:1.1; font-weight:650; letter-spacing:-.03em">Numbers, with their <span class="bmd-grad">method attached.</span></h1>
+        <p class="bmd-take" style="color:{{ fg }}">Reproducible performance measurements across platforms, AI models and <span style="white-space:nowrap">multi-stream</span> workloads.</p>
+        <p style="margin:14px 0 0; max-width:none; font-size:15.5px; line-height:1.7; transition:color 1s ease; color:{{ fgMuted }}">Four chapters, each starting with the answer and the key numbers. Full reports have the scripts and configuration.</p>
+      </header>
+      <h2 class="bmd-ask">What would you like to see?</h2>
+      <p class="bmd-askp" style="color:{{ fgMuted }}">Pick a question and we'll take you straight to the answer.</p>
+      <nav class="bmd-toc" aria-label="Chapters">
+        <sc-for list="{{ toc }}" as="c" hint-placeholder-count="4">
+          <a href="{{ c.anchor }}" style="border:1px solid {{ line }}; background:{{ panelBg }}">
+            <span class="bmd-toc__top"><svg width="26" height="26" viewBox="0 0 24 24" class="bmd-toc__ic" dangerouslySetInnerHTML="{{ c.icon }}"></svg><span class="bmd-toc__n">{{ c.n }}</span></span>
+            <span class="bmd-toc__lead">{{ c.lead }}</span>
+            <span class="bmd-toc__t" style="color:{{ fg }}">{{ c.title }}</span>
+            <span class="bmd-toc__d" style="color:{{ fgMuted }}">{{ c.desc }}</span>
+            <span class="bmd-toc__go">Take me there <span>↓</span></span>
+          </a>
+        </sc-for>
+      </nav>
+    </div>
+
+    <!-- 01: the Home-page test, as one chart -->
+    <section id="compare" class="bmd-sec" style="border-top:1px solid {{ line }}">
+      <div class="bmd-rail" style="border-right:1px solid {{ line }}">
+        <span class="bmd-label">01 / Different platforms</span>
+        <h2 class="bmd-h2">QCS9075 holds 28.4 FPS per channel at 9 channels. Orin falls to 7.6.</h2>
+        <p class="bmd-rp" style="color:{{ fgMuted }}">EXMP-Q911 vs Jetson AGX Orin, same software architecture and same pipeline: iQS-Streampipe, YOLOv10n INT8, 1080p30. Switch the metric to see the other side of the trade-off.</p>
+        <div class="bmd-metrics">
+          <sc-for list="{{ metricTabs }}" as="m" hint-placeholder-count="3">
+            <span class="bmd-metric" onClick="{{ m.pick }}" style="background:{{ m.bg }}; color:{{ m.fg }}">{{ m.name }}</span>
+          </sc-for>
+        </div>
+      </div>
+      <div class="bmd-content">
+        <div class="bmd-facts" style="border:1px solid {{ line }}; background:{{ chipBg }}">
+          <sc-for list="{{ facts }}" as="f" hint-placeholder-count="4">
+            <div class="bmd-fact" style="border-right:1px solid {{ line }}">
+              <div class="bmd-fact__n" style="color:{{ f.color }}">{{ f.n }}</div>
+              <div class="bmd-fact__l" style="color:{{ fgMuted }}">{{ f.l }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div class="bmd-chart" style="border:1px solid {{ line }}; background:{{ chipBg }}">
+          <div class="bmd-chart__head" style="color:{{ fgMuted }}">
+            <span>{{ chartTitle }}</span>
+            <span class="bmd-legend"><span><i style="background:linear-gradient(to right,var(--acBg),var(--acSoft))"></i>EXMP-Q911</span><span><i style="background:rgba(150,162,186,.6)"></i>Jetson AGX Orin</span></span>
+          </div>
+          <div class="bmd-plot">
+            <sc-for list="{{ groups }}" as="g" hint-placeholder-count="4">
+              <div class="bmd-grp">
+                <div class="bmd-delta" style="color:{{ g.deltaColor }}">{{ g.delta }}</div>
+                <div class="bmd-pair" style="border-bottom:1px solid {{ line }}">
+                  <div class="bmd-col"><span class="bmd-bar" style="height:{{ g.usH }}; background:linear-gradient(to top, var(--acBg), var(--ac))"><em style="color:{{ fg }}">{{ g.us }}</em></span></div>
+                  <div class="bmd-col"><span class="bmd-bar" style="height:{{ g.themH }}; background:rgba(150,162,186,.45)"><em style="color:{{ fgMuted }}">{{ g.them }}</em></span></div>
+                </div>
+                <div class="bmd-grp__l" style="color:{{ fgMuted }}">{{ g.label }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div class="bmd-method" style="color:{{ fgMuted }}">
+          <span>{{ methodNote }}</span>
+          <a class="iq-btn" href="{{ streampipeHref }}">Per-percentile data and method in Docs <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02: perception suite, real numbers per model -->
+    <section id="more" class="bmd-sec" style="border-top:1px solid {{ line }}; background:{{ bg2 }}">
+      <div class="bmd-rail" style="border-right:1px solid {{ line }}">
+        <span class="bmd-label">02 / Different models</span>
+        <h2 class="bmd-h2">Across six perception models, Q911 is {{ percRange }} faster.</h2>
+        <p class="bmd-rp" style="color:{{ fgMuted }}">Average FPS on INT8 models: TFLite (QNN HTP) on EXMP-Q911 vs TensorRT on Jetson AGX Orin, 30 W on both. Each row has its own scale.</p>
+      </div>
+      <div class="bmd-content">
+        <div class="bmd-trow bmd-thead" style="color:{{ fgMuted }}; border-bottom:1px solid {{ line }}">
+          <span>Model</span><span class="bmd-legend">Relative<span><i style="background:linear-gradient(to right,var(--acBg),var(--acSoft))"></i>EXMP-Q911</span><span><i style="background:rgba(150,162,186,.6)"></i>Orin</span></span><span>EXMP-Q911</span><span>Orin</span><span>Delta</span>
+        </div>
+        <sc-for list="{{ percRows }}" as="row" hint-placeholder-count="6">
+          <div class="bmd-trow bmd-tbody" style="border-bottom:1px solid {{ line }}">
+            <span><span class="bmd-rowname">{{ row.label }}</span><span class="bmd-sub" style="color:{{ fgMuted }}">{{ row.sub }}</span></span>
+            <span class="bmd-bars2">
+              <span class="bmd-b" style="width:{{ row.usW }}; background:linear-gradient(to right,var(--acBg),var(--acSoft))"></span>
+              <span class="bmd-b" style="width:{{ row.themW }}; background:rgba(150,162,186,.6)"></span>
+            </span>
+            <span class="bmd-mono" style="font-weight:500">{{ row.us }}</span>
+            <span class="bmd-mono" style="color:{{ fgMuted }}">{{ row.them }}</span>
+            <span class="bmd-mono" style="color:#3ddc97">{{ row.delta }}</span>
+          </div>
+        </sc-for>
+        <div class="bmd-method" style="color:{{ fgMuted }}">
+          <span>Average FPS · higher is better · bars scaled per row</span>
+          <a class="iq-btn" href="{{ perceptionHref }}">Hardware, versions and how to run in Docs <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03: limits of one board -->
+    <section id="limits" class="bmd-sec" style="border-top:1px solid {{ line }}">
+      <div class="bmd-rail" style="border-right:1px solid {{ line }}">
+        <span class="bmd-label">03 / Multi-stream</span>
+        <h2 class="bmd-h2">One EXEC-Q911 sustains 16 channels at 720p, and 4 at 4K.</h2>
+        <p class="bmd-rp" style="color:{{ fgMuted }}">Beyond these counts the CPU saturates and per-channel FPS drops. NPU use stayed below about 50%, so the CPU is the bottleneck, not the NPU.</p>
+      </div>
+      <div class="bmd-content">
+        <div class="bmd-tiles">
+          <sc-for list="{{ tiles }}" as="x" hint-placeholder-count="4">
+            <div class="bmd-tile" style="border:1px solid {{ line }}; background:{{ chipBg }}">
+              <div class="bmd-tilen">{{ x.n }}</div>
+              <div class="bmd-tilel" style="color:{{ fgMuted }}">channels at {{ x.res }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div class="bmd-ltable" style="border:1px solid {{ line }}">
+          <div class="bmd-lrow bmd-fhead" style="color:{{ fgMuted }}; border-bottom:1px solid {{ line }}">
+            <span>Resolution</span><span>Sustained</span><span>CPU</span><span>First drop</span><span>FPS / ch</span><span>CPU</span>
+          </div>
+          <sc-for list="{{ limitRows }}" as="r" hint-placeholder-count="4">
+            <div class="bmd-lrow" style="border-bottom:1px solid {{ line }}">
+              <span class="bmd-mono">{{ r.res }}</span><span class="bmd-mono" style="color:var(--ac); font-weight:600">{{ r.ok }}</span><span class="bmd-mono">{{ r.okCpu }}</span><span class="bmd-mono" style="color:{{ fgMuted }}">{{ r.drop }}</span><span class="bmd-mono" style="color:{{ fgMuted }}">{{ r.dropFps }}</span><span class="bmd-mono" style="color:{{ fgMuted }}">{{ r.dropCpu }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div class="bmd-method" style="color:{{ fgMuted }}">
+          <span>EXEC-Q911 · iQS-QVADK v3.0.0 · INT8 YOLO26n · 30 FPS H.264 input · near real-time FPS per channel</span>
+          <a class="iq-btn" href="{{ scalingHref }}">CPU, memory and power per channel count in Docs <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04: choosing a model, real numbers -->
+    <section id="choose" class="bmd-sec" style="border-top:1px solid {{ line }}; background:{{ bg2 }}">
+      <div class="bmd-rail" style="border-right:1px solid {{ line }}">
+        <span class="bmd-label">04 / iQ-Foundry models</span>
+        <h2 class="bmd-h2">INT8 makes the model about 3.5× smaller and 30–42% faster, for an 8–11% mAP drop.</h2>
+        <p class="bmd-rp" style="color:{{ fgMuted }}">iQ-Foundry conversions on EXMP-Q911, LiteRT runtime. The report also covers ONNX Runtime and W8A16.</p>
+      </div>
+      <div class="bmd-content">
+        <div class="bmd-fcharts">
+          <sc-for list="{{ fcharts }}" as="ch" hint-placeholder-count="3">
+            <div class="bmd-fchart" style="border:1px solid {{ line }}; background:{{ chipBg }}">
+              <div class="bmd-fchart__t">{{ ch.title }}</div>
+              <div class="bmd-fchart__s" style="color:{{ fgMuted }}">{{ ch.sub }}</div>
+              <sc-for list="{{ ch.models }}" as="md" hint-placeholder-count="3">
+                <div class="bmd-fm">
+                  <div class="bmd-fm__n" style="color:{{ fgMuted }}">{{ md.name }}</div>
+                  <div class="bmd-fb"><span class="bmd-fb__k" style="color:{{ fgMuted }}">FP32</span><span class="bmd-fb__track"><i style="width:{{ md.aW }}; background:rgba(150,162,186,.6)"></i></span><span class="bmd-mono">{{ md.a }}</span></div>
+                  <div class="bmd-fb"><span class="bmd-fb__k" style="color:var(--ac)">INT8</span><span class="bmd-fb__track"><i style="width:{{ md.bW }}; background:linear-gradient(to right,var(--acBg),var(--acSoft))"></i></span><span class="bmd-mono" style="font-weight:600">{{ md.b }}</span></div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+        <div class="bmd-method" style="color:{{ fgMuted }}">
+          <span>LiteRT · inference time in ms · model size in MB · conversion settings differ by model family</span>
+          <a class="iq-btn" href="{{ foundryHref }}">All runtimes and the selection guide in Docs <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05: every report -->
+    <section id="reports" class="bmd-foot" style="border-top:1px solid {{ line }}">
+      <div class="bmd-foot__in">
+        <span class="bmd-foot__t" style="color:{{ fgMuted }}">Full reports</span>
+        <sc-for list="{{ reports }}" as="p" hint-placeholder-count="4">
+          <a href="{{ p.href }}" style="border:1px solid {{ line }}; background:{{ chipBg }}; color:{{ fg }}">{{ p.name }}</a>
+        </sc-for>
+        <p style="flex-basis:100%; margin:6px 0 0; font-size:13px; line-height:1.7; color:{{ fgMuted }}">Results depend on the model, runtime versions, power mode, and test method, so compare numbers only under the same conditions. To reproduce one, start from <a href="iQ-Studio Get Started.dc.html" style="color:var(--ac)">Get Started</a>.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- @shared:footer -->
+  <footer class="iq-footer">
+    <span>© 2026 Innodisk Corporation · iQ-Studio</span>
+    <div class="iq-footer__links">
+      <a href="iQ-Studio Home A Datasheet.dc.html">Home</a><a href="iQ-Studio Get Started.dc.html">Get Started</a><a href="iQ-Studio Docs.dc.html">Docs</a><a href="iQ-Studio Benchmarks.dc.html">Benchmarks</a><a href="iQ-Studio Architecture.dc.html">Architecture</a><a href="iQ-Studio In the News.dc.html">In the News</a><a href="https://github.com/InnoIPA/iQ-Studio">GitHub</a>
+    </div>
+  </footer>
+  <!-- @end:footer -->
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;'dark' | 'light'&quot;}}">
+const DOC = (n) => 'iQ-Studio Docs ' + n + '.dc.html';
+
+// Same data as the Home page "Measured" section (iQS-Streampipe, 8 cores, 180 s warm-up).
+const METRICS = {
+  fps: {
+    name: 'throughput · fps/ch', unit: ' fps', max: 30, higherBetter: true,
+    title: 'Output average E2E FPS per channel · higher is better',
+    note: 'output average E2E FPS/channel · 8 cores · 180s warm-up · YOLOv10n INT8 · 1080p30',
+    rows: [
+      { label: '1 ch', us: 29.46, them: 29.78 },
+      { label: '4 ch', us: 29.47, them: 21.26 },
+      { label: '9 ch', us: 28.41, them: 7.58 },
+      { label: '16 ch', us: 15.90, them: 4.29 }
+    ]
+  },
+  cpu: {
+    name: 'cpu load · %', unit: '%', max: 100, higherBetter: false,
+    title: 'CPU loading (%) · lower is better',
+    note: 'CPU loading % · 8 cores · 180s warm-up · lower is better',
+    rows: [
+      { label: '1 ch', us: 24.2, them: 25.3 },
+      { label: '4 ch', us: 51.0, them: 72.3 },
+      { label: '9 ch', us: 93.6, them: 91.5 },
+      { label: '16 ch', us: 99.8, them: 91.7 }
+    ]
+  },
+  mem: {
+    name: 'memory · %', unit: '%', max: 25, higherBetter: false,
+    title: 'Average CPU memory (%) · lower is better',
+    note: 'average CPU memory % · 8 cores · lower is better',
+    rows: [
+      { label: '1 ch', us: 6.6, them: 18.8 },
+      { label: '4 ch', us: 8.6, them: 20.3 },
+      { label: '9 ch', us: 12.0, them: 21.9 },
+      { label: '16 ch', us: 17.7, them: 20.1 }
+    ]
+  }
+};
+
+// Perception suite (Perception Model Benchmark): average FPS, INT8, Q911 vs Orin.
+const PERC = [
+  { name: 'ResNet-50',   sub: '224×224',   q: 1206, n: 1053 },
+  { name: 'YOLOv7-tiny', sub: '640×640',   q: 210,  n: 149 },
+  { name: 'YOLOv8n',     sub: '640×640',   q: 478,  n: 215 },
+  { name: 'YOLOv10n',    sub: '640×640',   q: 413,  n: 180 },
+  { name: 'YOLOv11n',    sub: '640×640',   q: 415,  n: 190 },
+  { name: 'U-Net (Seg)', sub: '640×1280',  q: 27,   n: 12 }
+];
+
+// iQ-Foundry Model Benchmark, LiteRT table: [model, precision, reference mAP, converted mAP, delta, ms, MB]
+const FOUNDRY_ROWS = [
+  ['yolov26n', 'FP32', '0.5232', '0.5205', '-0.50%', '7.126', '9.7'],
+  ['yolov11n', 'FP32', '0.5287', '0.5279', '-0.15%', '7.257', '10.5'],
+  ['yolov10n', 'FP32', '0.5258', '0.5273', '+0.28%', '7.803', '9.3'],
+  ['yolov26n', 'INT8', '0.5232', '0.4635', '-11.40%', '4.974', '2.8'],
+  ['yolov11n', 'INT8', '0.5287', '0.4860', '-8.06%', '4.743', '2.9'],
+  ['yolov10n', 'INT8', '0.5258', '0.4770', '-9.28%', '4.504', '2.6']
+];
+
+// Multi-stream Scaling report: highest tested channel count that still holds ~30 FPS, and the next step tested.
+const LIMITS = [
+  { res: '720p', ok: '16 ch', okCpu: '75.3%', drop: 'none up to 16', dropFps: '29.98', dropCpu: '75.3%' },
+  { res: '1080p', ok: '12 ch', okCpu: '84.6%', drop: '16 ch', dropFps: '23.55', dropCpu: '95.2%' },
+  { res: '2K', ok: '9 ch', okCpu: '87.2%', drop: '12 ch', dropFps: '21.75', dropCpu: '97.8%' },
+  { res: '4K', ok: '4 ch', okCpu: '56.4%', drop: '6 ch', dropFps: '23.30', dropCpu: '99.1%' }
+];
+
+const TOC = [
+  { n: '01', lead: 'I want to compare…', title: 'Different platforms', desc: 'Same test, different boards, side by side', anchor: '#compare', icon: { __html: "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"6\" width=\"7\" height=\"12\" rx=\"2\"></rect><rect x=\"14\" y=\"6\" width=\"7\" height=\"12\" rx=\"2\"></rect><path d=\"M10.5 12h3\"></path></g>" } },
+  { n: '02', lead: "I'm curious about…", title: 'Different models', desc: 'Six AI models, one friendly race', anchor: '#more', icon: { __html: "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3 4 7.5v9L12 21l8-4.5v-9L12 3Z\"></path><path d=\"M4 7.5l8 4.5 8-4.5M12 12v9\"></path></g>" } },
+  { n: '03', lead: 'I wonder how many…', title: 'Multi-stream', desc: 'How many streams can one board juggle?', anchor: '#limits', icon: { __html: "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 7h16M4 12h16M4 17h10\"></path><circle cx=\"19\" cy=\"17\" r=\"1.2\"></circle></g>" } },
+  { n: '04', lead: 'Help me choose…', title: 'iQ-Foundry models', desc: 'What INT8 gains, and what it costs', anchor: '#choose', icon: { __html: "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M8 14v6\"></path></g>" } }
+];
+
+const TILES = [{ n: 16, res: '720p' }, { n: 12, res: '1080p' }, { n: 9, res: '2K' }, { n: 4, res: '4K' }];
+
+const REPORTS = [
+  { name: 'iQS-Streampipe Benchmark', note: 'Channel scaling, Q911 vs Orin', href: DOC('Benchmark Multi-stream') },
+  { name: 'Perception Model Benchmark', note: 'Model suite, Q911 vs Orin', href: DOC('Benchmark Perception') },
+  { name: 'Multi-stream Scaling Across Resolutions', note: 'EXEC-Q911, 720p to 4K', href: DOC('Benchmark Multistream Scaling') },
+  { name: 'iQ-Foundry Model Benchmark', note: 'Accuracy, size, latency', href: DOC('Benchmark iQ-Foundry Models') }
+];
+
+class Component extends DCLogic {
+  state = { theme: IQ_THEME.saved.theme, pal: IQ_THEME.saved.pal, palOpen: false, prog: 0, sideOpen: false, navOpen: false, metric: 'fps' };
+
+  componentDidMount() { IQ_THEME.apply(this.state.theme || this.props.theme || 'dark'); }
+
+  renderVals() {
+    const name = this.state.theme || this.props.theme || 'dark';
+    const { t, pal } = IQ_THEME.resolve(name, this.state.pal);
+    const metric = this.state.metric;
+    const M = METRICS[metric];
+    const pc = (v, max) => Math.max(2, Math.min(100, Math.round(v / max * 100)));
+    const ratios = PERC.map((p) => p.q / p.n);
+    return Object.assign({}, t, {
+      ...IQ_DOCS.vals(this, { TOC: [], ACTIVE: '', SIDE: [], t, name, pal }),
+      toc: TOC, tiles: TILES, reports: REPORTS,
+      facts: [
+        { n: '3.7×', l: 'FPS per channel at 9 channels', color: 'var(--ac)' },
+        { n: '30 W', l: 'vs 35 W system power at 9 channels', color: '#3ddc97' }
+      ],
+      limitRows: LIMITS,
+      fcharts: [
+        { title: 'Model size', sub: 'MB · lower is better', idx: 6, unit: ' MB' },
+        { title: 'Inference latency', sub: 'ms · lower is better', idx: 5, unit: ' ms' },
+        { title: 'Accuracy (converted mAP@0.5)', sub: 'higher is better', idx: 3, unit: '' }
+      ].map((ch) => {
+        const val = (r) => parseFloat(r[ch.idx]);
+        const names = ['yolov26n', 'yolov11n', 'yolov10n'];
+        const max = Math.max.apply(null, FOUNDRY_ROWS.map(val));
+        return {
+          title: ch.title, sub: ch.sub,
+          models: names.map((n) => {
+            const f = FOUNDRY_ROWS.filter((r) => r[0] === n && r[1] === 'FP32')[0];
+            const i = FOUNDRY_ROWS.filter((r) => r[0] === n && r[1] === 'INT8')[0];
+            return { name: n, a: f[ch.idx] + ch.unit, b: i[ch.idx] + ch.unit, aW: pc(val(f), max) + '%', bW: pc(val(i), max) + '%' };
+          })
+        };
+      }),
+      metricTabs: Object.keys(METRICS).map((k) => ({
+        name: METRICS[k].name, pick: () => this.setState({ metric: k }),
+        bg: metric === k ? 'color-mix(in srgb, var(--acBg) 16%, transparent)' : 'transparent',
+        fg: metric === k ? 'var(--ac)' : t.fgMuted
+      })),
+      chartTitle: M.title,
+      groups: M.rows.map((r) => {
+        const win = M.higherBetter ? r.us >= r.them : r.us <= r.them;
+        const d = metric === 'fps' ? (r.us / r.them).toFixed(1) + '×' : (r.us - r.them > 0 ? '+' : '') + (r.us - r.them).toFixed(1) + M.unit;
+        return {
+          label: r.label, us: r.us.toFixed(1), them: r.them.toFixed(1), delta: d,
+          usH: pc(r.us, M.max * 1.2) + '%', themH: pc(r.them, M.max * 1.2) + '%',
+          deltaColor: win ? '#3ddc97' : t.fgMuted
+        };
+      }),
+      methodNote: M.note,
+      percRange: Math.min.apply(null, ratios).toFixed(1) + '× to ' + Math.max.apply(null, ratios).toFixed(1) + '×',
+      percRows: PERC.map((p) => ({
+        label: p.name, sub: p.sub, us: p.q + ' fps', them: p.n + ' fps', delta: (p.q / p.n).toFixed(1) + '×',
+        usW: '100%', themW: pc(p.n, p.q) + '%'
+      })),
+      foundryRows: FOUNDRY_ROWS.map((r) => ({
+        model: r[0], prec: r[1], map: r[3], delta: r[4], ms: r[5] + ' ms', mb: r[6] + ' MB',
+        dcol: r[4].charAt(0) === '+' ? '#3ddc97' : t.fgMuted,
+        bg: r[1] === 'INT8' ? 'color-mix(in srgb, var(--ac) 7%, transparent)' : 'transparent'
+      })),
+      streampipeHref: DOC('Benchmark Multi-stream'),
+      perceptionHref: DOC('Benchmark Perception'),
+      scalingHref: DOC('Benchmark Multistream Scaling'),
+      foundryHref: DOC('Benchmark iQ-Foundry Models')
+    });
+  }
+}
+
+</script>
+</body>
+</html>

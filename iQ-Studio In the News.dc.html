@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>In the News · iQ-Studio</title>
+<link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg">
+<meta name="description" content="Media coverage, deployments, and ecosystem case studies about the Innodisk Qualcomm Dragonwing platforms that iQ-Studio runs on.">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./iq-tokens.css">
+<link rel="stylesheet" href="./iq-shell.css">
+<link rel="stylesheet" href="./iq-docs.css">
+<script src="./iq-tokens.js"></script>
+<script src="./iq-theme.js"></script>
+<script src="./iq-a11y.js"></script>
+<script src="./iq-docs.js"></script>
+<script src="./docs-search.js"></script>
+<style>
+  .news-wrap { max-width:1040px; margin:0 auto; padding:34px 48px 90px; }
+  .news-eyebrow { display:inline-block; padding:5px 13px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; background:color-mix(in srgb, var(--acBg) 14%, transparent); color:var(--ac); }
+  .news-hero { position:relative; }
+  .news-grad { background:linear-gradient(100deg, var(--ac), var(--acSoft) 55%, var(--ac)); background-size:200% 100%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent; animation:newsSheen 7s linear infinite; }
+  @keyframes newsSheen { to { background-position:-200% 0; } }
+  .news-chips { display:flex; flex-wrap:wrap; gap:10px; margin-top:26px; }
+  .news-chip { display:inline-flex; align-items:center; gap:8px; padding:9px 16px; border-radius:999px; font-size:13.5px; font-weight:600; text-decoration:none; transition:border-color .25s ease, transform .25s ease, color .25s ease; }
+  .news-chip:hover { border-color:var(--ac) !important; color:var(--ac) !important; transform:translateY(-1px); }
+  .news-sec { margin-top:56px; scroll-margin-top:96px; }
+  .news-h2 { position:relative; margin:0; padding-top:24px; font-size:28px; font-weight:650; letter-spacing:-.025em; transition:border-color 1s ease; }
+  .news-h2::before { content:""; position:absolute; left:0; top:-2px; width:64px; height:3px; border-radius:3px; background:linear-gradient(90deg, var(--ac), transparent); }
+  .news-lead { margin:12px 0 0; max-width:70ch; font-size:16px; line-height:1.75; transition:color 1s ease; }
+  .news-list { display:flex; flex-direction:column; gap:14px; margin-top:24px; }
+  .news-card { display:grid; grid-template-columns:240px minmax(0,1fr); gap:22px; padding:14px; border-radius:16px; transition:border-color .3s ease, transform .3s ease, background 1s ease; }
+  .news-card:hover { border-color:color-mix(in srgb, var(--ac) 45%, transparent) !important; transform:translateY(-2px); }
+  .news-thumb { display:block; overflow:hidden; border-radius:10px; aspect-ratio:16/9; background:color-mix(in srgb, var(--ac) 8%, transparent); }
+  .news-thumb img { display:block; width:100%; height:100%; object-fit:cover; }
+  .news-body { display:flex; flex-direction:column; justify-content:center; gap:10px; min-width:0; }
+  .news-meta { font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.06em; }
+  .news-title { margin:0; font-size:18px; line-height:1.45; font-weight:650; letter-spacing:-.01em; }
+  .news-keep { display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:12px; margin-top:22px; }
+  .news-keep a { display:block; padding:16px 18px; border-radius:14px; font-size:14.5px; font-weight:600; text-decoration:none; transition:border-color .3s ease, transform .3s ease; }
+  .news-keep a:hover { border-color:var(--ac) !important; transform:translateY(-2px); }
+  @media (max-width: 700px) {
+    .news-wrap { padding:24px 18px 70px; }
+    .news-card { grid-template-columns:1fr; gap:14px; }
+  }
+</style>
+</helmet>
+
+<div data-iq-theme="{{ themeName }}" style="--ac:{{ ac }}; --acSoft:{{ acSoft }}; --acBg:{{ acBg }}; transition:--ac .8s ease, --acSoft .8s ease, --acBg .8s ease, background 1s ease, color 1s ease; min-height:100vh; background:{{ bg }}; color:{{ fg }}">
+
+  <!-- @shared:nav -->
+  <div class="iq-navwrap">
+  <div class="iq-nav">
+    <a class="iq-brand" href="iQ-Studio Home A Datasheet.dc.html">
+      <img class="iq-brand__icon iq-brand__icon--dark" src="assets/logo/iQ-icon-mono-white.svg" alt="iQ">
+      <img class="iq-brand__icon iq-brand__icon--light" src="assets/logo/iQ-icon-mono-ink.svg" alt="iQ">
+      <span class="iq-brand__sep" aria-hidden="true"></span>
+      <span class="iq-brand__word">iQ STUDIO</span>
+    </a>
+    <div class="iq-nav__links">
+      <a class="iq-nav__link" href="iQ-Studio Home A Datasheet.dc.html">Home</a>
+      <a class="iq-nav__link" href="iQ-Studio Get Started.dc.html">Get Started</a>
+      <a class="iq-nav__link" href="iQ-Studio Docs.dc.html">Docs</a>
+      <a class="iq-nav__link" href="iQ-Studio Benchmarks.dc.html">Benchmarks</a>
+      <a class="iq-nav__link" href="iQ-Studio Architecture.dc.html">Architecture</a>
+      <a class="iq-nav__link--current" href="iQ-Studio In the News.dc.html" aria-current="page">In the News</a>
+    </div>
+    <div class="iq-nav__actions">
+    <span class="gs-search iq-search">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+      <span class="gs-searchlbl">Search…</span>
+      <span class="iq-search__kbd">⌘K</span>
+    </span>
+    <span class="iq-pal">
+      <span class="iq-roundbtn" onClick="{{ togglePal }}" aria-label="Accent colour">
+        <span class="iq-pal__swatch"></span>
+      </span>
+      <sc-if value="{{ palOpen }}" hint-placeholder-val="{{ false }}">
+        <div class="iq-pal__menu">
+          <span class="iq-pal__title">Primary colour</span>
+          <sc-for list="{{ pals }}" as="p" hint-placeholder-count="5">
+            <span class="iq-pal__item" onClick="{{ p.pick }}">
+              <span class="iq-pal__dot" style="background:{{ p.sw }}"></span>{{ p.name }}
+              <span class="iq-pal__tick" style="opacity:{{ p.tickOp }}">✓</span>
+            </span>
+          </sc-for>
+        </div>
+      </sc-if>
+    </span>
+    
+    <span class="iq-roundbtn iq-roundbtn--menu" onClick="{{ navToggle }}" aria-label="Menu">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"></path></svg>
+    </span>
+    <span class="iq-roundbtn" onClick="{{ toggleTheme }}" aria-label="Toggle theme">
+      <sc-if value="{{ isDark }}" hint-placeholder-val="{{ true }}">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"></path></svg>
+      </sc-if>
+      <sc-if value="{{ isLight }}" hint-placeholder-val="{{ false }}">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+      </sc-if>
+    </span>
+    <a href="https://github.com/InnoIPA/iQ-Studio" aria-label="GitHub" class="iq-roundbtn iq-roundbtn--github">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M12 1.5A10.5 10.5 0 0 0 8.7 22c.5.1.7-.2.7-.5v-1.7c-2.9.6-3.5-1.4-3.5-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.7-1.4-2.3-.3-4.8-1.2-4.8-5.2 0-1.1.4-2.1 1-2.8-.1-.3-.5-1.3.1-2.7 0 0 .9-.3 2.8 1a9.6 9.6 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .6 1.4.2 2.4.1 2.7.7.7 1 1.7 1 2.8 0 4-2.5 4.9-4.8 5.2.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10.5 10.5 0 0 0 12 1.5Z"></path></svg>
+    </a>
+    </div>
+  </div>
+  <sc-if value="{{ navOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="iq-mobscrim" onClick="{{ navClose }}"></div>
+    <div class="iq-mobmenu">
+      <a href="iQ-Studio Home A Datasheet.dc.html">Home</a>
+      <a href="iQ-Studio Get Started.dc.html">Get Started</a>
+      <a href="iQ-Studio Docs.dc.html">Docs</a>
+      <a href="iQ-Studio Benchmarks.dc.html">Benchmarks</a>
+      <a href="iQ-Studio Architecture.dc.html">Architecture</a>
+      <a href="iQ-Studio In the News.dc.html">In the News</a>
+      <a href="https://github.com/InnoIPA/iQ-Studio">GitHub ↗</a>
+    </div>
+  </sc-if>
+  </div>
+  <!-- @end:nav -->
+
+  <main class="news-wrap" style="animation:gsRise .6s cubic-bezier(.16,1,.3,1) both">
+
+    <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.08em; transition:color 1s ease; color:{{ fgMuted }}">
+      <a href="iQ-Studio Home A Datasheet.dc.html">Home</a><span>/</span><span style="transition:color 1s ease; color:{{ fg }}">In the News</span>
+    </div>
+
+    <header class="news-hero" style="max-width:760px; margin-top:22px">
+      <span class="news-eyebrow">Newsroom</span>
+      <h1 style="margin:16px 0 0; font-size:clamp(34px, 4.6vw, 52px); line-height:1.08; font-weight:700; letter-spacing:-.035em">In the <span class="news-grad">News</span></h1>
+      <p style="margin:20px 0 0; font-size:18px; line-height:1.7; transition:color 1s ease; color:{{ fgMuted }}">See how Innodisk Qualcomm Dragonwing platforms, the foundation of iQ-Studio, are covered, deployed, and adopted across the industry.</p>
+    </header>
+
+    <nav class="news-chips" aria-label="Sections">
+      <sc-for list="{{ sections }}" as="s" hint-placeholder-count="3">
+        <a class="news-chip" href="{{ s.anchor }}" style="border:1px solid {{ line }}; background:{{ panelBg }}; color:{{ fgMuted }}">{{ s.chip }}</a>
+      </sc-for>
+    </nav>
+
+    <sc-for list="{{ sections }}" as="s" hint-placeholder-count="3">
+      <section id="{{ s.id }}" class="news-sec">
+        <h2 class="news-h2" style="border-top:1px solid {{ line }}">{{ s.title }}</h2>
+        <p class="news-lead" style="color:{{ fgMuted }}">{{ s.lead }}</p>
+        <div class="news-list">
+          <sc-for list="{{ s.items }}" as="it" hint-placeholder-count="2">
+            <article class="news-card" style="border:1px solid {{ line }}; background:{{ panelBg }}">
+              <a class="news-thumb" href="{{ it.href }}" target="_blank" rel="noopener" style="pointer-events:{{ it.linkEvents }}"><img src="{{ it.img }}" alt="{{ it.alt }}" loading="lazy"></a>
+              <div class="news-body">
+                <span class="news-meta" style="color:{{ fgMuted }}">{{ it.meta }}</span>
+                <h3 class="news-title">{{ it.title }}</h3>
+                <a class="iq-btn" href="{{ it.href }}" target="_blank" rel="noopener" style="display:{{ it.moreDisplay }}">Read more <span aria-hidden="true">→</span></a>
+              </div>
+            </article>
+          </sc-for>
+        </div>
+      </section>
+    </sc-for>
+
+    <section class="news-sec">
+      <h2 class="news-h2" style="border-top:1px solid {{ line }}">Keep Exploring</h2>
+      <div class="news-keep">
+        <a href="iQ-Studio Docs Applications Overview.dc.html" style="border:1px solid {{ line }}; background:{{ panelBg }}; color:{{ fg }}">Run a demo on your device: Applications</a>
+        <a href="iQ-Studio Benchmarks.dc.html" style="border:1px solid {{ line }}; background:{{ panelBg }}; color:{{ fg }}">See measured results: Benchmarks</a>
+        <a href="iQ-Studio Get Started.dc.html" style="border:1px solid {{ line }}; background:{{ panelBg }}; color:{{ fg }}">Boot your hardware first: Starting Guides</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- @shared:footer -->
+  <footer class="iq-footer">
+    <span>© 2026 Innodisk Corporation · iQ-Studio</span>
+    <div class="iq-footer__links">
+      <a href="iQ-Studio Home A Datasheet.dc.html">Home</a><a href="iQ-Studio Get Started.dc.html">Get Started</a><a href="iQ-Studio Docs.dc.html">Docs</a><a href="iQ-Studio Benchmarks.dc.html">Benchmarks</a><a href="iQ-Studio Architecture.dc.html">Architecture</a><a href="iQ-Studio In the News.dc.html">In the News</a><a href="https://github.com/InnoIPA/iQ-Studio">GitHub</a>
+    </div>
+  </footer>
+  <!-- @end:footer -->
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;'dark' | 'light'&quot;}}">
+const IMG = 'https://raw.githubusercontent.com/InnoIPA/iQ-Studio/main/news/fig/';
+
+// Keep newest entries at the top of each section, as in news/README.md on GitHub.
+const SECTIONS = [
+  {
+    id: 'deployments', chip: 'Deployments', title: 'Real-World Deployments',
+    lead: 'Customer and project stories where the platform is running in production or at live events.',
+    items: [
+      { img: IMG + 'ncu-smart-stadium.jpg', alt: 'Smart stadium environmental monitoring at National Central University', meta: 'May 1, 2026 | National Central University', title: 'Smart Stadium Deployment: Real-Time Environmental Monitoring and AI Analysis for the 2026 National Intercollegiate Athletic Games', href: 'https://2026niag.ncu.edu.tw/public/news_data.aspx?id=562' }
+    ]
+  },
+  {
+    id: 'events', chip: 'Events & Media', title: 'Events & Media Coverage',
+    lead: 'Exhibition reports and press articles about product launches and live demos.',
+    items: [
+      { img: IMG + 'computex-2026.jpg', alt: 'Qualcomm and Innodisk representatives at the Innodisk COMPUTEX 2026 booth', meta: 'June 8, 2026 | Innodisk', title: 'Innodisk Showcases Its Full Qualcomm Dragonwing Edge AI Lineup at COMPUTEX 2026', href: 'https://www.innodisk.com/en/news/innodisk-qualcomm-dragonwing-edge-ai-computex-2026' },
+      { img: IMG + 'digitimes-ai-safety.jpg', alt: 'Innodisk, Qualcomm, and Formosa Plastics representatives at the announcement', meta: 'June 4, 2026 | DIGITIMES', title: 'Innodisk Partners with Qualcomm and Formosa Plastics to Launch an AI Industrial Safety Visual Solution', href: 'https://www.digitimes.com.tw/tech/dt/n/shwnws.asp?id=0000757480_JWT5HXC07NK7DZ1JHX78H' },
+      { img: IMG + 'embedded-world-2026.jpg', alt: 'Innodisk booth at Embedded World 2026', meta: 'March 23, 2026 | StorageNewsletter', title: 'Embedded World 2026: Innodisk Showcases an Integrated Edge AI Portfolio for Industrial Deployment', href: 'https://www.storagenewsletter.com/2026/03/23/embedded-world-2026-innodisk-showcases-integrated-edge-ai-portfolio-for-industrial-deployment/' }
+    ]
+  },
+  {
+    id: 'partners', chip: 'Reviews & Partners', title: 'Reviews & Ecosystem Partners',
+    lead: 'Case studies and technical documentation from ecosystem partners such as Qualcomm, Edge Impulse, and EyePop.ai.',
+    items: [
+      { img: IMG + 'qualcomm-case-study.jpg', alt: 'Qualcomm partner case study on Innodisk and Dragonwing IQ-9075', meta: '-- | Qualcomm Partner Network', title: 'Why Innodisk Chose the Qualcomm Dragonwing\u2122 IQ-9075 Processor for Real-time Multi-Channel Video Inferencing and Edge AI', href: 'https://www.qualcomm.com/support/partner/blog/innodisk-iq9' },
+      { img: IMG + 'edgeimpulse-exec-q911.jpg', alt: 'Edge Impulse documentation for the Innodisk Dragonwing starter kit', meta: '-- | Edge Impulse Documentation', title: 'Deploy Accelerated Edge Impulse Models on Innodisk Dragonwing Platforms: Ubuntu Setup and Qualcomm Dependencies', href: 'https://docs.edgeimpulse.com/hardware/boards/innodisk-exec-q911' },
+      { img: IMG + 'eyepop-deployment.jpg', alt: 'EyePop.ai logo', meta: '-- | EyePop.ai', title: 'Real-Time Computer Vision at the Edge: EyePop.ai on Innodisk Dragonwing Platforms', href: 'https://www.eyepop.ai/deployments/dragonwing-edge-ai-eyepop-ai-on-innodisk' }
+    ]
+  },
+  {
+    id: 'workshops', chip: 'Workshops', title: 'Hands-On Workshops',
+    lead: 'Three hands-on workshops where attendees ran iQ-Studio on Innodisk Dragonwing platforms.',
+    items: [
+      { img: IMG + 'workshop-session-3.jpg', alt: 'Attendee running multi-stream inference on the IQ9 at the Xizhi HQ workshop', meta: 'October 14, 2026 | Innodisk HQ, Xizhi', title: 'Innodisk × Qualcomm Hands-On Workshop: Accelerating Edge AI Deployment', href: 'https://innoipa.github.io/inno_qcom_hands_on_workshop_2.0/' },
+      { img: IMG + 'workshop-session-2.jpg', alt: 'Innodisk presenting multi-stream inference at the Watch-Me-Build event in Santa Clara', meta: 'September 14, 2026 | Santa Clara, USA', title: 'Bringing Vision Intelligence to the Edge, Live in Santa Clara', href: '' },
+      { img: IMG + 'workshop-session-1.jpg', alt: 'Dragonwing board set up for the Qualcomm AI Hub and YOLO26 workshop', meta: 'July 30, 2026 | Innodisk × Qualcomm', title: 'Qualcomm AI Hub × YOLO26 BYOM Hands-On Workshop', href: 'https://innoipa.github.io/inno_qcom_hands_on_workshop/' }
+    ]
+  }
+];
+
+class Component extends DCLogic {
+  state = { theme: IQ_THEME.saved.theme, pal: IQ_THEME.saved.pal, palOpen: false, prog: 0, sideOpen: false, navOpen: false };
+
+  componentDidMount() { IQ_THEME.apply(this.state.theme || this.props.theme || 'dark'); }
+
+  renderVals() {
+    const name = this.state.theme || this.props.theme || 'dark';
+    const { t, pal } = IQ_THEME.resolve(name, this.state.pal);
+    return Object.assign({}, t, {
+      ...IQ_DOCS.vals(this, { TOC: [], ACTIVE: '', SIDE: [], t, name, pal }),
+      sections: SECTIONS.map((s) => Object.assign({ anchor: '#' + s.id }, s, { items: s.items.map((it) => Object.assign({ linkEvents: it.href ? 'auto' : 'none', moreDisplay: it.href ? 'inline-flex' : 'none' }, it)) }))
+    });
+  }
+}
+
+</script>
+</body>
+</html>
