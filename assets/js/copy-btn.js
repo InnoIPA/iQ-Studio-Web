@@ -52,7 +52,15 @@
     make: function (text) {
       return function (e) {
         var el = e && e.currentTarget && e.currentTarget.classList ? e.currentTarget : lastBtn;
-        write(text).then(function (ok) { flash(el, ok); });
+        write(text).then(function (ok) {
+          flash(el, ok);
+          try {
+            (window.dataLayer = window.dataLayer || []).push({
+              event: 'copy_code', copy_success: ok !== false,
+              copy_text: String(text).slice(0, 80), page_path: location.pathname
+            });
+          } catch (e) {}
+        });
       };
     },
     write: write,

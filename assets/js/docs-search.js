@@ -10,7 +10,7 @@
     });
   });
 
-  var open = false, sel = 0, hits = [], el = {}, host = null, lastFocus = null;
+  var clickedHit = '', open = false, sel = 0, hits = [], el = {}, host = null, lastFocus = null;
   var IS_MAC = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent || '');
   var KEY_LABEL = IS_MAC ? '\u2318K' : 'Ctrl K';
   function motion() { return window.IQ_MOTION && window.IQ_MOTION.reduced() ? 'auto' : 'smooth'; }
@@ -183,6 +183,17 @@
       el.panel.style.transform = 'none';
       el.input.focus();
     });
+  }
+  // GA4 via GTM dataLayer: one site_search per opened search that had a query (term capped at 50 chars).
+  function track() {
+    try {
+      var q = (el.input.value || '').trim();
+      if (q) (window.dataLayer = window.dataLayer || []).push({
+        event: 'site_search', search_term: q.slice(0, 50).toLowerCase(),
+        result_count: hits.length, result_clicked: clickedHit || '(none)'
+      });
+    } catch (e) {}
+    clickedHit = '';
   }
   function close() {
     if (!open) return;
