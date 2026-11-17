@@ -160,7 +160,7 @@
     close();
     if (here.slice(-r.file.length - 1) === '/' + r.file) {
       if (!r.hash) { window.scrollTo({ top: 0, behavior: motion() }); return; }
-      var t = document.querySelector(r.hash);
+      var t = document.getElementById(r.hash.replace(/^#/, ''));
       if (t) window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - 88, behavior: motion() });
       history.replaceState(null, '', r.hash);
     } else {

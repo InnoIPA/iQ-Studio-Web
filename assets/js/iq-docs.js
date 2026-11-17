@@ -25,11 +25,14 @@ window.IQ_DOCS = (function () {
     setTimeout(function () { host.remove(); }, 600);
   }
 
+  // look up '#id' via getElementById — querySelector throws on ids that start with a digit (e.g. '#720p-30fps')
+  function byHash(href) { return document.getElementById(String(href).replace(/^#/, '')); }
+
   // click handler for a table-of-contents link: eased scroll + a brief highlight on the target heading
   function goto(c, href) {
     return function (e) {
       if (e) e.preventDefault();
-      var el = document.querySelector(href);
+      var el = byHash(href);
       if (!el) return;
       var top = el.getBoundingClientRect().top + window.scrollY - 112;
       c._lockTo = href;
@@ -72,7 +75,7 @@ window.IQ_DOCS = (function () {
       var active = TOC[0][1];
       var prev = c.state.activeSec;
       TOC.forEach(function (item) {
-        var el = document.querySelector(item[1]);
+        var el = byHash(item[1]);
         if (!el) return;
         var top = el.getBoundingClientRect().top;
         if (top <= (item[1] === prev ? 162 : 150)) active = item[1];
