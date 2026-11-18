@@ -221,5 +221,23 @@ window.IQ_DOCS = (function () {
     });
   }
 
+  // GA4 via GTM dataLayer: every link click on docs/benchmarks pages (sidebar, TOC, content, nav, footer).
+  document.addEventListener('click', function (e) {
+    try {
+      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if (!a) return;
+      var href = a.getAttribute('href') || '';
+      if (!href || href === '#' || href.indexOf('javascript:') === 0) return;
+      var area = a.closest('.docs-side') || a.hasAttribute('data-toc') ? (a.hasAttribute('data-toc') ? 'toc' : 'sidebar')
+        : a.closest('footer') ? 'footer' : a.closest('nav, header') ? 'nav' : 'content';
+      (window.dataLayer = window.dataLayer || []).push({
+        event: 'docs_link_click',
+        link_text: (a.textContent || a.getAttribute('aria-label') || '').replace(/s+/g, ' ').trim().slice(0, 80),
+        link_url: a.href, link_path: a.pathname + (a.hash || ''), link_external: a.hostname !== location.hostname,
+        link_area: area, page_path: location.pathname, page_title: document.title
+      });
+    } catch (err) {}
+  }, true);
+
   return { mount: mount, unmount: unmount, vals: vals, goto: goto, spark: spark };
 })();

@@ -48,6 +48,19 @@
     lastBtn = t && t.closest ? t.closest('.iq-copy') : null;
   }, true);
 
+  // text of the closest heading above the button — tells us which section/command was copied
+  function nearestHeading(node) {
+    try {
+      if (!node) return '';
+      var hs = document.querySelectorAll('h1,h2,h3,h4'), found = '';
+      for (var i = 0; i < hs.length; i++) {
+        if (hs[i].compareDocumentPosition(node) & Node.DOCUMENT_POSITION_FOLLOWING) found = hs[i].textContent;
+        else break;
+      }
+      return found.replace(/s+/g, ' ').trim().slice(0, 80);
+    } catch (e) { return ''; }
+  }
+
   window.IQ_COPY = {
     make: function (text) {
       return function (e) {
@@ -57,7 +70,8 @@
           try {
             (window.dataLayer = window.dataLayer || []).push({
               event: 'copy_code', copy_success: ok !== false,
-              copy_text: String(text).slice(0, 80), page_path: location.pathname
+              copy_text: String(text).slice(0, 120), copy_heading: nearestHeading(el),
+              page_path: location.pathname, page_title: document.title
             });
           } catch (e) {}
         });
