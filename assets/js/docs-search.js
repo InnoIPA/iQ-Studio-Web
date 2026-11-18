@@ -157,6 +157,15 @@
   function go(r) {
     if (!r) return;
     var here = decodeURIComponent(location.pathname);
+    clickedHit = r.file + (r.hash || '');
+    try {
+      (window.dataLayer = window.dataLayer || []).push({
+        event: 'search_result_click', search_term: (el.input.value || '').trim().slice(0, 50).toLowerCase(),
+        result_label: r.label, result_page: r.page, result_group: r.group, result_kind: r.kind,
+        result_file: r.file, result_hash: r.hash || '', result_position: hits.indexOf(r) + 1,
+        page_path: location.pathname
+      });
+    } catch (e) {}
     close();
     if (here.slice(-r.file.length - 1) === '/' + r.file) {
       if (!r.hash) { window.scrollTo({ top: 0, behavior: motion() }); return; }
